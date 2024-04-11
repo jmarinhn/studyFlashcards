@@ -6,6 +6,10 @@
     overflow: hidden;
     perspective: 1000px;
     cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   
   .flashcard .front, .flashcard .back {
@@ -14,14 +18,18 @@
     position: absolute;
     backface-visibility: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 20px;
     box-sizing: border-box;
+    font-size: 16px;
   }
   
-  .flashcard .front {
-    background-color: #fff;
+  .flashcard .front h1 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
   }
   
   .flashcard .back {
@@ -35,4 +43,4 @@
   
   .flashcard.flipped .back {
     transform: rotateY(0deg);
-  }
+  }  

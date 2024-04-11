@@ -61,6 +61,19 @@ const App = () => {
     onSwipedRight: () => handleSwipe('Right'),
   });
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'ArrowRight') {
+        handleSwipe('Right');
+      } else if (event.key === 'ArrowLeft') {
+        handleSwipe('Left');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [currentQuestionIndex, questions.length]);
+
   return (
     <div className="app">
       {loading ? (
