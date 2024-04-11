@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import Loader from 'react-loader-spinner';
 import Flashcard from './Flashcard';
 import useQuestions from './useQuestions';
+import FileDropzone from './FileDropzone';
 import './App.css';
 
 const App = () => {
