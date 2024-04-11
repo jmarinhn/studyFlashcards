@@ -10,13 +10,14 @@ import './App.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
-  const [questions, loadQuestions] = useQuestions();
+  const [questions, loadQuestions] = useQuestions(username);
   const [loading, setLoading] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
-    const savedIndex = Cookies.get(`currentQuestionIndex_${username}`);
-    return savedIndex ? JSON.parse(savedIndex) : 0;
-  });
-  
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
+  const [backgroundColor, setBackgroundColor] = useState('white');
+  const [showResults, setShowResults] = useState(false);
+
   useEffect(() => {
     Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
   }, [currentQuestionIndex]);
@@ -35,26 +36,50 @@ const App = () => {
     setTimeout(() => {
       setLoading(false);
       setCurrentQuestionIndex(0);
-    }, 3000); // Adjust the countdown time as needed
+      setCorrectCount(0);
+      setIncorrectCount(0);
+      setShowResults(false);
+    }, 3000);
   };
 
   const handleSwipe = (direction) => {
-    const currentQuestion = questions[currentQuestionIndex];
     if (direction === 'Right') {
-      // Store the question ID as correct
-      localStorage.setItem(`question_${currentQuestion.id}`, 'correct');
+      setCorrectCount((prevCount) => prevCount + 1);
+      setBackgroundColor('lightgreen');
     } else if (direction === 'Left') {
-      // Store the question ID as incorrect
-      localStorage.setItem(`question_${currentQuestion.id}`, 'incorrect');
+      setIncorrectCount((prevCount) => prevCount + 1);
+      setBackgroundColor('lightcoral');
     }
-    // Move to the next question
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-    if (currentQuestionIndex >= questions.length) {
-      // Show a message or reset the index
-      setCurrentQuestionIndex(0);
-    }
+    setTimeout(() => {
+      setBackgroundColor('white');
+      if (currentQuestionIndex + 1 < questions.length) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      } else {
+        setShowResults(true);
+      }
+    }, 500);
   };
   
+  const handleRetry = () => {
+    setShowResults(false);
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    // Filter out questions that were answered correctly
+    const remainingQuestions = questions.filter(
+      (question) => localStorage.getItem(`question_${question.id}`) !== 'correct'
+    );
+    setQuestions(remainingQuestions);
+  };
+
+  const handleFinish = () => {
+    setShowResults(false);
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setQuestions([]);
+    localStorage.clear();
+  };
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => handleSwipe('Left'),
@@ -64,28 +89,52 @@ const App = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'ArrowRight') {
-        handleSwipe('Right');
+        handleSwipe('Right'); // Swipe right
       } else if (event.key === 'ArrowLeft') {
-        handleSwipe('Left');
+        handleSwipe('Left'); // Swipe left
+      } else if (event.key === ' ') {
+        setFlipped((prev) => !prev); // Flip the card
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown); 
   }, [currentQuestionIndex, questions.length]);
 
   return (
-    <div className="app">
+    <div className="app" style={{ backgroundColor }}>
       {loading ? (
         <ThreeDots color="#00BFFF" height={80} width={80} />
+      ) : showResults ? (
+        <div className="results">
+          <h1>Results</h1>
+          <p>Correct Answers: {correctCount}</p>
+          <p>Incorrect Answers: {incorrectCount}</p>
+          <p>
+            {correctCount / (correctCount + incorrectCount) >= 0.8
+              ? 'Passed'
+              : 'Failed'}
+          </p>
+          <button onClick={handleRetry}>Retry</button>
+          <button onClick={handleFinish}>Finish</button>
+        </div>
       ) : questions.length > 0 ? (
-        <div {...swipeHandlers}>
-          <Flashcard
-            key={currentQuestionIndex}
-            question={questions[currentQuestionIndex].question}
-            options={questions[currentQuestionIndex].options}
-            answer={questions[currentQuestionIndex].answer_official}
-          />
+        <div>
+          <div className="counters">
+            <div>Correct Answers: {correctCount}</div>
+            <div>Incorrect Answers: {incorrectCount}</div>
+          </div>
+          <div {...swipeHandlers}>
+            <Flashcard
+              key={currentQuestionIndex}
+              question={questions[currentQuestionIndex].question}
+              options={questions[currentQuestionIndex].options}
+              answer={questions[currentQuestionIndex].answer_official}
+            />
+          </div>
+          <div className="card-number">
+            Card {currentQuestionIndex + 1} of {questions.length}
+          </div>
         </div>
       ) : (
         <FileDropzone onFileAccepted={handleFileAccepted} />
@@ -93,5 +142,6 @@ const App = () => {
     </div>
   );
 };
+
 
 export default App;
