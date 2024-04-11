@@ -46,7 +46,7 @@ const App = () => {
   return (
     <div className="app">
       {loading ? (
-        <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
+        <ThreeDots color="#00BFFF" height={80} width={80} />
       ) : questions.length > 0 ? (
         <div {...swipeHandlers}>
           <Flashcard
