@@ -10,8 +10,9 @@ import './App.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
-  const [questions, loadQuestions] = useQuestions(username);
+  const [questions, loadQuestions, setQuestions] = useQuestions(username);
   const [loading, setLoading] = useState(false);
+  const [flipped, setFlipped] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
@@ -130,6 +131,7 @@ const App = () => {
               question={questions[currentQuestionIndex].question}
               options={questions[currentQuestionIndex].options}
               answer={questions[currentQuestionIndex].answer_official}
+              flipped={flipped}
             />
           </div>
           <div className="card-number">

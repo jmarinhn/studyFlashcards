@@ -9,10 +9,10 @@ const shuffleArray = (array) => {
 };
 
 const useQuestions = (username) => {
-  const [questions, setQuestions] = useState(() => {
-    const savedQuestions = localStorage.getItem(`questions_${username}`);
-    return savedQuestions ? JSON.parse(savedQuestions) : [];
-  });
+    const [questions, setQuestions] = useState(() => {
+        const savedQuestions = localStorage.getItem(`questions_${username}`);
+        return savedQuestions ? JSON.parse(savedQuestions) : [];
+    });
 
   const loadQuestions = (file) => {
     const reader = new FileReader();
@@ -36,7 +36,7 @@ const useQuestions = (username) => {
     reader.readAsText(file);
   };
 
-  return [questions, loadQuestions];
+  return [questions, loadQuestions, setQuestions];
 };
 
 export default useQuestions;
