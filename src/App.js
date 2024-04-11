@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Loader from 'react-loader-spinner';
+import { Loader } from 'react-loader-spinner'; // Change the import statement
 import Flashcard from './Flashcard';
 import useQuestions from './useQuestions';
 import FileDropzone from './FileDropzone';
