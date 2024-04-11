@@ -31,6 +31,10 @@ const App = () => {
     }
     // Move to the next question
     setCurrentQuestionIndex(currentQuestionIndex + 1);
+    if (currentQuestionIndex >= questions.length) {
+      // Show a message or reset the index
+      setCurrentQuestionIndex(0);
+    }
   };
   
 
