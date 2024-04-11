@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import { View, ScrollView } from 'react-native';
+import UploadJson from './src/UploadJson';
+import Flashcard from './src/Flashcard';
+import useQuestions from './src/useQuestions';
 
-function App() {
+export default function App() {
+  const [fileUri, setFileUri] = useState(null);
+  const [questions, loadQuestions] = useQuestions(fileUri);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn how to use React
-        </a>
-      </header>
-    </div>
+    <View style={{ flex: 1, padding: 20 }}>
+      <UploadJson onFileSelected={(uri) => {
+        setFileUri(uri);
+        loadQuestions();
+      }} />
+      <ScrollView>
+        {questions.map((question) => (
+          <Flashcard
+            key={question.id}
+            question={question.question}
+            options={question.options}
+            answer={question.answer_official}
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 }
-
-export default App;
