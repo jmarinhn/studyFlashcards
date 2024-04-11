@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
 import { View, ScrollView } from 'react-native';
-import UploadJson from './src/UploadJson';
-import Flashcard from './src/Flashcard';
-import useQuestions from './src/useQuestions';
+import UploadJson from './UploadJson';
+import Flashcard from './Flashcard';
+import useQuestions from './useQuestions';
 
 export default function App() {
   const [fileUri, setFileUri] = useState(null);
