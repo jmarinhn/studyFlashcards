@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Loader } from 'react-loader-spinner'; // Change the import statement
+import { ThreeDots } from 'react-loader-spinner';
 import Flashcard from './Flashcard';
 import useQuestions from './useQuestions';
 import FileDropzone from './FileDropzone';
@@ -22,7 +22,7 @@ const App = () => {
   return (
     <div className="app">
       {loading ? (
-        <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
+        <ThreeDots type="ThreeDots" color="#00BFFF" height={80} width={80} />
       ) : questions.length > 0 ? (
         <Flashcard
           question={questions[currentQuestionIndex].question}
