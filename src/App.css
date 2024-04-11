@@ -45,14 +45,14 @@
 }
 
 .back {
-  background-color: #000;
-  color: #fff;
+  background-color: #5fee7e;
+  color: #000000;
   transform: rotateY(180deg);
 }
 
 h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 18px;
   text-align: center;
 }
 
