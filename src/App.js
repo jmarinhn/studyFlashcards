@@ -21,13 +21,18 @@ const App = () => {
   };
 
   const handleSwipe = (direction) => {
-    // Increment or decrement the current question index based on the swipe direction
-    if (direction === 'Right' && currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else if (direction === 'Left' && currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    const currentQuestion = questions[currentQuestionIndex];
+    if (direction === 'Right') {
+      // Store the question ID as correct
+      localStorage.setItem(`question_${currentQuestion.id}`, 'correct');
+    } else if (direction === 'Left') {
+      // Store the question ID as incorrect
+      localStorage.setItem(`question_${currentQuestion.id}`, 'incorrect');
     }
+    // Move to the next question
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
+  
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => handleSwipe('Left'),
