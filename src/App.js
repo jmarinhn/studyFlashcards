@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { ThreeDots } from 'react-loader-spinner';
+import FingerprintJS from 'fingerprintjs2';
+import Cookies from 'js-cookie';
 import Flashcard from './Flashcard';
 import useQuestions from './useQuestions';
 import FileDropzone from './FileDropzone';
 import './App.css';
 
 const App = () => {
+  const [username, setUsername] = useState('');
   const [questions, loadQuestions] = useQuestions();
   const [loading, setLoading] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
+    const savedIndex = Cookies.get(`currentQuestionIndex_${username}`);
+    return savedIndex ? JSON.parse(savedIndex) : 0;
+  });
+  
+  useEffect(() => {
+    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
+  }, [currentQuestionIndex]);
+
+  useEffect(() => {
+    FingerprintJS.get((components) => {
+      const values = components.map((component) => component.value);
+      const uniqueHash = FingerprintJS.x64hash128(values.join(''), 31);
+      setUsername(uniqueHash);
+    });
+  }, []);
 
   const handleFileAccepted = (file) => {
     setLoading(true);
