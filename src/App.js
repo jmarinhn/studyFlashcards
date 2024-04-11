@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { ThreeDots } from 'react-loader-spinner';
 import FingerprintJS from 'fingerprintjs2';
