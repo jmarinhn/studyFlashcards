@@ -1,30 +1,37 @@
 import React, { useState } from 'react';
-import './App.css';
-import { View, ScrollView } from 'react-native';
-import UploadJson from './UploadJson';
 import Flashcard from './Flashcard';
 import useQuestions from './useQuestions';
+import './App.css';
 
-export default function App() {
-  const [fileUri, setFileUri] = useState(null);
-  const [questions, loadQuestions] = useQuestions(fileUri);
+const App = () => {
+  const [questions, loadQuestions] = useQuestions();
+  const [loading, setLoading] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const handleFileAccepted = (file) => {
+    setLoading(true);
+    loadQuestions(file);
+    setTimeout(() => {
+      setLoading(false);
+      setCurrentQuestionIndex(0);
+    }, 3000); // Adjust the countdown time as needed
+  };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <UploadJson onFileSelected={(uri) => {
-        setFileUri(uri);
-        loadQuestions();
-      }} />
-      <ScrollView>
-        {questions.map((question) => (
-          <Flashcard
-            key={question.id}
-            question={question.question}
-            options={question.options}
-            answer={question.answer_official}
-          />
-        ))}
-      </ScrollView>
-    </View>
+    <div className="app">
+      {loading ? (
+        <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
+      ) : questions.length > 0 ? (
+        <Flashcard
+          question={questions[currentQuestionIndex].question}
+          options={questions[currentQuestionIndex].options}
+          answer={questions[currentQuestionIndex].answer_official}
+        />
+      ) : (
+        <FileDropzone onFileAccepted={handleFileAccepted} />
+      )}
+    </div>
   );
-}
+};
+
+export default App;
