@@ -66,12 +66,17 @@ const App = () => {
     setTimeout(() => {
       setCardStyle({});
       setFeedbackIcon('');
-      setCurrentQuestionIndex(prevIndex => prevIndex + 1 >= maxQuestions ? 0 : prevIndex + 1);
-      if (currentQuestionIndex + 1 >= maxQuestions) {
+      if (isCorrect) {
+        setCorrectCount(c => c + 1);
+      } else {
+        setIncorrectCount(c => c + 1);
+      }
+      if (currentQuestionIndex + 1 < maxQuestions) {
+        setCurrentQuestionIndex(i => i + 1);
+      } else {
         setShowResults(true);
       }
     }, 1200);
-  
 
 
   };
