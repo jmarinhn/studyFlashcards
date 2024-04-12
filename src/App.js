@@ -12,16 +12,15 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [questions, loadQuestions, setQuestions] = useQuestions(username);
   const [loading, setLoading] = useState(false);
-  const [flipped, setFlipped] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
-  const [backgroundColor, setBackgroundColor] = useState('white');
   const [showResults, setShowResults] = useState(false);
+  const [cardStyle, setCardStyle] = useState({}); // Correctly declare the cardStyle state
 
   useEffect(() => {
     Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
-  }, [currentQuestionIndex]);
+  }, [currentQuestionIndex, username]);
 
   useEffect(() => {
     FingerprintJS.get((components) => {
@@ -35,7 +34,7 @@ const App = () => {
     setLoading(true);
     loadQuestions(file);
     setTimeout(() => {
-      setLoading(false);
+      setLoading(true);
       setCurrentQuestionIndex(0);
       setCorrectCount(0);
       setIncorrectCount(0);
@@ -110,7 +109,7 @@ const App = () => {
   }, [currentQuestionIndex, questions.length]);
 
   return (
-    <div className="app" style={{ backgroundColor }}>
+    <div className="app" style={{ backgroundColor: cardStyle.backgroundColor || 'white' }}>
       {loading ? (
         <ThreeDots color="#00BFFF" height={80} width={80} />
       ) : showResults ? (
