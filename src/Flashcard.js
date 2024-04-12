@@ -4,6 +4,17 @@ import './Flashcard.css';
 const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }) => {
     const [flipped, setFlipped] = useState(false);
 
+    // Convert options object into an array of objects with letter and text properties
+    const optionsArray = Object.entries(options).map(([letter, text]) => ({
+        letter,
+        text
+    })).sort((a, b) => a.letter.localeCompare(b.letter)); // Sort by letter to ensure A>Z order
+
+    // Process the answer to show actual answers instead of just the letters
+    const processedAnswer = answer.split('').map(letter => {
+        return `${letter}: ${options[letter]}`;
+    }).join(', ');
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === ' ') {
@@ -30,13 +41,13 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
-                    {options.sort((a, b) => a.letter.localeCompare(b.letter)).map((option, index) => (
+                    {optionsArray.map((option, index) => (
                         <p key={index}>{option.letter}: {option.text}</p>
                     ))}
                 </div>
                 <div className="back">
                     <h1>Answer</h1>
-                    <p>{answer.map(a => `${a.letter}: ${a.text}`).join(', ')}</p>
+                    <p>{processedAnswer}</p>
                 </div>
             </div>
         </div>
