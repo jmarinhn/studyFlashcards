@@ -7,7 +7,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === ' ') {
-                event.preventDefault();  // Prevent the default action to avoid scrolling
+                event.preventDefault(); // Prevent the default action to avoid scrolling
                 setFlipped(prev => !prev);
             }
         };
@@ -16,11 +16,15 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    // Ensure options is in the correct format and sorted
-    const optionsArray = options ? Object.entries(options).sort((a, b) => a[0].localeCompare(b[0])) : [];
+    // Convert options object into an array and ensure it is sorted by the letter keys
+    const optionsArray = options && typeof options === 'object'
+        ? Object.entries(options).sort((a, b) => a[0].localeCompare(b[0]))
+        : [];
 
-    // Prepare the display of answers based on the letters in 'answer_official'
-    const processedAnswer = answer.split('').map(letter => `${letter}: ${options[letter]}`).join(', ');
+    // Map the 'answer' string to the corresponding options text
+    const processedAnswer = answer
+        ? answer.split('').map(letter => `${letter}: ${options[letter]}`).join(', ')
+        : 'No answer provided';
 
     return (
         <div className="flashcard" onClick={() => setFlipped(f => !f)}>
