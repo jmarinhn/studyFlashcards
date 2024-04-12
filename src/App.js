@@ -142,9 +142,6 @@ const App = () => {
                   totalQuestions={questions.length}
             />
           </div>
-          <div className="card-number">
-            Card {currentQuestionIndex + 1} of {questions.length}
-          </div>
         </div>
       ) : (
         <FileDropzone onFileAccepted={handleFileAccepted} />
