@@ -7,14 +7,15 @@ const Flashcard = ({ question, options, answer }) => {
     const flipCard = () => {
         setFlipped(!flipped);
     };
-    
+
     return (
         <div className="flashcard" onClick={flipCard}>
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
                     {Object.entries(options).map(([key, value]) => (
-                    <p key={key}>{key}: {value}</p>
+                        // Ensure value is a string or convert it safely
+                        <p key={key}>{key}: {typeof value === 'string' ? value : JSON.stringify(value)}</p>
                     ))}
                 </div>
                 <div className="back">
