@@ -35,7 +35,7 @@ const App = () => {
     setLoading(true);
     loadQuestions(file);
     setTimeout(() => {
-      setLoading(true);
+      setLoading(false);
       setCurrentQuestionIndex(0);
       setCorrectCount(0);
       setIncorrectCount(0);
