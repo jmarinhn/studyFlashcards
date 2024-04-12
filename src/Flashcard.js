@@ -31,7 +31,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
-                    {sortedOptions.map((option, index) => (
+                    {options.map((option, index) => (
                         <p key={index}>{option.letter}: {option.text}</p>
                     ))}
                 </div>
