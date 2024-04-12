@@ -19,6 +19,7 @@ const App = () => {
   const [cardStyle, setCardStyle] = useState({});
   const [flipped, setFlipped] = useState(false);
   const [feedbackIcon, setFeedbackIcon] = useState('');
+  const maxQuestions = 60;
 
   useEffect(() => {
     FingerprintJS.get((components) => {
@@ -46,15 +47,20 @@ const App = () => {
 
   const handleSwipe = (direction) => {
     const isCorrect = direction === 'Right';
+
+    setCorrectCount(c => c + (isCorrect ? 1 : 0));
+    setIncorrectCount(c => c + (isCorrect ? 0 : 1));
+
     const feedback = isCorrect ? '❤️' : '❌';
     const newBg = isCorrect ? 'lightgreen' : 'lightcoral';
+
     setFeedbackIcon(feedback);
+
     setCardStyle({
       transform: `translateX(${isCorrect ? 150 : -150}px) rotate(${isCorrect ? 10 : -10}deg)`,
       transition: 'transform 0.5s ease-out',
-      backgroundColor: newBg
+      backgroundColor: isCorrect ? 'lightgreen' : 'lightcoral'
     });
-
 
     setTimeout(() => {
       setCardStyle({});
@@ -64,7 +70,7 @@ const App = () => {
       } else {
         setIncorrectCount(c => c + 1);
       }
-      if (currentQuestionIndex + 1 < questions.length) {
+      if (currentQuestionIndex + 1 < maxQuestions) {
         setCurrentQuestionIndex(i => i + 1);
       } else {
         setShowResults(true);

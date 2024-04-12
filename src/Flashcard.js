@@ -30,16 +30,14 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
-                    {options.map((option, index) => (
+                    {options.sort((a, b) => a.letter.localeCompare(b.letter)).map((option, index) => (
                         <p key={index}>{option.letter}: {option.text}</p>
                     ))}
                 </div>
                 <div className="back">
-                    <p>Answer: {getFullAnswers()}</p>
+                    <h1>Answer</h1>
+                    <p>{answer.map(a => `${a.letter}: ${a.text}`).join(', ')}</p>
                 </div>
-            </div>
-            <div className="question-counter">
-                Question {questionNumber} of {totalQuestions}
             </div>
         </div>
     );
