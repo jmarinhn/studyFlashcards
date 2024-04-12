@@ -14,6 +14,13 @@
   margin-bottom: 20px;
 }
 
+.question-counter {
+  text-align: center; /* Center the question counter text */
+  margin-top: 10px; /* Space above the counter */
+  font-size: 1.2em; /* Larger text for visibility */
+  font-weight: bold; /* Make it bold */
+}
+
 .card-number {
   margin-top: 20px;
 }

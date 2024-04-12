@@ -44,22 +44,29 @@ const App = () => {
   };
 
   const handleSwipe = (direction) => {
-    if (direction === 'Right') {
-      setCorrectCount((prevCount) => prevCount + 1);
-      setBackgroundColor('lightgreen');
-    } else if (direction === 'Left') {
-      setIncorrectCount((prevCount) => prevCount + 1);
-      setBackgroundColor('lightcoral');
-    }
+    let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
+    let xOffset = direction === 'Right' ? 150 : -150;
+    setCardStyle({
+      transform: `translateX(${xOffset}px)`,
+      transition: 'transform 0.3s ease-out',
+      backgroundColor: newBg
+    });
+
     setTimeout(() => {
-      setBackgroundColor('white');
-      if (currentQuestionIndex + 1 < questions.length) {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      setCardStyle({});
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1 >= questions.length ? 0 : prevIndex + 1);
+      if (direction === 'Right') {
+        setCorrectCount((prevCount) => prevCount + 1);
       } else {
-        setShowResults(true);
+        setIncorrectCount((prevCount) => prevCount + 1);
       }
-    }, 500);
+    }, 300);
+
+    if (currentQuestionIndex + 1 >= questions.length) {
+      setShowResults(true);
+    }
   };
+
   
   const handleRetry = () => {
     setShowResults(false);
@@ -125,13 +132,14 @@ const App = () => {
             <div>Correct Answers: {correctCount}</div>
             <div>Incorrect Answers: {incorrectCount}</div>
           </div>
-          <div {...swipeHandlers}>
+          <div {...swipeHandlers} style={cardStyle}>
             <Flashcard
-              key={currentQuestionIndex}
-              question={questions[currentQuestionIndex].question}
-              options={questions[currentQuestionIndex].options}
-              answer={questions[currentQuestionIndex].answer_official}
-              flipped={flipped}
+                  key={currentQuestionIndex}
+                  question={questions[currentQuestionIndex].question}
+                  options={questions[currentQuestionIndex].options}
+                  answer={questions[currentQuestionIndex].answer_official}
+                  questionNumber={currentQuestionIndex + 1}
+                  totalQuestions={questions.length}
             />
           </div>
           <div className="card-number">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Flashcard.css';
 
-const Flashcard = ({ question, options, answer }) => {
+const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }) => {
     const [flipped, setFlipped] = useState(false);
 
     const flipCard = () => {
@@ -13,14 +13,16 @@ const Flashcard = ({ question, options, answer }) => {
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
-                    {Object.entries(options).map(([key, value]) => (
-                        // Ensure value is a string or convert it safely
-                        <p key={key}>{key}: {typeof value === 'string' ? value : JSON.stringify(value)}</p>
+                    {options.map((option, index) => (
+                        <p key={index}>{option.letter}: {option.text}</p>
                     ))}
                 </div>
                 <div className="back">
                     <p>Answer: {answer}</p>
                 </div>
+            </div>
+            <div className="question-counter">
+                Question {questionNumber} of {totalQuestions}
             </div>
         </div>
     );
