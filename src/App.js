@@ -17,6 +17,7 @@ const App = () => {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [cardStyle, setCardStyle] = useState({}); // Correctly declare the cardStyle state
+  const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
     Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
