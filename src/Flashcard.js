@@ -39,7 +39,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
                 </div>
             </div>
             <div className="question-counter">
-                 {questionNumber} / 60
+                {questionNumber} / 60
             </div>
         </div>
     );
