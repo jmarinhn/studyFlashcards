@@ -17,20 +17,19 @@ const App = () => {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [cardStyle, setCardStyle] = useState({});
+  const [flipped, setFlipped] = useState(false);
   const [feedbackIcon, setFeedbackIcon] = useState('');
-  const maxQuestions = 60;  // Max number of questions to handle before showing results
+  const maxQuestions = 60;
 
-  // Code for fingerprinting to set unique user ID
   useEffect(() => {
-    FingerprintJS.get(components => {
-      const values = components.map(component => component.value);
+    FingerprintJS.get((components) => {
+      const values = components.map((component) => component.value);
       const uniqueHash = FingerprintJS.x64hash128(values.join(''), 31);
       setUsername(uniqueHash);
     });
   }, []);
 
-  // Load questions and reset counts when a file is accepted
-  const handleFileAccepted = file => {
+  const handleFileAccepted = (file) => {
     setLoading(true);
     loadQuestions(file);
     setTimeout(() => {
@@ -42,42 +41,58 @@ const App = () => {
     }, 3000);
   };
 
-  // Swipe handling for right and left swipes
-  const handleSwipe = direction => {
-    let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
+  useEffect(() => {
+    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
+  }, [currentQuestionIndex, username]);  
+
+  const handleSwipe = (direction) => {
     const isCorrect = direction === 'Right';
-    setFeedbackIcon(isCorrect ? '❤️' : '❌');
+
+    setCorrectCount(c => c + (isCorrect ? 1 : 0));
+    setIncorrectCount(c => c + (isCorrect ? 0 : 1));
+
+    const feedback = isCorrect ? '❤️' : '❌';
+    const newBg = isCorrect ? 'lightgreen' : 'lightcoral';
+
+    setFeedbackIcon(feedback);
+
     setCardStyle({
       transform: `translateX(${isCorrect ? 150 : -150}px) rotate(${isCorrect ? 10 : -10}deg)`,
       transition: 'transform 0.5s ease-out',
-      backgroundColor: newBg
+      backgroundColor: isCorrect ? 'lightgreen' : 'lightcoral'
     });
 
     setTimeout(() => {
       setCardStyle({});
       setFeedbackIcon('');
-      setCurrentQuestionIndex(prev => prev + 1);
       if (isCorrect) {
-        setCorrectCount(prev => prev + 1);
+        setCorrectCount(c => c + 1);
       } else {
-        setIncorrectCount(prev => prev + 1);
+        setIncorrectCount(c => c + 1);
       }
-      if (currentQuestionIndex + 1 >= maxQuestions) {
+      if (currentQuestionIndex + 1 < maxQuestions) {
+        setCurrentQuestionIndex(i => i + 1);
+      } else {
         setShowResults(true);
       }
     }, 500);
+
+    if (currentQuestionIndex + 1 >= questions.length) {
+      setShowResults(true);
+    }
   };
 
-  // Button actions for retry and finish
+  
   const handleRetry = () => {
-    const remainingQuestions = questions.filter(
-      question => localStorage.getItem(`question_${question.id}`) !== 'correct'
-    );
-    setQuestions(remainingQuestions);
     setShowResults(false);
     setCurrentQuestionIndex(0);
     setCorrectCount(0);
     setIncorrectCount(0);
+    // Filter out questions that were answered correctly
+    const remainingQuestions = questions.filter(
+      (question) => localStorage.getItem(`question_${question.id}`) !== 'correct'
+    );
+    setQuestions(remainingQuestions);
   };
 
   const handleFinish = () => {
@@ -89,29 +104,26 @@ const App = () => {
     localStorage.clear();
   };
 
-
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => handleSwipe('Left'),
     onSwipedRight: () => handleSwipe('Right'),
   });
 
-  // Key handling for desktop interactions
   useEffect(() => {
-    const handleKeyDown = event => {
+    const handleKeyDown = (event) => {
       if (event.key === 'ArrowRight') {
-        handleSwipe('Right');
+        handleSwipe('Right'); // Swipe right
       } else if (event.key === 'ArrowLeft') {
-        handleSwipe('Left');
+        handleSwipe('Left'); // Swipe left
+      } else if (event.key === ' ') {
+        setFlipped((prev) => !prev); // Flip the card
       }
     };
 
-
-    
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleSwipe, currentQuestionIndex, questions.length]);
+    return () => document.removeEventListener('keydown', handleKeyDown); 
+  }, [currentQuestionIndex, questions.length]);
 
-  // Render the main app interface
   return (
     <div className="app" style={{ backgroundColor: cardStyle.backgroundColor || 'white' }}>
       {loading ? (
@@ -142,5 +154,6 @@ const App = () => {
     </div>
   );
 };
+
 
 export default App;
