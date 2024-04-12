@@ -5,27 +5,15 @@
   max-width: 350px;
   margin: 20px auto;
   position: relative;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: shadow for better visibility */
-  transition: transform 0.5s, opacity 0.5s; /* Smooth transitions for movements */  
-  user-select: none; /* Prevent text selection */
-  cursor: pointer; /* Indicates the card is interactive */
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 }
 
-
-.flashcard .front h1,
-.flashcard .back h1 {
-  font-size: 1.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90%;
-  margin: 0 auto;
+.flashcard .front h1 {
+  font-size: 1.5rem; /* Adjust size as needed */
+  white-space: nowrap; /* Keep text in a single line if desired */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis to text that overflows */
+  max-width: 90%; /* Limit width of h1 to prevent it from overflowing its container */
+  margin: 0 auto; /* Centering the heading */
 }
 
 
