@@ -10,7 +10,7 @@ import './App.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
-  const [questions, loadQuestions] = useQuestions(username);
+  const [questions, loadQuestions, setQuestions] = useQuestions(username);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -44,6 +44,7 @@ const App = () => {
 
   // Swipe handling for right and left swipes
   const handleSwipe = direction => {
+    let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
     const isCorrect = direction === 'Right';
     setFeedbackIcon(isCorrect ? '❤️' : '❌');
     setCardStyle({
@@ -88,6 +89,12 @@ const App = () => {
     localStorage.clear();
   };
 
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => handleSwipe('Left'),
+    onSwipedRight: () => handleSwipe('Right'),
+  });
+
   // Key handling for desktop interactions
   useEffect(() => {
     const handleKeyDown = event => {
@@ -98,6 +105,8 @@ const App = () => {
       }
     };
 
+
+    
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleSwipe, currentQuestionIndex, questions.length]);
