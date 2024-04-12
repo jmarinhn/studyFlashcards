@@ -16,12 +16,9 @@ const App = () => {
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showResults, setShowResults] = useState(false);
-  const [cardStyle, setCardStyle] = useState({}); // Correctly declare the cardStyle state
+  const [cardStyle, setCardStyle] = useState({});
   const [flipped, setFlipped] = useState(false);
-
-  useEffect(() => {
-    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
-  }, [currentQuestionIndex, username]);
+  const [feedbackIcon, setFeedbackIcon] = useState('');
 
   useEffect(() => {
     FingerprintJS.get((components) => {
@@ -43,24 +40,36 @@ const App = () => {
     }, 3000);
   };
 
+  useEffect(() => {
+    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
+  }, [currentQuestionIndex, username]);  
+
   const handleSwipe = (direction) => {
-    let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
-    let xOffset = direction === 'Right' ? 150 : -150;
+    const isCorrect = direction === 'Right';
+    const feedback = isCorrect ? '❤️' : '❌';
+    const newBg = isCorrect ? 'lightgreen' : 'lightcoral';
+    setFeedbackIcon(feedback);
     setCardStyle({
-      transform: `translateX(${xOffset}px)`,
-      transition: 'transform 0.3s ease-out',
+      transform: `translateX(${isCorrect ? 150 : -150}px) rotate(${isCorrect ? 10 : -10}deg)`,
+      transition: 'transform 0.5s ease-out',
       backgroundColor: newBg
     });
 
+
     setTimeout(() => {
       setCardStyle({});
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1 >= questions.length ? 0 : prevIndex + 1);
-      if (direction === 'Right') {
-        setCorrectCount((prevCount) => prevCount + 1);
+      setFeedbackIcon('');
+      if (isCorrect) {
+        setCorrectCount(c => c + 1);
       } else {
-        setIncorrectCount((prevCount) => prevCount + 1);
+        setIncorrectCount(c => c + 1);
       }
-    }, 300);
+      if (currentQuestionIndex + 1 < questions.length) {
+        setCurrentQuestionIndex(i => i + 1);
+      } else {
+        setShowResults(true);
+      }
+    }, 500);
 
     if (currentQuestionIndex + 1 >= questions.length) {
       setShowResults(true);
@@ -118,33 +127,20 @@ const App = () => {
           <h1>Results</h1>
           <p>Correct Answers: {correctCount}</p>
           <p>Incorrect Answers: {incorrectCount}</p>
-          <p>
-            {correctCount / (correctCount + incorrectCount) >= 0.8
-              ? 'Passed'
-              : 'Failed'}
-          </p>
-          <button onClick={handleRetry}>Retry</button>
-          <button onClick={handleFinish}>Finish</button>
+          <p>{correctCount / (correctCount + incorrectCount) >= 0.8 ? 'Passed' : 'Failed'}</p>
+          <button onClick={() => handleRetry(true)}>Retry Correct</button>
+          <button onClick={() => handleRetry(false)}>Finish Session</button>
         </div>
       ) : questions.length > 0 ? (
-        <div>
-          <div className="counters">
-            <div>Correct Answers: {correctCount}</div>
-            <div>Incorrect Answers: {incorrectCount}</div>
-          </div>
-          <div {...swipeHandlers} style={cardStyle}>
-            <Flashcard
-                  key={currentQuestionIndex}
-                  question={questions[currentQuestionIndex].question}
-                  options={questions[currentQuestionIndex].options}
-                  answer={questions[currentQuestionIndex].answer_official}
-                  questionNumber={currentQuestionIndex + 1}
-                  totalQuestions={questions.length}
-            />
-          </div>
-          <div className="card-number">
-            Card {currentQuestionIndex + 1} of {questions.length}
-          </div>
+        <div {...swipeHandlers} style={cardStyle}>
+          <Flashcard
+            question={questions[currentQuestionIndex].question}
+            options={questions[currentQuestionIndex].options}
+            answer={questions[currentQuestionIndex].answer_official}
+            questionNumber={currentQuestionIndex + 1}
+            totalQuestions={questions.length}
+          />
+          {feedbackIcon && <div className="feedback-icon">{feedbackIcon}</div>}
         </div>
       ) : (
         <FileDropzone onFileAccepted={handleFileAccepted} />

@@ -17,6 +17,14 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
+    // Function to extract the full answers from the options using the answer letters
+    const getFullAnswers = () => {
+        return answer.split('').map(letter => 
+            options.find(option => option.letter === letter)?.text || ''
+        ).join(', ');  // Join the answers with a comma for better readability
+    };
+
+
     return (
         <div className="flashcard" onClick={() => setFlipped(f => !f)}>
             <div className={`card ${flipped ? 'flipped' : ''}`}>
@@ -27,7 +35,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
                     ))}
                 </div>
                 <div className="back">
-                    <p>Answer: {answer}</p>
+                    <p>Answer: {getFullAnswers()}</p>
                 </div>
             </div>
             <div className="question-counter">
