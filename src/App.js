@@ -1,5 +1,8 @@
+import React, { useState, useEffect } from 'react';
+import { useSwipeable } from 'react-swipeable';
 import { ThreeDots } from 'react-loader-spinner';
 import FingerprintJS from 'fingerprintjs2';
+import Cookies from 'js-cookie';
 import Flashcard from './Flashcard';
 import useQuestions from './useQuestions';
 import FileDropzone from './FileDropzone';
@@ -46,7 +49,7 @@ const App = () => {
     setCardStyle({
       transform: `translateX(${isCorrect ? 150 : -150}px) rotate(${isCorrect ? 10 : -10}deg)`,
       transition: 'transform 0.5s ease-out',
-      backgroundColor: cardStyle.backgroundColor || 'white'
+      backgroundColor: newBg
     });
 
     setTimeout(() => {
@@ -76,6 +79,30 @@ const App = () => {
     setIncorrectCount(0);
   };
 
+  const handleFinish = () => {
+    setShowResults(false);
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setQuestions([]);
+    localStorage.clear();
+  };
+
+  // Key handling for desktop interactions
+  useEffect(() => {
+    const handleKeyDown = event => {
+      if (event.key === 'ArrowRight') {
+        handleSwipe('Right');
+      } else if (event.key === 'ArrowLeft') {
+        handleSwipe('Left');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleSwipe, currentQuestionIndex, questions.length]);
+
+  // Render the main app interface
   return (
     <div className="app" style={{ backgroundColor: cardStyle.backgroundColor || 'white' }}>
       {loading ? (
