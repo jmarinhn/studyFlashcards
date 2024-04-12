@@ -13,9 +13,10 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
         };
 
         window.addEventListener('keydown', handleKeyDown);
-        // Clean up to avoid memory leaks
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
+
+    const sortedOptions = options.sort((a, b) => a.letter.localeCompare(b.letter));
 
     // Function to extract the full answers from the options using the answer letters
     const getFullAnswers = () => {
@@ -30,7 +31,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
-                    {options.map((option, index) => (
+                    {sortedOptions.map((option, index) => (
                         <p key={index}>{option.letter}: {option.text}</p>
                     ))}
                 </div>
@@ -39,7 +40,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
                 </div>
             </div>
             <div className="question-counter">
-                 {questionNumber} / {totalQuestions}
+                {Math.min(questionNumber, 60)} / 60
             </div>
         </div>
     );

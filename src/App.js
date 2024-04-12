@@ -57,29 +57,23 @@ const App = () => {
     setFeedbackIcon(feedback);
 
     setCardStyle({
-      transform: `translateX(${isCorrect ? 150 : -150}px) rotate(${isCorrect ? 10 : -10}deg)`,
-      transition: 'transform 0.5s ease-out',
-      backgroundColor: isCorrect ? 'lightgreen' : 'lightcoral'
+      transform: `translateX(${isCorrect ? 1000 : -1000}px) rotate(${isCorrect ? 20 : -20}deg)`,
+      transition: 'transform 0.5s ease-out, opacity 0.5s ease-out',
+      backgroundColor: isCorrect ? 'lightgreen' : 'lightcoral',
+      opacity: 0 // Fade out the card
     });
 
     setTimeout(() => {
       setCardStyle({});
       setFeedbackIcon('');
-      if (isCorrect) {
-        setCorrectCount(c => c + 1);
-      } else {
-        setIncorrectCount(c => c + 1);
-      }
-      if (currentQuestionIndex + 1 < maxQuestions) {
-        setCurrentQuestionIndex(i => i + 1);
-      } else {
+      setCurrentQuestionIndex(prevIndex => prevIndex + 1 >= maxQuestions ? 0 : prevIndex + 1);
+      if (currentQuestionIndex + 1 >= maxQuestions) {
         setShowResults(true);
       }
-    }, 500);
+    }, 1200);
+  
 
-    if (currentQuestionIndex + 1 >= questions.length) {
-      setShowResults(true);
-    }
+
   };
 
   
