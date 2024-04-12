@@ -1,10 +1,11 @@
 .app {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  transition: background-color 0.5s;
+  align-items: center;
+  height: 100vh; /* Use full viewport height */
+  width: 100vw; /* Use full viewport width */
+  overflow: hidden; /* Hide anything outside the viewport */
+  position: relative; /* For absolutely positioning elements inside it */
 }
 
 .counters {
@@ -29,21 +30,6 @@
   text-align: center;
 }
 
-.flashcard {
-  width: 300px;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
-  user-select: none; /* Prevent text selection */
-  cursor: pointer; /* Indicates the card is interactive */
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: transform 0.3s;
-}
 
 .card {
   width: 100%;

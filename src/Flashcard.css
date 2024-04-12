@@ -1,49 +1,89 @@
 .flashcard {
-    width: 300px;
-    height: 200px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    perspective: 1000px;
-    cursor: pointer;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 0.3s ease-out, background-color 0.3s ease;
-    will-change: transform, background-color;    
-  }
-  
-  .flashcard .front, .flashcard .back {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-    font-size: 14px;
-  }
-  
-  .flashcard .front h1 {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    word-wrap: break-word;
-  }
-  
-  .flashcard .back {
-    background-color: #f0f0f0;
-    transform: rotateY(180deg);
-  }
-  
-  .flashcard.flipped .front {
-    transform: rotateY(180deg);
-  }
-  
-  .flashcard.flipped .back {
-    transform: rotateY(0deg);
-  }  
+  perspective: 1000px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 350px;
+  margin: 20px auto;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: shadow for better visibility */
+  transition: transform 0.5s, opacity 0.5s; /* Smooth transitions for movements */  
+  user-select: none; /* Prevent text selection */
+  cursor: pointer; /* Indicates the card is interactive */
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+
+.flashcard .front h1,
+.flashcard .back h1 {
+  font-size: 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+
+.card {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.front {
+  background-color: white;
+  color: black;
+}
+
+.back {
+  background-color: #f8f8f8;
+  color: darkslategray;
+  transform: rotateY(180deg);
+}
+
+.question-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 0.8em;
+  color: #666;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+p {
+  margin: 5px 0;
+  font-size: 1.2em;
+}
