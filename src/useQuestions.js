@@ -1,18 +1,18 @@
 import { useState } from 'react';
 
-const shuffleArray = array => {
+const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]]; // ES6 swap syntax
+    [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 };
 
 const useQuestions = (username) => {
-  const [questions, setQuestions] = useState(() => {
-    const savedQuestions = localStorage.getItem(`questions_${username}`);
-    return savedQuestions ? JSON.parse(savedQuestions) : [];
-  });
+    const [questions, setQuestions] = useState(() => {
+        const savedQuestions = localStorage.getItem(`questions_${username}`);
+        return savedQuestions ? JSON.parse(savedQuestions) : [];
+    });
 
   const loadQuestions = (file) => {
     const reader = new FileReader();
@@ -22,9 +22,9 @@ const useQuestions = (username) => {
         const parsedQuestions = Object.keys(jsonContent).map((key) => ({
           id: key,
           ...jsonContent[key],
-          options: shuffleArray(Object.entries(jsonContent[key].options))
+          options: shuffleArray(Object.entries(jsonContent[key].options).map(([letter, text]) => ({ letter, text }))),
         }));
-        setQuestions(parsedQuestions);
+        setQuestions(shuffleArray(parsedQuestions));
         localStorage.setItem(`questions_${username}`, JSON.stringify(parsedQuestions));
       } catch (error) {
         console.error('Error parsing JSON:', error);
