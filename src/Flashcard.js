@@ -7,41 +7,39 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === ' ') {
-                event.preventDefault(); // Prevent the default action to avoid scrolling
+                event.preventDefault();  // Prevent the default action to avoid scrolling
                 setFlipped(prev => !prev);
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
+        // Clean up to avoid memory leaks
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
-    // Convert options object into an array and ensure it is sorted by the letter keys
-    const optionsArray = options && typeof options === 'object'
-        ? Object.entries(options).sort((a, b) => a[0].localeCompare(b[0]))
-        : [];
+    // Function to extract the full answers from the options using the answer letters
+    const getFullAnswers = () => {
+        return answer.split('').map(letter => 
+            options.find(option => option.letter === letter)?.text || ''
+        ).join(', ');  // Join the answers with a comma for better readability
+    };
 
-    // Map the 'answer' string to the corresponding options text
-    const processedAnswer = answer
-        ? answer.split('').map(letter => `${letter}: ${options[letter]}`).join(', ')
-        : 'No answer provided';
 
     return (
         <div className="flashcard" onClick={() => setFlipped(f => !f)}>
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
                     <h1>{question}</h1>
-                    {optionsArray.map(([letter, text], index) => (
-                        <p key={index}>{letter}: {text}</p>
+                    {options.map((option, index) => (
+                        <p key={index}>{option.letter}: {option.text}</p>
                     ))}
                 </div>
                 <div className="back">
-                    <h1>Answer</h1>
-                    <p>{processedAnswer}</p>
+                    <p>Answer: {getFullAnswers()}</p>
                 </div>
             </div>
             <div className="question-counter">
-                {questionNumber} / {totalQuestions}
+                Question {questionNumber} of {totalQuestions}
             </div>
         </div>
     );
