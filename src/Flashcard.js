@@ -13,10 +13,9 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
         };
 
         window.addEventListener('keydown', handleKeyDown);
+        // Clean up to avoid memory leaks
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
-
-    const sortedOptions = options.sort((a, b) => a.letter.localeCompare(b.letter));
 
     // Function to extract the full answers from the options using the answer letters
     const getFullAnswers = () => {
@@ -40,7 +39,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
                 </div>
             </div>
             <div className="question-counter">
-                {Math.min(questionNumber, 60)} / 60
+                 {questionNumber} / 60
             </div>
         </div>
     );
