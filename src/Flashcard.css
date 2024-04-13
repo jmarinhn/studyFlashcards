@@ -1,63 +1,78 @@
+/* Estilos generales para la tarjeta */
 .flashcard {
-  perspective: 1000px;
   cursor: pointer;
-  width: 100%;
-  max-width: 350px;
-  margin: 20px auto;
   position: relative;
-}
-
-.flashcard .front h1 {
-  font-size: 1.5rem; /* Adjust size as needed */
-  white-space: nowrap; /* Keep text in a single line if desired */
-  overflow: hidden; /* Hide overflow */
-  text-overflow: ellipsis; /* Add ellipsis to text that overflows */
-  max-width: 90%; /* Limit width of h1 to prevent it from overflowing its container */
-  margin: 0 auto; /* Centering the heading */
-}
-
-
-.card {
-  width: 100%;
-  height: 300px;
-  position: relative;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.card.flipped {
-  transform: rotateY(180deg);
-}
-
-.front,
-.back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  min-width: 300px;
+  max-width: 300px;
+  height: 400px;
+  margin: 20px auto;
+  padding: 15px; /* Añadido aquí para aplicar a todos los elementos internos de la tarjeta */
+  background-color: #fff; /* Utiliza valores hexadecimales por consistencia */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+  user-select: none; /* Evita la selección de texto */
+}
+
+/* Estilos para el contenedor giratorio */
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* Estilo para cuando la tarjeta está girada */
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Estilos comunes para el frente y el dorso */
+.front, .back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
   box-sizing: border-box;
 }
 
 .front {
-  background-color: white;
+  background-color: #fff; /* Color de fondo para la parte frontal */
   color: black;
 }
 
 .back {
-  background-color: #f8f8f8;
+  background-color: #f8f8f8; /* Color de fondo para la parte posterior */
   color: darkslategray;
   transform: rotateY(180deg);
 }
 
-.question-counter {
+/* Estilos para los textos y contadores */
+h1 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center; /* Asegura que el título esté centrado */
+}
+
+p {
+  margin: 5px 0;
+  font-size: 1.em;
+}
+
+.question-counter, .card-number {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -65,13 +80,7 @@
   color: #666;
 }
 
-h1 {
-  margin: 0;
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-p {
-  margin: 5px 0;
-  font-size: 1.2em;
+.card-number {
+  top: 10px; /* Mueve el número de la tarjeta arriba */
+  right: 10px; /* Alinea el número de la tarjeta a la derecha */
 }

@@ -17,7 +17,9 @@ const App = () => {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [cardStyle, setCardStyle] = useState({}); // Correctly declare the cardStyle state
+  const [swipeCount, setSwipeCount] = useState(0);  // Track the number of swipes
   const [flipped, setFlipped] = useState(false);
+  const maxQuestions = 60;
 
   useEffect(() => {
     Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
@@ -40,15 +42,28 @@ const App = () => {
       setCorrectCount(0);
       setIncorrectCount(0);
       setShowResults(false);
+      setSwipeCount(1); 
     }, 3000);
   };
 
   const handleSwipe = (direction) => {
+
+    if (swipeCount >= maxQuestions || swipeCount >= questions.length) {
+      console.log('Max swipe count reached, showing results...');
+      setShowResults(true);
+      return;  // Prevent further swipes if limit is reached
+    }
+    setSwipeCount(swipeCount + 1);  // Increment swipe count
+
+
+    console.log('Number of swipes: ', swipeCount);
+
     let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
-    let xOffset = direction === 'Right' ? 150 : -150;
+    let xOffset = direction === 'Right' ? 1000 : -1000;
+
     setCardStyle({
       transform: `translateX(${xOffset}px)`,
-      transition: 'transform 0.3s ease-out',
+      transition: 'transform 0.6s ease-out',
       backgroundColor: newBg
     });
 
@@ -62,20 +77,21 @@ const App = () => {
       }
     }, 300);
 
-    if (currentQuestionIndex + 1 >= questions.length) {
+    if (swipeCount + 1 >= maxQuestions || currentQuestionIndex + 1 >= questions.length) {
       setShowResults(true);
     }
+
   };
 
   
-  const handleRetry = () => {
+  const handleRetry = (retryCorrect) => {
     setShowResults(false);
     setCurrentQuestionIndex(0);
     setCorrectCount(0);
     setIncorrectCount(0);
-    // Filter out questions that were answered correctly
+    setSwipeCount(0);
     const remainingQuestions = questions.filter(
-      (question) => localStorage.getItem(`question_${question.id}`) !== 'correct'
+      question => retryCorrect || localStorage.getItem(`question_${question.id}`) !== 'correct'
     );
     setQuestions(remainingQuestions);
   };
@@ -123,8 +139,9 @@ const App = () => {
               ? 'Passed'
               : 'Failed'}
           </p>
-          <button onClick={handleRetry}>Retry</button>
-          <button onClick={handleFinish}>Finish</button>
+          <button onClick={() => handleRetry(false)}>Retry All</button>
+          <button onClick={() => handleRetry(true)}>Retry Incorrect</button>
+          <button onClick={handleFinish}>Finish Session</button>
         </div>
       ) : questions.length > 0 ? (
         <div>
@@ -139,7 +156,7 @@ const App = () => {
                   options={questions[currentQuestionIndex].options}
                   answer={questions[currentQuestionIndex].answer_official}
                   questionNumber={currentQuestionIndex + 1}
-                  totalQuestions={questions.length}
+                  totalQuestions={maxQuestions}
             />
           </div>
         </div>
