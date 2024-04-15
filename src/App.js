@@ -155,7 +155,7 @@ const App = () => {
                   key={currentQuestionIndex}
                   question={questions[currentQuestionIndex].question}
                   options={questions[currentQuestionIndex].options}
-                  answer={questions[currentQuestionIndex].answer_official}
+                  answer={questions[currentQuestionIndex].answer_community}
                   questionNumber={currentQuestionIndex + 1}
                   totalQuestions={maxQuestions}
             />
