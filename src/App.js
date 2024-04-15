@@ -48,8 +48,6 @@ const App = () => {
 
   const handleSwipe = (direction) => {
 
-    setSwipeCount(swipeCount + 1);  // Increment swipe count
-
 
     if (swipeCount >= maxQuestions || swipeCount >= questions.length) {
       console.log('Max swipe count reached, showing results...');
@@ -57,6 +55,9 @@ const App = () => {
       return;  // Prevent further swipes if limit is reached
     }
 
+    
+
+    setSwipeCount(swipeCount + 1);  // Increment swipe count
 
     let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
     let xOffset = direction === 'Right' ? 1000 : -1000;
