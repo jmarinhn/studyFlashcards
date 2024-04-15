@@ -48,15 +48,15 @@ const App = () => {
 
   const handleSwipe = (direction) => {
 
+    setSwipeCount(swipeCount + 1);  // Increment swipe count
+
+
     if (swipeCount >= maxQuestions || swipeCount >= questions.length) {
       console.log('Max swipe count reached, showing results...');
       setShowResults(true);
       return;  // Prevent further swipes if limit is reached
     }
-    setSwipeCount(swipeCount + 1);  // Increment swipe count
 
-
-    console.log('Number of swipes: ', swipeCount);
 
     let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
     let xOffset = direction === 'Right' ? 1000 : -1000;
@@ -146,8 +146,8 @@ const App = () => {
       ) : questions.length > 0 ? (
         <div>
           <div className="counters">
-            <div>Correct Answers: {correctCount}</div>
-            <div>Incorrect Answers: {incorrectCount}</div>
+            <div className="incorrectCount">{incorrectCount}</div>
+            <div className="correctCount">{correctCount}</div>
           </div>
           <div {...swipeHandlers} style={cardStyle}>
             <Flashcard

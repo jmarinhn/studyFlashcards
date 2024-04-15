@@ -33,7 +33,7 @@ const Flashcard = ({ question, options, answer, questionNumber, totalQuestions }
         <div className="flashcard" onClick={() => setFlipped(f => !f)}>
             <div className={`card ${flipped ? 'flipped' : ''}`}>
                 <div className="front">
-                    <h1>{question}</h1>
+                    <h1 className="question">{question}</h1>
                     <div> <br/> </div>
                     {sortedOptions.map((option, index) => (
                         <p key={index}>{option.letter}: {option.text}</p>
