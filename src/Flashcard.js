@@ -35,7 +35,7 @@ const Flashcard = ({ question, options, answer, questionNumber }) => {
   };
 
   const shuffledOptions = useMemo(() => shuffleOptions(options), [options]);
-  console.log(shuffledOptions);
+
 
   return (
     <div className="flashcard" onClick={() => setFlipped(f => !f)}>

@@ -4,13 +4,14 @@ import { ThreeDots } from 'react-loader-spinner';
 import FingerprintJS from 'fingerprintjs2';
 import Cookies from 'js-cookie';
 import Flashcard from './Flashcard';
-import useQuestions from './useQuestions';
+import { useQuestions, shuffleArray } from './useQuestions';
 import FileDropzone from './FileDropzone';
 import './App.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
   const [questions, loadQuestions, setQuestions] = useQuestions(username);
+  const [currentFile, setCurrentFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -18,8 +19,8 @@ const App = () => {
   const [showResults, setShowResults] = useState(false);
   const [cardStyle, setCardStyle] = useState({}); // Correctly declare the cardStyle state
   const [swipeCount, setSwipeCount] = useState(0);  // Track the number of swipes
-  const [flipped, setFlipped] = useState(false);
-  const maxQuestions = 60;
+
+  const maxQuestions = 10;
 
   useEffect(() => {
     Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
@@ -34,6 +35,7 @@ const App = () => {
   }, []);
 
   const handleFileAccepted = (file) => {
+    setCurrentFile(file); 
     setLoading(true);
     loadQuestions(file);
     setTimeout(() => {
@@ -42,15 +44,13 @@ const App = () => {
       setCorrectCount(0);
       setIncorrectCount(0);
       setShowResults(false);
-      setSwipeCount(1); 
+      setSwipeCount(0); 
     }, 3000);
   };
 
   const handleSwipe = (direction) => {
 
-
     if (swipeCount >= maxQuestions || swipeCount >= questions.length) {
-      console.log('Max swipe count reached, showing results...');
       setShowResults(true);
       return;  // Prevent further swipes if limit is reached
     }
@@ -85,7 +85,7 @@ const App = () => {
   };
 
   
-  const handleRetry = (retryCorrect) => {
+/*  const handleRetry = (retryCorrect) => {
     setShowResults(false);
     setCurrentQuestionIndex(0);
     setCorrectCount(0);
@@ -95,7 +95,28 @@ const App = () => {
       question => retryCorrect || localStorage.getItem(`question_${question.id}`) !== 'correct'
     );
     setQuestions(remainingQuestions);
+  }; */
+
+  const handleRetry = (retryIncorrect) => {
+    console.log("Loser. Next.");
+    setShowResults(false);
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setSwipeCount(0);
+    if (retryIncorrect) {
+      const incorrectQuestions = questions.filter(q => localStorage.getItem(`question_${q.id}`) !== 'correct');
+      setQuestions(shuffleArray(incorrectQuestions));
+    } else {
+      // This part can be used to reset everything and start over if necessary
+      if (currentFile) {
+        loadQuestions(currentFile);
+      } else {
+        console.error("No file loaded. Please upload a file to continue.");
+      }
+    }
   };
+  
 
   const handleFinish = () => {
     setShowResults(false);

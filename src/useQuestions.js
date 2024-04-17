@@ -53,4 +53,4 @@ const useQuestions = (username) => {
   return [questions, loadQuestions, setQuestions];
 };
 
-export default useQuestions;
+export { shuffleArray, useQuestions };
