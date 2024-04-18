@@ -10,17 +10,31 @@ import './App.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
-  const [questions, loadQuestions, setQuestions] = useQuestions(username);
+  const maxQuestions = 10;  // Defina el máximo de preguntas aquí para controlar el alcance
+  const [questions, loadQuestions, setQuestions] = useQuestions(username, maxQuestions);
   const [currentFile, setCurrentFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [showResults, setShowResults] = useState(false);
-  const [cardStyle, setCardStyle] = useState({}); // Correctly declare the cardStyle state
-  const [swipeCount, setSwipeCount] = useState(0);  // Track the number of swipes
+  const [cardStyle, setCardStyle] = useState({});
+  const [swipeCount, setSwipeCount] = useState(0);
+  const [retryMode, setRetryMode] = useState(false);
+  
+  const updateAnswerStatus = (questionId, isCorrect) => {
+    localStorage.setItem(`question_correct_${questionId}`, isCorrect ? "true" : "false");
+    if (!isCorrect) {
+      const attempts = parseInt(localStorage.getItem(`incorrect_attempts_${questionId}`) || '0', 10) + 1;
+      localStorage.setItem(`incorrect_attempts_${questionId}`, attempts.toString());
+    }
+  };  
 
-  const maxQuestions = 10;
+  // Function that will log the questions and a message to the console when retrying, for debugging purposes
+  const logQuestions = (questions, message) => {
+    console.log(message);
+    questions.forEach(question => console.log(question.question));
+  };
 
   useEffect(() => {
     Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
@@ -40,49 +54,43 @@ const App = () => {
     loadQuestions(file);
     setTimeout(() => {
       setLoading(false);
+      setSwipeCount(0); 
       setCurrentQuestionIndex(0);
       setCorrectCount(0);
       setIncorrectCount(0);
       setShowResults(false);
-      setSwipeCount(0); 
+      setRetryMode(false);
     }, 3000);
   };
 
   const handleSwipe = (direction) => {
-
-    if (swipeCount >= maxQuestions || swipeCount >= questions.length) {
-      setShowResults(true);
-      return;  // Prevent further swipes if limit is reached
-    }
-
-    
-
-    setSwipeCount(swipeCount + 1);  // Increment swipe count
-
-    let newBg = direction === 'Right' ? 'lightgreen' : 'lightcoral';
-    let xOffset = direction === 'Right' ? 1000 : -1000;
+    const question = questions[currentQuestionIndex];
+    const isCorrect = direction === 'Right';
+    updateAnswerStatus(question.id, isCorrect);
+    setSwipeCount(prev => prev + 1); 
 
     setCardStyle({
-      transform: `translateX(${xOffset}px)`,
-      transition: 'transform 0.6s ease-out',
-      backgroundColor: newBg
+      transform: `translateX(${direction === 'Right' ? 1000 : -1000}px)`,
+      transition: 'transform 0.7s ease-out',
+      backgroundColor: direction === 'Right' ? 'lightgreen' : 'lightcoral'
     });
 
     setTimeout(() => {
       setCardStyle({});
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1 >= questions.length ? 0 : prevIndex + 1);
-      if (direction === 'Right') {
-        setCorrectCount((prevCount) => prevCount + 1);
+      setCurrentQuestionIndex(prev => (prev + 1) % questions.length);
+      if (isCorrect) {
+        setCorrectCount(prev => prev + 1);
       } else {
-        setIncorrectCount((prevCount) => prevCount + 1);
+        setIncorrectCount(prev => prev + 1);
       }
     }, 300);
 
     if (swipeCount + 1 >= maxQuestions || currentQuestionIndex + 1 >= questions.length) {
       setShowResults(true);
+      logQuestions(questions.filter(q => localStorage.getItem(`question_correct_${q.id}`) !== "true"), "Preguntas incorrectas al finalizar:");
     }
-
   };
+
 
   
 /*  const handleRetry = (retryCorrect) => {
@@ -97,28 +105,35 @@ const App = () => {
     setQuestions(remainingQuestions);
   }; */
 
+
   const handleRetry = (retryIncorrect) => {
-    console.log("Loser. Next.");
-    setShowResults(false);
-    setCurrentQuestionIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setSwipeCount(0);
-    if (retryIncorrect) {
-      const incorrectQuestions = questions.filter(q => localStorage.getItem(`question_${q.id}`) !== 'correct');
-      setQuestions(shuffleArray(incorrectQuestions));
+    if (!retryIncorrect) {
+        loadQuestions(currentFile); // Recargar todas las preguntas si se presiona "Retry All"
+        console.log("Reintentando todas las preguntas...");
     } else {
-      // This part can be used to reset everything and start over if necessary
-      if (currentFile) {
-        loadQuestions(currentFile);
-      } else {
-        console.error("No file loaded. Please upload a file to continue.");
-      }
+        const incorrectQuestions = questions.filter(q => localStorage.getItem(`question_correct_${q.id}`) !== "true");
+        if (incorrectQuestions.length === 0) {
+            console.log("No hay respuestas incorrectas para reintento.");
+            return;
+        }
+        setQuestions(shuffleArray(incorrectQuestions)); // Actualizar estado con las preguntas incorrectas
+        setCurrentQuestionIndex(0);
+        setRetryMode(true);
+        setSwipeCount(0);
+        setCorrectCount(0);
+        setIncorrectCount(0);
+        setShowResults(false);
+        logQuestions(incorrectQuestions, "Reintentando preguntas incorrectas:");
     }
-  };
+};
+
+
   
 
   const handleFinish = () => {
+    console.log("Fin del juego, resultados:");
+    console.log(`Correctas: ${correctCount}`);
+    console.log(`Incorrectas: ${incorrectCount}`);
     setShowResults(false);
     setCurrentQuestionIndex(0);
     setCorrectCount(0);
@@ -148,19 +163,18 @@ const App = () => {
   }, [currentQuestionIndex, questions.length]);
 
   return (
-    <div className="app" style={{ backgroundColor: cardStyle.backgroundColor || 'white' }}>
+    <div className="app" style={{ backgroundColor: retryMode ? 'salmon' : 'white' }}> 
       {loading ? (
         <ThreeDots color="#00BFFF" height={80} width={80} />
       ) : showResults ? (
         <div className="results">
           <h1>Results</h1>
+          <br></br>
           <p>Correct Answers: {correctCount}</p>
           <p>Incorrect Answers: {incorrectCount}</p>
-          <p>
-            {correctCount / (correctCount + incorrectCount) >= 0.8
-              ? 'Passed'
-              : 'Failed'}
-          </p>
+          <br></br>
+          <h1>{correctCount / (correctCount + incorrectCount) >= 0.8 ? 'Passed' : 'Failed'}</h1>
+          <br></br>
           <button onClick={() => handleRetry(false)}>Retry All</button>
           <button onClick={() => handleRetry(true)}>Retry Incorrect</button>
           <button onClick={handleFinish}>Finish Session</button>
@@ -173,13 +187,15 @@ const App = () => {
           </div>
           <div {...swipeHandlers} style={cardStyle}>
             <Flashcard
-                  key={currentQuestionIndex}
-                  question={questions[currentQuestionIndex].question}
-                  options={questions[currentQuestionIndex].options}
-                  answer={questions[currentQuestionIndex].answer_community}
-                  questionNumber={currentQuestionIndex + 1}
-                  totalQuestions={maxQuestions}
+              key={currentQuestionIndex}
+              question={questions[currentQuestionIndex].question}
+              options={questions[currentQuestionIndex].options}
+              answer={questions[currentQuestionIndex].answer_community}
+              questionNumber={currentQuestionIndex + 1}
+              questionId={questions[currentQuestionIndex].id}
+              totalQuestions={maxQuestions}
             />
+
           </div>
         </div>
       ) : (

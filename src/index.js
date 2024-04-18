@@ -18,9 +18,4 @@ AppRegistry.runApplication('study-flashcards', {
   rootTag: document.getElementById('root'),
 });
 
-
-const container = document.getElementById('root');
-const root = createRoot(container); // create a root.
-root.render(<App />);
-
 reportWebVitals(sendToVercelAnalytics);

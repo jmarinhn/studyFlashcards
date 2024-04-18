@@ -90,3 +90,13 @@ p {
   font-weight: bold;
   text-align: center; /* Asegura que el título esté centrado */
 }
+
+.red-dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}

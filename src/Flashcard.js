@@ -14,15 +14,16 @@ function shuffleOptions(options) {
 const Flashcard = ({ question, options, answer, questionNumber }) => {
   const [flipped, setFlipped] = useState(false);
   const maxQuestions = 60;
+  const incorrectAttempts = parseInt(localStorage.getItem(`incorrect_attempts_${question.id}`) || '0', 10);
+
+  const handleKeyDown = (event) => {
+    if (event.key === ' ') {
+      event.preventDefault();
+      setFlipped(prev => !prev);
+    }
+  };
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === ' ') {
-        event.preventDefault();  // Prevent the default action to avoid scrolling
-        setFlipped(prev => !prev);
-      }
-    };
-
     window.addEventListener('keydown', handleKeyDown);
     // Clean up to avoid memory leaks
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -36,13 +37,13 @@ const Flashcard = ({ question, options, answer, questionNumber }) => {
 
   const shuffledOptions = useMemo(() => shuffleOptions(options), [options]);
 
-
   return (
     <div className="flashcard" onClick={() => setFlipped(f => !f)}>
       <div className={`card ${flipped ? 'flipped' : ''}`}>
         <div className="front">
           <h1 className="question">{question}</h1>
-          <ol TYPE="A">
+          {incorrectAttempts > 1 && <div className="red-dot"></div>} {/* Show red dot if incorrect more than once */}
+          <ol type="A">
             {shuffledOptions.map((option, index) => (
               <li key={index}>{option.text}</li>
             ))}

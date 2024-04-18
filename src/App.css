@@ -24,3 +24,14 @@
 .incorrectCount {
   color: red;
 }
+
+.retry-mode {
+  background-color: salmon; 
+}
+.error-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: red;
+  font-weight: bold;
+}

@@ -19,12 +19,11 @@ const shuffleOptions = (options) => {
   return entries;
 };
 
-const useQuestions = (username) => {
-  const [questions, setQuestions] = useState(() => {
-    const savedQuestions = localStorage.getItem(`questions_${username}`);
-    return savedQuestions ? JSON.parse(savedQuestions) : [];
-  });
+const useQuestions = (username, maxQuestions) => {
+  const [questions, setQuestions] = useState([]);
+  const [currentFile, setCurrentFile] = useState(null);
 
+/*
   const loadQuestions = (file) => {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -49,8 +48,32 @@ const useQuestions = (username) => {
     };
     reader.readAsText(file);
   };
+*/
 
-  return [questions, loadQuestions, setQuestions];
+  const loadQuestions = (file) => {
+    setCurrentFile(file);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const jsonContent = JSON.parse(event.target.result);
+        console.log("Contenido del JSON cargado:", jsonContent); // Log de control
+        const allQuestions = shuffleArray(Object.keys(jsonContent).map(key => {
+          const options = shuffleOptions(jsonContent[key].options);
+          return { id: key, ...jsonContent[key], options };
+        }));
+        // Asegúrate de cortar el array a maxQuestions
+        const selectedQuestions = allQuestions.slice(0, maxQuestions);
+        setQuestions(selectedQuestions);
+        console.log("Preguntas seleccionadas para esta ronda:", selectedQuestions); // Log de control
+      } catch (error) {
+        console.error('Error al analizar JSON:', error);
+      }
+    };
+    reader.onerror = error => console.error('Error al leer el archivo:', error);
+    reader.readAsText(file);
+  };
+  
+  return [questions, loadQuestions, setCurrentFile, currentFile];
 };
 
 export { shuffleArray, useQuestions };
