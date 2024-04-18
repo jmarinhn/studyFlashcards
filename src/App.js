@@ -10,8 +10,9 @@ import './App.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
-  const maxQuestions = 10;  // Defina el máximo de preguntas aquí para controlar el alcance
-  const [questions, loadQuestions, setQuestions] = useQuestions(username, maxQuestions);
+  const [questions, loadQuestions, setQuestions, totalQuestions] = useQuestions(username);
+  // Ajusta el máximo en función del total cargado
+  const maxQuestions = Math.min(60, totalQuestions);
   const [currentFile, setCurrentFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -21,6 +22,7 @@ const App = () => {
   const [cardStyle, setCardStyle] = useState({});
   const [swipeCount, setSwipeCount] = useState(0);
   const [retryMode, setRetryMode] = useState(false);
+
   
   const updateAnswerStatus = (questionId, isCorrect) => {
     localStorage.setItem(`question_correct_${questionId}`, isCorrect ? "true" : "false");
@@ -106,26 +108,28 @@ const App = () => {
   }; */
 
 
-  const handleRetry = (retryIncorrect) => {
-    if (!retryIncorrect) {
-        loadQuestions(currentFile); // Recargar todas las preguntas si se presiona "Retry All"
-        console.log("Reintentando todas las preguntas...");
-    } else {
-        const incorrectQuestions = questions.filter(q => localStorage.getItem(`question_correct_${q.id}`) !== "true");
-        if (incorrectQuestions.length === 0) {
-            console.log("No hay respuestas incorrectas para reintento.");
-            return;
-        }
-        setQuestions(shuffleArray(incorrectQuestions)); // Actualizar estado con las preguntas incorrectas
-        setCurrentQuestionIndex(0);
-        setRetryMode(true);
-        setSwipeCount(0);
-        setCorrectCount(0);
-        setIncorrectCount(0);
-        setShowResults(false);
-        logQuestions(incorrectQuestions, "Reintentando preguntas incorrectas:");
+  const handleRetry = () => {
+    // Filtra para obtener solo preguntas que fueron marcadas incorrectamente
+    const incorrectQuestions = questions.filter(question => localStorage.getItem(`question_correct_${question.id}`) === "false");
+
+    if (incorrectQuestions.length === 0) {
+        console.log("No hay preguntas incorrectas para reintento.");
+        return;
     }
+
+    // Logs para depuración
+    console.log("Reintentando preguntas incorrectas:");
+    incorrectQuestions.forEach(question => console.log(question.question));
+
+    // Reiniciar los estados necesarios y establecer las preguntas filtradas
+    setQuestions(incorrectQuestions);
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setShowResults(false);
+    setRetryMode(true);
 };
+
 
 
   
@@ -173,7 +177,9 @@ const App = () => {
           <p>Correct Answers: {correctCount}</p>
           <p>Incorrect Answers: {incorrectCount}</p>
           <br></br>
-          <h1>{correctCount / (correctCount + incorrectCount) >= 0.8 ? 'Passed' : 'Failed'}</h1>
+          <h2 className={correctCount / (correctCount + incorrectCount) >= 0.8 ? 'passed' : 'failed'}>
+            {correctCount / (correctCount + incorrectCount) >= 0.8 ? 'Passed' : 'Failed'}
+          </h2>
           <br></br>
           <button onClick={() => handleRetry(false)}>Retry All</button>
           <button onClick={() => handleRetry(true)}>Retry Incorrect</button>

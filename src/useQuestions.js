@@ -22,7 +22,8 @@ const shuffleOptions = (options) => {
 const useQuestions = (username, maxQuestions) => {
   const [questions, setQuestions] = useState([]);
   const [currentFile, setCurrentFile] = useState(null);
-
+  const [totalQuestions, setTotalQuestions] = useState(0);
+  
 /*
   const loadQuestions = (file) => {
     const reader = new FileReader();

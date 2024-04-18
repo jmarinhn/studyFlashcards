@@ -64,10 +64,22 @@ h1 {
   margin: 0;
   text-align: center; /* Asegura que el título esté centrado */
 }
+h2 {
+  margin: 0;
+  text-align: center; /* Asegura que el título esté centrado */
+}
 
 p {
   margin: 5px 0;
   font-size: 1.em;
+}
+
+.failed {
+  color: red;
+}
+
+.passed {
+  color: green;
 }
 
 .question-counter, .card-number {
