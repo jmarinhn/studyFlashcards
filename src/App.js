@@ -171,7 +171,7 @@ const App = () => {
         </>
       ) : jsonStatus === "JSON Validated!" ? (
         <>
-            <h1>Flashcard App</h1>
+            <h1>flashcard<i>Match</i></h1>
           <p>Total questions detected: {totalQuestions}</p>
           <br></br>
           <p>Select your game mode:</p>
