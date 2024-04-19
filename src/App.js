@@ -13,7 +13,6 @@ const App = () => {
   const [questions, loadQuestions, setQuestions, totalQuestions] = useQuestions(username);
   // Ajusta el máximo en función del total cargado
   const maxQuestions = Math.min(60, totalQuestions);
-  const [currentFile, setCurrentFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -22,8 +21,11 @@ const App = () => {
   const [cardStyle, setCardStyle] = useState({});
   const [swipeCount, setSwipeCount] = useState(0);
   const [retryMode, setRetryMode] = useState(false);
+  const [mode, setMode] = useState("");
+  const [jsonStatus, setJsonStatus] = useState("Validating JSON...");
+  const [flipped, setFlipped] = useState(false);
+  const [currentFile, setCurrentFile] = useState(null);
 
-  
   const updateAnswerStatus = (questionId, isCorrect) => {
     localStorage.setItem(`question_correct_${questionId}`, isCorrect ? "true" : "false");
     if (!isCorrect) {
@@ -32,107 +34,68 @@ const App = () => {
     }
   };  
 
-  // Function that will log the questions and a message to the console when retrying, for debugging purposes
-  const logQuestions = (questions, message) => {
-    console.log(message);
-    questions.forEach(question => console.log(question.question));
-  };
-
-  useEffect(() => {
-    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
-  }, [currentQuestionIndex, username]);
-
-  useEffect(() => {
-    FingerprintJS.get((components) => {
-      const values = components.map((component) => component.value);
-      const uniqueHash = FingerprintJS.x64hash128(values.join(''), 31);
-      setUsername(uniqueHash);
-    });
-  }, []);
-
   const handleFileAccepted = (file) => {
     setCurrentFile(file); 
     setLoading(true);
-    loadQuestions(file);
-    setTimeout(() => {
-      setLoading(false);
-      setSwipeCount(0); 
-      setCurrentQuestionIndex(0);
-      setCorrectCount(0);
-      setIncorrectCount(0);
-      setShowResults(false);
-      setRetryMode(false);
-    }, 3000);
+    setJsonStatus("Validating JSON...");
+    loadQuestions(file, () => {
+      setTimeout(() => {
+        console.log("Callback triggered - JSON is now processed and validated.");
+        setJsonStatus("JSON Validated!");   
+        setLoading(false);
+        setShowResults(false);
+        setRetryMode(false);
+        setSwipeCount(0); 
+        setCurrentQuestionIndex(0);
+        setCorrectCount(0);
+        setIncorrectCount(0);
+      }, 3000);
+    });
   };
 
   const handleSwipe = (direction) => {
-    const question = questions[currentQuestionIndex];
-    const isCorrect = direction === 'Right';
-    updateAnswerStatus(question.id, isCorrect);
-    setSwipeCount(prev => prev + 1); 
+    if (mode === "test") {
+      const question = questions[currentQuestionIndex];
+      const isCorrect = direction === 'Right';
+      updateAnswerStatus(question.id, isCorrect);
+      setSwipeCount(swipeCount + 1);
 
-    setCardStyle({
-      transform: `translateX(${direction === 'Right' ? 1000 : -1000}px)`,
-      transition: 'transform 0.7s ease-out',
-      backgroundColor: direction === 'Right' ? 'lightgreen' : 'lightcoral'
-    });
-
-    setTimeout(() => {
-      setCardStyle({});
-      setCurrentQuestionIndex(prev => (prev + 1) % questions.length);
-      if (isCorrect) {
-        setCorrectCount(prev => prev + 1);
-      } else {
-        setIncorrectCount(prev => prev + 1);
+      if (swipeCount + 1 >= totalQuestions || currentQuestionIndex + 1 >= questions.length) {
+        setShowResults(true);
+        setMode("");
       }
-    }, 300);
 
-    if (swipeCount + 1 >= maxQuestions || currentQuestionIndex + 1 >= questions.length) {
-      setShowResults(true);
-      logQuestions(questions.filter(q => localStorage.getItem(`question_correct_${q.id}`) !== "true"), "Preguntas incorrectas al finalizar:");
+      setCardStyle({
+        transform: `translateX(${direction === 'Right' ? 1000 : -1000}px)`,
+        transition: 'transform 0.7s ease-out',
+        backgroundColor: direction === 'Right' ? 'lightgreen' : 'lightcoral'
+      });
+
+      setTimeout(() => {
+        setCardStyle({});
+        setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);
+        if (isCorrect) {
+          setCorrectCount(correctCount + 1);
+        } else {
+          setIncorrectCount(incorrectCount + 1);
+        }
+      }, 300);
     }
   };
-
-
   
-/*  const handleRetry = (retryCorrect) => {
-    setShowResults(false);
-    setCurrentQuestionIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setSwipeCount(0);
-    const remainingQuestions = questions.filter(
-      question => retryCorrect || localStorage.getItem(`question_${question.id}`) !== 'correct'
-    );
-    setQuestions(remainingQuestions);
-  }; */
+  const handleRetry = (retryIncorrect) => {
+    // Retrieve only incorrect questions if retryIncorrect is true
+    const filteredQuestions = retryIncorrect ? 
+      questions.filter(question => !localStorage.getItem(`question_correct_${question.id}`)) : 
+      questions;
 
-
-  const handleRetry = () => {
-    // Filtra para obtener solo preguntas que fueron marcadas incorrectamente
-    const incorrectQuestions = questions.filter(question => localStorage.getItem(`question_correct_${question.id}`) === "false");
-
-    if (incorrectQuestions.length === 0) {
-        console.log("No hay preguntas incorrectas para reintento.");
-        return;
-    }
-
-    // Logs para depuración
-    console.log("Reintentando preguntas incorrectas:");
-    incorrectQuestions.forEach(question => console.log(question.question));
-
-    // Reiniciar los estados necesarios y establecer las preguntas filtradas
-    setQuestions(incorrectQuestions);
+    setQuestions(shuffleArray(filteredQuestions));
     setCurrentQuestionIndex(0);
     setCorrectCount(0);
     setIncorrectCount(0);
     setShowResults(false);
     setRetryMode(true);
-};
-
-
-
-  
+  };
 
   const handleFinish = () => {
     console.log("Fin del juego, resultados:");
@@ -145,6 +108,28 @@ const App = () => {
     setQuestions([]);
     localStorage.clear();
   };
+
+  const handleModeSelect = (selectedMode) => {
+    console.log(`Current mode: ${mode}, Total questions: ${totalQuestions}, Questions Loaded: ${questions.length}`);
+    console.log(`Switching to ${selectedMode} mode.`);
+    setMode(selectedMode);
+    if (selectedMode === "study") {
+      // In study mode, use all questions
+      const shuffledQuestions = shuffleArray([...questions]);
+      setQuestions(shuffledQuestions);
+    } else {
+      // In test mode, ensure only the correct number of questions is used
+      const shuffledQuestions = shuffleArray([...questions]).slice(0, maxQuestions);
+      setQuestions(shuffledQuestions);
+    }
+    setCurrentQuestionIndex(0); // Reset the index for both modes
+    setSwipeCount(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setShowResults(false);
+  };
+  
+  
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => handleSwipe('Left'),
@@ -166,10 +151,32 @@ const App = () => {
     return () => document.removeEventListener('keydown', handleKeyDown); 
   }, [currentQuestionIndex, questions.length]);
 
+  useEffect(() => {
+    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
+  }, [currentQuestionIndex, username]);
+
+  useEffect(() => {
+    FingerprintJS.get((components) => {
+      const values = components.map((component) => component.value);
+      const uniqueHash = FingerprintJS.x64hash128(values.join(''), 31);
+      setUsername(uniqueHash);
+    });
+  }, []);
+
+
   return (
-    <div className="app" style={{ backgroundColor: retryMode ? 'salmon' : 'white' }}> 
+    <div className="app" style={{ backgroundColor: mode === "test" ? 'salmon' : 'white' }}>
       {loading ? (
-        <ThreeDots color="#00BFFF" height={80} width={80} />
+        <>
+          <ThreeDots color="#00BFFF" height={80} width={80} />
+          <p>{jsonStatus}</p>
+        </>
+      ) : jsonStatus === "JSON Validated!" ? (
+        <>
+          <p>Total questions detected: {totalQuestions}</p>
+          <button onClick={() => handleModeSelect("study")}>Study</button>
+          <button onClick={() => handleModeSelect("test")}>Test</button>
+        </>
       ) : showResults ? (
         <div className="results">
           <h1>Results</h1>
@@ -185,12 +192,8 @@ const App = () => {
           <button onClick={() => handleRetry(true)}>Retry Incorrect</button>
           <button onClick={handleFinish}>Finish Session</button>
         </div>
-      ) : questions.length > 0 ? (
+      ) : questions.length > 0 && mode === "study" ? (
         <div>
-          <div className="counters">
-            <div className="incorrectCount">{incorrectCount}</div>
-            <div className="correctCount">{correctCount}</div>
-          </div>
           <div {...swipeHandlers} style={cardStyle}>
             <Flashcard
               key={currentQuestionIndex}
@@ -201,7 +204,6 @@ const App = () => {
               questionId={questions[currentQuestionIndex].id}
               totalQuestions={maxQuestions}
             />
-
           </div>
         </div>
       ) : (
@@ -210,6 +212,5 @@ const App = () => {
     </div>
   );
 };
-
 
 export default App;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import './Flashcard.css';
 
-// Función para mezclar opciones y preservar la asociación de letras
+// Function to shuffle options and preserve letter association
 function shuffleOptions(options) {
   const entries = options.map(option => ({...option}));
   for (let i = entries.length - 1; i > 0; i--) {
@@ -25,9 +26,8 @@ const Flashcard = ({ question, options, answer, questionNumber }) => {
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
-    // Clean up to avoid memory leaks
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleKeyDown]);
 
   const getFullAnswers = () => {
     return answer.split('').map(letter =>
@@ -37,12 +37,16 @@ const Flashcard = ({ question, options, answer, questionNumber }) => {
 
   const shuffledOptions = useMemo(() => shuffleOptions(options), [options]);
 
+  console.log(`Rendering Flashcard for question ${questionNumber + 1}`);
+
   return (
-    <div className="flashcard" onClick={() => setFlipped(f => !f)}>
+    <div className="flashcard" onClick={() => setFlipped(f => !f)} tabIndex={0} aria-label="Click or press space to flip the card">
       <div className={`card ${flipped ? 'flipped' : ''}`}>
         <div className="front">
           <h1 className="question">{question}</h1>
-          {incorrectAttempts > 1 && <div className="red-dot"></div>} {/* Show red dot if incorrect more than once */}
+          {incorrectAttempts > 1 && (
+            <div className="red-dot" aria-label="Question answered incorrectly more than once"></div>
+          )}
           <ol type="A">
             {shuffledOptions.map((option, index) => (
               <li key={index}>{option.text}</li>
@@ -59,6 +63,16 @@ const Flashcard = ({ question, options, answer, questionNumber }) => {
       </div>
     </div>
   );
+};
+
+Flashcard.propTypes = {
+  question: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    letter: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
+  })).isRequired,
+  answer: PropTypes.string.isRequired,
+  questionNumber: PropTypes.number.isRequired
 };
 
 export default Flashcard;
