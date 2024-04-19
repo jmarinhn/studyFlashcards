@@ -3,9 +3,9 @@ import { useSwipeable } from 'react-swipeable';
 import { ThreeDots } from 'react-loader-spinner';
 import FingerprintJS from 'fingerprintjs2';
 import Cookies from 'js-cookie';
-import Flashcard from './Flashcard';
 import { useQuestions, shuffleArray } from './useQuestions';
 import FileDropzone from './FileDropzone';
+import Flashcard from './Flashcard';
 import './App.css';
 
 const App = () => {
@@ -53,6 +53,26 @@ const App = () => {
     });
   };
 
+  const handleModeSelect = (selectedMode) => {
+    console.log(`Switching to ${selectedMode} mode.`);
+    setMode(selectedMode);
+    console.log(`Current mode: ${mode}, Total questions: ${totalQuestions}, Questions Loaded: ${questions.length}`);
+    if (selectedMode === "study") {
+      // In study mode, use all questions
+      const shuffledQuestions = shuffleArray([...questions]);
+      setQuestions(shuffledQuestions);
+    } else {
+      // In test mode, ensure only the correct number of questions is used
+      const shuffledQuestions = shuffleArray([...questions]).slice(0, maxQuestions);
+      setQuestions(shuffledQuestions);
+    }
+    setCurrentQuestionIndex(0); // Reset the index for both modes
+    setSwipeCount(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setShowResults(false);
+  };
+
   const handleSwipe = (direction) => {
     if (mode === "test") {
       const question = questions[currentQuestionIndex];
@@ -82,53 +102,6 @@ const App = () => {
       }, 300);
     }
   };
-  
-  const handleRetry = (retryIncorrect) => {
-    // Retrieve only incorrect questions if retryIncorrect is true
-    const filteredQuestions = retryIncorrect ? 
-      questions.filter(question => !localStorage.getItem(`question_correct_${question.id}`)) : 
-      questions;
-
-    setQuestions(shuffleArray(filteredQuestions));
-    setCurrentQuestionIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setShowResults(false);
-    setRetryMode(true);
-  };
-
-  const handleFinish = () => {
-    console.log("Fin del juego, resultados:");
-    console.log(`Correctas: ${correctCount}`);
-    console.log(`Incorrectas: ${incorrectCount}`);
-    setShowResults(false);
-    setCurrentQuestionIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setQuestions([]);
-    localStorage.clear();
-  };
-
-  const handleModeSelect = (selectedMode) => {
-    console.log(`Current mode: ${mode}, Total questions: ${totalQuestions}, Questions Loaded: ${questions.length}`);
-    console.log(`Switching to ${selectedMode} mode.`);
-    setMode(selectedMode);
-    if (selectedMode === "study") {
-      // In study mode, use all questions
-      const shuffledQuestions = shuffleArray([...questions]);
-      setQuestions(shuffledQuestions);
-    } else {
-      // In test mode, ensure only the correct number of questions is used
-      const shuffledQuestions = shuffleArray([...questions]).slice(0, maxQuestions);
-      setQuestions(shuffledQuestions);
-    }
-    setCurrentQuestionIndex(0); // Reset the index for both modes
-    setSwipeCount(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setShowResults(false);
-  };
-  
   
 
   const swipeHandlers = useSwipeable({
@@ -163,9 +136,34 @@ const App = () => {
     });
   }, []);
 
+  const handleRetry = (retryIncorrect) => {
+    // Retrieve only incorrect questions if retryIncorrect is true
+    const filteredQuestions = retryIncorrect ? 
+      questions.filter(question => !localStorage.getItem(`question_correct_${question.id}`)) : 
+      questions;
+
+    setQuestions(shuffleArray(filteredQuestions));
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setShowResults(false);
+    setRetryMode(true);
+  };
+
+  const handleFinish = () => {
+    console.log("Fin del juego, resultados:");
+    console.log(`Correctas: ${correctCount}`);
+    console.log(`Incorrectas: ${incorrectCount}`);
+    setShowResults(false);
+    setCurrentQuestionIndex(0);
+    setCorrectCount(0);
+    setIncorrectCount(0);
+    setQuestions([]);
+    localStorage.clear();
+  };
 
   return (
-    <div className="app" style={{ backgroundColor: mode === "test" ? 'salmon' : 'white' }}>
+    <div className="app" style={{ backgroundColor: mode === "test" ? 'gray' : 'white' }}>
       {loading ? (
         <>
           <ThreeDots color="#00BFFF" height={80} width={80} />
@@ -173,27 +171,17 @@ const App = () => {
         </>
       ) : jsonStatus === "JSON Validated!" ? (
         <>
+            <h1>Flashcard App</h1>
           <p>Total questions detected: {totalQuestions}</p>
-          <button onClick={() => handleModeSelect("study")}>Study</button>
-          <button onClick={() => handleModeSelect("test")}>Test</button>
+          <br></br>
+          <p>Select your game mode:</p>
+          <br></br>
+          <button className="studyButton" onClick={() => handleModeSelect("study")} style={{borderRadius: 'rounded'}}>Study</button>
+          <br></br>
+          <button className="quizButton" onClick={() => handleModeSelect("test")} style={{borderRadius: 'rounded'}}>Test</button>
         </>
-      ) : showResults ? (
-        <div className="results">
-          <h1>Results</h1>
-          <br></br>
-          <p>Correct Answers: {correctCount}</p>
-          <p>Incorrect Answers: {incorrectCount}</p>
-          <br></br>
-          <h2 className={correctCount / (correctCount + incorrectCount) >= 0.8 ? 'passed' : 'failed'}>
-            {correctCount / (correctCount + incorrectCount) >= 0.8 ? 'Passed' : 'Failed'}
-          </h2>
-          <br></br>
-          <button onClick={() => handleRetry(false)}>Retry All</button>
-          <button onClick={() => handleRetry(true)}>Retry Incorrect</button>
-          <button onClick={handleFinish}>Finish Session</button>
-        </div>
       ) : questions.length > 0 && mode === "study" ? (
-        <div>
+        <div className="studyMode"> 
           <div {...swipeHandlers} style={cardStyle}>
             <Flashcard
               key={currentQuestionIndex}
@@ -205,6 +193,44 @@ const App = () => {
               totalQuestions={maxQuestions}
             />
           </div>
+        </div>
+      ) : questions.length > 0 && mode === "test" ? (
+        <div className="testMode">
+            <p>Swipe right for correct, left for incorrect</p>
+            <br></br>
+            <p>{correctCount}</p>
+            <p>{incorrectCount}</p> 
+          <div {...swipeHandlers} style={cardStyle}>
+            <Flashcard
+              key={currentQuestionIndex}
+              question={questions[currentQuestionIndex].question}
+              options={questions[currentQuestionIndex].options}
+              answer={questions[currentQuestionIndex].answer_community}
+              questionNumber={currentQuestionIndex + 1}
+              questionId={questions[currentQuestionIndex].id}
+              totalQuestions={maxQuestions}
+            />
+            <br></br>
+            <button onClick={handleFinish}>Finish Session</button>
+          </div>
+        </div>        
+      ) : showResults ? (
+        <div className="results">
+          <h1>Results</h1>
+          <h1 className={correctCount / (correctCount + incorrectCount) >= 0.8 ? 'passed' : 'failed'}>{(correctCount / (correctCount + incorrectCount))*100}%</h1>
+          <br></br>
+          <p>Correct Answers: {correctCount}</p>
+          <p>Incorrect Answers: {incorrectCount}</p>
+          <br></br>
+          <h2 className={correctCount / (correctCount + incorrectCount) >= 0.8 ? 'passed' : 'failed'}>
+            {correctCount / (correctCount + incorrectCount) >= 0.8 ? 'Passed' : 'Failed'}
+          </h2>
+          <br></br>
+          <button onClick={() => handleRetry(false)}>Retry All</button>
+          <br></br>
+          <button onClick={() => handleRetry(true)}>Retry Incorrect</button>
+          <br></br>
+          <button onClick={handleFinish}>Finish Session</button>
         </div>
       ) : (
         <FileDropzone onFileAccepted={handleFileAccepted} />
