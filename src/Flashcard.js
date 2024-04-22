@@ -31,7 +31,7 @@ const Flashcard = ({ question, options, answer, questionNumber }) => {
 
   const getFullAnswers = () => {
     return answer.split('').map(letter =>
-      options.find(option => option.letter === letter)?.text || ''
+      options.find(option => option.letter === letter)?.text || 'Missing Answer. Check JSON file.'
     ).join(', ');
   };
 
