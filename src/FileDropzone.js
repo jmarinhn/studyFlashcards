@@ -10,9 +10,18 @@ const FileDropzone = ({ onFileAccepted }) => {
     },
   });
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      onFileAccepted(file);
+    }
+  };
+
+  console.log("Waiting for file...");
+  
   return (
     <div {...getRootProps({ className: 'dropzone' })}>
-      <input {...getInputProps()} />
+      <input {...getInputProps()} onChange={handleFileChange}/>
       <p>Drop or select a JSON file here</p>
     </div>
   );
