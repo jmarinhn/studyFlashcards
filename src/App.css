@@ -66,8 +66,17 @@
   animation: fadeInOut 5s;
 }
 
+.timer {
+  font-size: 2em;
+  font-family:'Courier New', Courier, monospace;
+  font-weight: bolder;
+  color: red;
+  text-align: center;
+}
+
 @keyframes fadeInOut {
   0% { opacity: 0; }
   50% { opacity: 1; }
   100% { opacity: 0; }
 }
+

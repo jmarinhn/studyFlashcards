@@ -27,66 +27,38 @@ const useQuestions = (username, maxQuestions) => {
   const [jsonStatus, setJsonStatus] = useState("");
 
   
-/*
-  const loadQuestions = (file) => {
+  const loadQuestions = (file, callback) => {
+    setCurrentFile(file);
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const jsonContent = JSON.parse(event.target.result);
-        const parsedQuestions = shuffleArray(Object.keys(jsonContent).map((key) => {
-          const options = shuffleOptions(jsonContent[key].options);
-          return {
-            id: key,
-            ...jsonContent[key],
-            options: options
-          };
+        const allQuestions = Object.keys(jsonContent).map(key => ({
+          id: key,
+          ...jsonContent[key],
+          options: shuffleOptions(jsonContent[key].options)
         }));
-        setQuestions(parsedQuestions);
-        localStorage.setItem(`questions_${username}`, JSON.stringify(parsedQuestions));
+        // Log the loaded content for debugging
+        console.log("Contenido del JSON cargado:", allQuestions);
+        setTotalQuestions(allQuestions.length);  // Update total questions
+        const questionsForSession = shuffleArray(allQuestions).slice(0, maxQuestions);
+        setQuestions(questionsForSession);
+        console.log("Preguntas seleccionadas para esta ronda:", questionsForSession);
+        callback(); // Continue after setting questions
       } catch (error) {
-        console.error('Error parsing JSON:', error);
+        console.error('Error al analizar JSON:', error);
+        callback(); // Call callback even on error
       }
     };
-    reader.onerror = (error) => {
-      console.error('Error reading file:', error);
+    reader.onerror = error => {
+      console.error('Error al leer el archivo:', error);
+      callback(); // Ensure callback on read error
     };
     reader.readAsText(file);
   };
-*/
 
-const loadQuestions = (file, callback) => {
-  setCurrentFile(file);
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    try {
-      const jsonContent = JSON.parse(event.target.result);
-      const allQuestions = Object.keys(jsonContent).map(key => ({
-        id: key,
-        ...jsonContent[key],
-        options: shuffleOptions(jsonContent[key].options)
-      }));
-      // Log the loaded content for debugging
-      console.log("Contenido del JSON cargado:", allQuestions);
-      setTotalQuestions(allQuestions.length);  // Update total questions
-      const questionsForSession = shuffleArray(allQuestions).slice(0, maxQuestions);
-      setQuestions(questionsForSession);
-      console.log("Preguntas seleccionadas para esta ronda:", questionsForSession);
-      callback(); // Continue after setting questions
-    } catch (error) {
-      console.error('Error al analizar JSON:', error);
-      callback(); // Call callback even on error
-    }
-  };
-  reader.onerror = error => {
-    console.error('Error al leer el archivo:', error);
-    callback(); // Ensure callback on read error
-  };
-  reader.readAsText(file);
-};
+  return [questions, loadQuestions, setQuestions, totalQuestions, loading, jsonStatus];
 
-
-
-return [questions, loadQuestions, setQuestions, totalQuestions, loading, jsonStatus];
 };
 
 export { shuffleArray, useQuestions };

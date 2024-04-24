@@ -115,7 +115,8 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
     onSwipedRight: () => {
       onSwipe(true);
       setFlipped(false);  // Reset flip state on swipe
-    }
+    },
+    trackMouse: true
   });
 
   if (!question || !options) {

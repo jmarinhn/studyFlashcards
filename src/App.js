@@ -9,318 +9,13 @@ import Flashcard from './Flashcard';
 import Leaderboard from './Leaderboard';
 import './App.css';
 
-/*
-const App = () => {
-  const [stage, setStage] = useState('welcome'); // 'welcome', 'upload', 'enterName', 'menu', 'study', 'test', 'results' 
-  const [username, setUsername] = useState('');
-  const [inputUsername, setInputUsername] = useState(''); // Para capturar el nombre de usuario
-  const [questions, loadQuestions, setQuestions, totalQuestions] = useQuestions(username);
-  const maxQuestions = Math.min(60, totalQuestions);
-  const [loading, setLoading] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [incorrectCount, setIncorrectCount] = useState(0);
-  const [showResults, setShowResults] = useState(false);
-  const [cardStyle, setCardStyle] = useState({});
-  const [swipeCount, setSwipeCount] = useState(0);
-  const [retryMode, setRetryMode] = useState(false);
-  const [mode, setMode] = useState("none");
-  const [previousMode, setPreviousMode] = useState("none");
-  const [jsonStatus, setJsonStatus] = useState("Validating JSON...");
-  const [flipped, setFlipped] = useState(false);
-  const [currentFile, setCurrentFile] = useState(null);
-
-  useEffect(() => {
-    if (stage === 'welcome') {
-      setTimeout(() => {
-        setStage('upload');
-      }, 5000); // Wait for 5 seconds then switch to upload
-    }
-  }, [stage]);
-
-  const handleFileAccepted = (file) => {
-    setCurrentFile(file);
-    setJsonStatus("Please enter your name to proceed...");
-    setStage('enterName');
-  };
-
-  const handleNameSubmit = (event) => {
-    if (event.key === 'Enter') {
-      setUsername(event.target.value);
-      setStage('menu');
-    }
-  };
-
-  const renderWelcome = () => (
-    <div className="fade-in-out">
-      <h1>flashcardMatch</h1>
-    </div>
-  );
-  
-  const renderFileUpload = () => (
-    <div>
-      <FileDropzone onFileAccepted={handleFileAccepted} />
-    </div>
-  );
-
-  const renderNameInput = () => (
-    <input
-      type="text"
-      placeholder="Enter your name"
-      onKeyPress={handleNameSubmit}
-      autoFocus
-    />
-  );
-
-
-  const updateAnswerStatus = (questionId, isCorrect) => {
-    localStorage.setItem(`question_correct_${questionId}`, isCorrect ? "true" : "false");
-    if (!isCorrect) {
-      const attempts = parseInt(localStorage.getItem(`incorrect_attempts_${questionId}`) || '0', 10) + 1;
-      localStorage.setItem(`incorrect_attempts_${questionId}`, attempts.toString());
-    }
-  };  
-
-  const processQuestions = () => {
-    if (!inputUsername.trim()) {
-      alert("Please enter a valid name.");
-      return;
-    }
-    setUsername(inputUsername);
-    loadQuestions(currentFile, () => {
-      setTimeout(() => {
-        console.log("Callback triggered - JSON is now processed and validated.");
-        setJsonStatus("JSON Validated!");
-        setLoading(false);
-        setShowResults(false);
-        setRetryMode(false);
-        setSwipeCount(0);
-        setCurrentQuestionIndex(0);
-        setCorrectCount(0);
-        setIncorrectCount(0);
-      }, 3000);
-    });
-  };
-  
-
-  const handleModeSelect = (selectedMode) => {
-    if (mode !== selectedMode) {
-      console.log(`Switching from ${mode || 'none'} to ${selectedMode} mode.`);
-      setPreviousMode(mode);
-      setMode(selectedMode);
-      const newQuestions = selectedMode === 'study' ? shuffleArray([...questions]) : shuffleArray([...questions]).slice(0, maxQuestions);
-      setQuestions(newQuestions);
-      console.log(`Total questions in mode ${selectedMode}: ${newQuestions.length}`);
-      setCurrentQuestionIndex(0);
-      setSwipeCount(0);
-      setCorrectCount(0);
-      setIncorrectCount(0);
-      setShowResults(false);
-    }
-  };
-
-  const handleSwipe = (direction) => {
-    if (mode === "test") {
-      const question = questions[currentQuestionIndex];
-      const isCorrect = direction === 'Right';
-      updateAnswerStatus(question.id, isCorrect);
-      setSwipeCount(swipeCount + 1);
-
-      if (swipeCount + 1 >= totalQuestions || currentQuestionIndex + 1 >= questions.length) {
-        setShowResults(true);
-        setMode("");
-      }
-
-      setCardStyle({
-        transform: `translateX(${direction === 'Right' ? 1000 : -1000}px)`,
-        transition: 'transform 0.7s ease-out',
-        backgroundColor: direction === 'Right' ? 'lightgreen' : 'lightcoral'
-      });
-
-      setTimeout(() => {
-        setCardStyle({});
-        setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);
-        if (isCorrect) {
-          setCorrectCount(correctCount + 1);
-        } else {
-          setIncorrectCount(incorrectCount + 1);
-        }
-      }, 300);
-    }
-  };
-  
-
-  const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => handleSwipe('Left'),
-    onSwipedRight: () => handleSwipe('Right'),
-  });
-
-
-
-  const renderMainMenu = () => (
-    <div>
-      <h1>Welcome, {username}!</h1>
-      <p>Total questions detected: {questions.length}</p>
-      <br></br>
-      <button className='studyButton'>Study</button>
-      <br></br>
-      <button className='quizButton'>Test</button>
-    </div>
-  );
-
-  const renderContent = () => {
-    switch (stage) {
-      case 'welcome':
-        return renderWelcome();
-      case 'upload':
-        return renderFileUpload();
-      case 'enterName':
-        return renderNameInput();
-      case 'menu':
-          return (
-            <>
-              <h1>flashcardMatch</h1>
-              <h2>Welcome, {username}!</h2>
-              <p>Total questions detected: {questions.length}</p>
-              <button onClick={() => setStage('study')}>Study</button>
-              <button onClick={() => setStage('test')}>Test</button>
-              <button onClick={() => setStage('leaderboard')}>Leaderboard</button>
-            </>
-          );
-      case 'study':
-        return <Flashcard data={questions[currentQuestionIndex]} />;
-      case 'test':
-        return <Flashcard data={questions[currentQuestionIndex]} onSwipe={handleSwipe} />;
-      case 'results':
-        return <Leaderboard data={scoreboard} />;
-      default:
-        return <div>Unknown stage</div>;
-  
-    }
-  };
-
-
-
-
-  // Solo actualiza las preguntas cuando el modo cambia y es necesario
-  useEffect(() => {
-    if (mode) {
-      const newQuestions = mode === 'study' ? [...questions] : shuffleArray([...questions]).slice(0, maxQuestions);
-      setQuestions(newQuestions);
-      setCurrentQuestionIndex(0);
-      setSwipeCount(0);
-      setCorrectCount(0);
-      setIncorrectCount(0);
-    }
-  }, [mode]); // Solo escucha cambios en `mode`  
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'ArrowRight') {
-        handleSwipe('Right'); // Swipe right
-      } else if (event.key === 'ArrowLeft') {
-        handleSwipe('Left'); // Swipe left
-      } else if (event.key === ' ') {
-        setFlipped((prev) => !prev); // Flip the card
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown); 
-  }, [currentQuestionIndex, questions.length]);
-
-  useEffect(() => {
-    Cookies.set(`currentQuestionIndex_${username}`, JSON.stringify(currentQuestionIndex));
-  }, [currentQuestionIndex, username]);
-
-  useEffect(() => {
-    FingerprintJS.get((components) => {
-      const values = components.map((component) => component.value);
-      const uniqueHash = FingerprintJS.x64hash128(values.join(''), 31);
-      setUsername(uniqueHash);
-    });
-  }, []);
-
-  const handleRetry = (retryIncorrect) => {
-    // Retrieve only incorrect questions if retryIncorrect is true
-    const filteredQuestions = retryIncorrect ? 
-      questions.filter(question => !localStorage.getItem(`question_correct_${question.id}`)) : 
-      questions;
-
-    setQuestions(shuffleArray(filteredQuestions));
-    setCurrentQuestionIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setShowResults(false);
-    setRetryMode(true);
-  };
-
-  const handleFinish = () => {
-    const percent = (correctCount / (correctCount + incorrectCount) * 100).toFixed(2);
-    console.log("Fin del juego, resultados:");
-    console.log(`Porcentaje de respuestas correctas: ${percent}%`);
-    setShowResults(false);
-    setCurrentQuestionIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setQuestions([]);
-    localStorage.clear();
-  };
-
-/*
-  return (
-    <div className="app" style={{ backgroundColor: mode === "test" ? 'gray' : 'white' }}>
-      {loading ? (
-        <>
-          <ThreeDots color="#00BFFF" height={80} width={80} />
-          <p>{jsonStatus}</p>
-        </>
-      ) : (
-        <>
-          {jsonStatus.startsWith("Please enter") && (
-            <>
-              <input
-                type="text"
-                placeholder="Enter your name"
-                value={inputUsername}
-                onChange={(e) => setInputUsername(e.target.value)}
-                onKeyDown={handleUsernameInput}
-              />
-              <button onClick={processQuestions}>Submit</button>
-            </>
-          )}
-          {renderBasedOnMode()}
-        </>
-      )}
-    </div>
-  );
-    // Función auxiliar para renderizar basado en el estado y modo actual.
-    function renderBasedOnMode() {
-      if (mode === "none") return renderMainMenu();
-      if (showResults) return renderResults();
-      return renderQuestion();
-    }
-};
-
-
-export default App;*/
-/*
-return (
-  <div className="app">
-    {loading ? <ThreeDots color="#00BFFF" height={80} width={80} /> : renderContent()}
-  </div>
-);
-};
-
-export default App;
-*/
 const App = () => {
   const [stage, setStage] = useState('welcome');
   const [username, setUsername] = useState('');
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scoreboard, setScoreboard] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(3600); // tiempo en segundos para una hora
+  const [timeLeft, setTimeLeft] = useState(3600); 
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
   const [timerActive, setTimerActive] = useState(false);  
@@ -369,9 +64,6 @@ const App = () => {
     };
     reader.readAsText(file);
   };
-  
-
-  
 
   const handleNameSubmit = (event) => {
     if (event.key === 'Enter') {
@@ -380,7 +72,6 @@ const App = () => {
     }
   };
  
-
   const handleSwipe = (isCorrect) => {
     if (stage === 'study') {
       setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);  // Esto permitirá un bucle continuo de preguntas
@@ -411,7 +102,6 @@ const App = () => {
           setFeedbackMessage('Oops! That’s not right.');
         }
       }
-      
     } else if (stage === 'menu' && selectedMode === 'test') {
       let shuffledQuestions = shuffleArray([...questions]);
       setQuestions(shuffledQuestions.slice(0, 60));
@@ -422,20 +112,17 @@ const App = () => {
       setStage('test');
       setTimerActive(true);
     }
-    
   };
-  
 
   const averageTimePerQuestion = correctAnswers > 0 ? Math.floor((3600 - timeLeft) / correctAnswers) : 0;
 
-// Función onAddToLeaderboard actualizada para usar localStorage
+  // Función onAddToLeaderboard actualizada para usar localStorage
   const onAddToLeaderboard = (newEntry) => {
     const existingEntries = JSON.parse(localStorage.getItem('scoreboard') || '[]');
     const updatedScoreboard = [...existingEntries, newEntry].sort((a, b) => b.score - a.score).slice(0, 10);
     localStorage.setItem('scoreboard', JSON.stringify(updatedScoreboard));
     setScoreboard(updatedScoreboard);
   };
-
 
   // Agregar un botón para salir de la sesión actual y volver al menú
   const renderExitButton = () => (
@@ -467,8 +154,8 @@ const renderStudyMode = () => {
 const renderTestMode = () => {
   return (
     <>
-      {renderExitButton()}
-      <div>Time left: {Math.floor(timeLeft / 60)}:{('0' + timeLeft % 60).slice(-2)}</div>
+      <div>Time Left:</div>
+      <div className='timer'>{Math.floor(timeLeft / 60)}:{('0' + timeLeft % 60).slice(-2)}</div>
       <div>{feedbackMessage}</div>
       {questions.length > 0 ? (
         <Flashcard
@@ -481,11 +168,11 @@ const renderTestMode = () => {
       ) : (
         <div>No questions available</div>
       )}
+      {renderExitButton()}
     </>
   );
 };  
   
-
   const renderContent = () => {
     switch (stage) {
       case 'welcome':
@@ -498,7 +185,7 @@ const renderTestMode = () => {
           <input
             type="text"
             placeholder="Enter your name"
-            onKeyPress={handleNameSubmit}
+            onKeyDown={handleNameSubmit}
             autoFocus
           />
         );
@@ -560,7 +247,6 @@ const renderTestMode = () => {
     return () => clearInterval(interval);
   }, [timerActive, timeLeft]);
   
-
   return (
     <div className="app">
       {loading ? <div>Loading...</div> : renderContent()}
