@@ -8,15 +8,18 @@
   justify-content: center;
   min-width: 320px;
   min-height: 520px;
-  height: 520px;
+  height: auto;
   margin: 20px auto;
-  padding: 15px; /* Añadido aquí para aplicar a todos los elementos internos de la tarjeta */
-  background-color: #fff; /* Utiliza valores hexadecimales por consistencia */
+  padding: 15px;
+  /* Añadido aquí para aplicar a todos los elementos internos de la tarjeta */
+  background-color: #fff;
+  /* Utiliza valores hexadecimales por consistencia */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.3s ease-out;
-  user-select: none; /* Evita la selección de texto */
+  user-select: none;
+  /* Evita la selección de texto */
 }
 
 /* Estilos cuando la tarjeta está siendo arrastrada */
@@ -40,7 +43,8 @@
 }
 
 /* Estilos comunes para el frente y el dorso */
-.front, .back {
+.front,
+.back {
   position: absolute;
   top: 0;
   left: 0;
@@ -49,18 +53,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   backface-visibility: hidden;
   box-sizing: border-box;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .front {
-  background-color: #fff; /* Color de fondo para la parte frontal */
+  background-color: #fff;
+  /* Color de fondo para la parte frontal */
   color: black;
+  position: relative;
 }
 
 .back {
-  background-color: #f8f8f8; /* Color de fondo para la parte posterior */
+  background-color: #f8f8f8;
+  /* Color de fondo para la parte posterior */
   color: rgb(0, 0, 0);
   transform: rotateY(180deg);
 }
@@ -68,11 +77,14 @@
 /* Estilos para los textos y contadores */
 h1 {
   margin: 0;
-  text-align: center; /* Asegura que el título esté centrado */
+  text-align: center;
+  /* Asegura que el título esté centrado */
 }
+
 h2 {
   margin: 0;
-  text-align: center; /* Asegura que el título esté centrado */
+  text-align: center;
+  /* Asegura que el título esté centrado */
 }
 
 p {
@@ -88,7 +100,8 @@ p {
   color: green;
 }
 
-.question-counter, .card-number {
+.question-counter,
+.card-number {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -97,16 +110,18 @@ p {
 }
 
 .card-number {
-  top: 10px; /* Mueve el número de la tarjeta arriba */
-  right: 10px; /* Alinea el número de la tarjeta a la derecha */
+  top: 10px;
+  /* Mueve el número de la tarjeta arriba */
+  right: 10px;
+  /* Alinea el número de la tarjeta a la derecha */
 }
 
 .question {
   font-size: 1.1em;
   max-width: 100%;
-  max-height: 100%;
   font-weight: bold;
-  text-align: center; /* Asegura que el título esté centrado */
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 .red-dot {
@@ -117,4 +132,198 @@ p {
   position: absolute;
   top: 5px;
   right: 5px;
+}
+
+/* Estilos para opciones seleccionables */
+.options-list {
+  width: 100%;
+  padding-left: 0;
+  list-style: none;
+  margin: 0;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #fafafa;
+}
+
+.option:hover {
+  border-color: #4a90d9;
+  background-color: #f0f7ff;
+}
+
+.option.selected {
+  border-color: #4a90d9;
+  background-color: #e3f2fd;
+  box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.3);
+}
+
+.option.correct {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+.option.incorrect {
+  border-color: #f44336;
+  background-color: #ffebee;
+}
+
+.option-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  margin-right: 12px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.option.selected .option-letter {
+  background-color: #4a90d9;
+  color: white;
+}
+
+.option.correct .option-letter {
+  background-color: #4caf50;
+  color: white;
+}
+
+.option.incorrect .option-letter {
+  background-color: #f44336;
+  color: white;
+}
+
+.option-text {
+  flex: 1;
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* Hint para preguntas de múltiple selección */
+.multiple-choice-hint {
+  color: #666;
+  font-size: 0.85em;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+/* Botón de verificar respuesta */
+.submit-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  font-size: 1em;
+  font-weight: bold;
+  color: white;
+  background-color: #4a90d9;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #357abd;
+  transform: scale(1.02);
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Feedback de respuesta */
+.answer-feedback {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.correct-feedback {
+  color: #4caf50;
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.incorrect-feedback {
+  color: #f44336;
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Botón siguiente pregunta */
+.next-btn {
+  padding: 12px 30px;
+  font-size: 1em;
+  font-weight: bold;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.next-btn:hover {
+  background-color: #388e3c;
+  transform: scale(1.02);
+}
+
+/* Estilos para la lista de respuestas en el back */
+.answer-list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.answer-list li {
+  padding: 10px 15px;
+  margin: 5px 0;
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  border-radius: 4px;
+}
+
+.swipe-hint {
+  color: #888;
+  font-size: 0.85em;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+/* Estilos para el header del modo test */
+.test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  gap: 15px;
+}
+
+.test-header>div {
+  text-align: center;
+}
+
+.feedback {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-weight: bold;
 }

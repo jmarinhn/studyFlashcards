@@ -15,14 +15,14 @@ const App = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scoreboard, setScoreboard] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(3600); 
+  const [timeLeft, setTimeLeft] = useState(3600);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
-  const [timerActive, setTimerActive] = useState(false);  
+  const [timerActive, setTimerActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
-  
+
   useEffect(() => {
     if (stage === 'welcome') {
       setTimeout(() => {
@@ -71,7 +71,7 @@ const App = () => {
       setStage('menu');
     }
   };
- 
+
   const handleSwipe = (isCorrect) => {
     if (stage === 'study') {
       setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);  // Esto permitirá un bucle continuo de preguntas
@@ -131,48 +131,53 @@ const App = () => {
     </button>
   );
 
-// Modificar la renderización en los modos de estudio y prueba para incluir el botón de salida
-const renderStudyMode = () => {
-  return (
-    <>
-      {renderExitButton()}
-      {questions.length > 0 ? (
-        <Flashcard
-          question={questions[currentQuestionIndex].question}
-          options={questions[currentQuestionIndex].options}
-          answer_official={questions[currentQuestionIndex].answer_official}
-          answer_community={questions[currentQuestionIndex].answer_community}
-          onSwipe={handleSwipe}
-        />
-      ) : (
-        <div>No questions available</div>
-      )}
-    </>
-  );
-};
+  // Modificar la renderización en los modos de estudio y prueba para incluir el botón de salida
+  const renderStudyMode = () => {
+    return (
+      <>
+        {renderExitButton()}
+        {questions.length > 0 ? (
+          <Flashcard
+            question={questions[currentQuestionIndex].question}
+            options={questions[currentQuestionIndex].options}
+            answer_official={questions[currentQuestionIndex].answer_official}
+            answer_community={questions[currentQuestionIndex].answer_community}
+            onSwipe={handleSwipe}
+            mode="study"
+          />
+        ) : (
+          <div>No questions available</div>
+        )}
+      </>
+    );
+  };
 
-const renderTestMode = () => {
-  return (
-    <>
-      <div>Time Left:</div>
-      <div className='timer'>{Math.floor(timeLeft / 60)}:{('0' + timeLeft % 60).slice(-2)}</div>
-      <div>{feedbackMessage}</div>
-      {questions.length > 0 ? (
-        <Flashcard
-          question={questions[currentQuestionIndex].question}
-          options={questions[currentQuestionIndex].options}
-          answer_official={questions[currentQuestionIndex].answer_official}
-          answer_community={questions[currentQuestionIndex].answer_community}
-          onSwipe={handleSwipe}
-        />
-      ) : (
-        <div>No questions available</div>
-      )}
-      {renderExitButton()}
-    </>
-  );
-};  
-  
+  const renderTestMode = () => {
+    return (
+      <>
+        <div className="test-header">
+          <div>Tiempo restante: {Math.floor(timeLeft / 60)}:{('0' + timeLeft % 60).slice(-2)}</div>
+          <div>Pregunta {currentQuestionIndex + 1} de {questions.length}</div>
+          <div>✓ {correctAnswers} | ✗ {incorrectAnswers}</div>
+        </div>
+        {feedbackMessage && <div className="feedback">{feedbackMessage}</div>}
+        {questions.length > 0 ? (
+          <Flashcard
+            question={questions[currentQuestionIndex].question}
+            options={questions[currentQuestionIndex].options}
+            answer_official={questions[currentQuestionIndex].answer_official}
+            answer_community={questions[currentQuestionIndex].answer_community}
+            onSwipe={handleSwipe}
+            mode="test"
+          />
+        ) : (
+          <div>No questions available</div>
+        )}
+        {renderExitButton()}
+      </>
+    );
+  };
+
   const renderContent = () => {
     switch (stage) {
       case 'welcome':
@@ -200,32 +205,32 @@ const renderTestMode = () => {
             <button className='quizButton' onClick={() => { setStage('test'); setTimerActive(true); }}>Test</button>
             <button onClick={() => setStage('results')}>Leaderboard</button>
           </>
-        );      
-        case 'study':
-          if (questions.length > 0) {
-            if (currentQuestionIndex === 0) {
-              console.log("Study mode activated. Hard is to study, young padawan...");
-            }
-            return renderStudyMode();
-          } else {
-            return <div>No questions available</div>;
+        );
+      case 'study':
+        if (questions.length > 0) {
+          if (currentQuestionIndex === 0) {
+            console.log("Study mode activated. Hard is to study, young padawan...");
           }
-        case 'test':
+          return renderStudyMode();
+        } else {
+          return <div>No questions available</div>;
+        }
+      case 'test':
+        if (timeLeft === 0) {
+          setStage('results');
+          setTimerActive(false);
+        } else if (timeLeft === 3600) {
+          console.log("Test mode activated. May the odds be ever in your favor!")
+        }
+        if (questions.length > 0) {
           if (timeLeft === 0) {
             setStage('results');
             setTimerActive(false);
-          }else if (timeLeft === 3600){
-            console.log("Test mode activated. May the odds be ever in your favor!")
           }
-          if (questions.length > 0) {
-            if (timeLeft === 0) {
-              setStage('results');
-              setTimerActive(false);
-            }
-            return renderTestMode();
-          } else {
-            return <div>No questions available</div>;
-          }
+          return renderTestMode();
+        } else {
+          return <div>No questions available</div>;
+        }
       case 'results':
         console.log("Results are in! Let's see how you did...");
         return <Leaderboard data={scoreboard} userTime={averageTimePerQuestion} onAddToLeaderboard={onAddToLeaderboard} />
@@ -246,7 +251,7 @@ const renderTestMode = () => {
     }
     return () => clearInterval(interval);
   }, [timerActive, timeLeft]);
-  
+
   return (
     <div className="app">
       {loading ? <div>Loading...</div> : renderContent()}

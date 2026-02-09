@@ -77,7 +77,7 @@ Flashcard.propTypes = {
 
 export default Flashcard;
 */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './Flashcard.css';
 import { useSwipeable } from 'react-swipeable';
@@ -91,30 +91,97 @@ function shuffleOptions(options) {
   return entries;
 }
 
-const Flashcard = ({ question, options, answer_official, answer_community, onSwipe }) => {
+const Flashcard = ({ question, options, answer_official, answer_community, onSwipe, mode = 'study' }) => {
   const [flipped, setFlipped] = useState(false);
-  const [shuffledOptions, setShuffledOptions] = useState([]);
+  const [selectedLetters, setSelectedLetters] = useState([]);
+  const [hasAnswered, setHasAnswered] = useState(false);
 
+  // Baraja las opciones solo cuando cambian las options
+  const shuffledOptions = useMemo(() => shuffleOptions(options), [options]);
+
+  // Reset estado cuando cambia la pregunta
   useEffect(() => {
-    setShuffledOptions(shuffleOptions(options));  // Baraja las opciones solo cuando cambian
-  }, [options]);  // Dependencia en las opciones propias de la pregunta
+    setFlipped(false);
+    setSelectedLetters([]);
+    setHasAnswered(false);
+  }, [question, options]);
 
-  const getFullAnswers = () => {
+  // Obtiene las letras de la respuesta correcta
+  const getCorrectLetters = () => {
     const validAnswer = answer_community || answer_official || '';
-    return validAnswer.split('').map((letter, index) =>
-      options[letter] ? `<li>${options[letter]}</li>` : '<li>Missing Answer. Check JSON file.</li>'
+    return validAnswer.split('').filter(letter => letter.trim() !== '');
+  };
+
+  // Verifica si la respuesta del usuario es correcta
+  const checkAnswer = () => {
+    const correctLetters = getCorrectLetters();
+    if (selectedLetters.length !== correctLetters.length) return false;
+    
+    const sortedSelected = [...selectedLetters].sort();
+    const sortedCorrect = [...correctLetters].sort();
+    
+    return sortedSelected.every((letter, index) => letter === sortedCorrect[index]);
+  };
+
+  // Maneja click en una opción
+  const handleOptionClick = (e, letter) => {
+    e.stopPropagation(); // Evita que el click voltee la tarjeta
+    
+    if (hasAnswered) return; // No permitir cambios después de responder
+    
+    const correctLetters = getCorrectLetters();
+    const isMultipleChoice = correctLetters.length > 1;
+    
+    if (isMultipleChoice) {
+      // Para preguntas de múltiple selección
+      setSelectedLetters(prev => {
+        if (prev.includes(letter)) {
+          return prev.filter(l => l !== letter);
+        } else {
+          return [...prev, letter];
+        }
+      });
+    } else {
+      // Para preguntas de una sola respuesta
+      setSelectedLetters([letter]);
+    }
+  };
+
+  // Maneja el submit de la respuesta
+  const handleSubmit = (e) => {
+    e.stopPropagation();
+    if (selectedLetters.length === 0) return;
+    
+    setHasAnswered(true);
+    setFlipped(true);
+  };
+
+  // Maneja pasar a la siguiente pregunta
+  const handleNext = (e) => {
+    e.stopPropagation();
+    const isCorrect = checkAnswer();
+    onSwipe(isCorrect, selectedLetters, getCorrectLetters());
+  };
+
+  // Genera el HTML de las respuestas correctas
+  const getFullAnswers = () => {
+    const correctLetters = getCorrectLetters();
+    return correctLetters.map(letter =>
+      options[letter] ? `<li><strong>${letter}:</strong> ${options[letter]}</li>` : '<li>Missing Answer. Check JSON file.</li>'
     ).join('');
   };
-  
-  
+
+  // Swipe handlers para modo estudio (sin calificación)
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
-      onSwipe(false);
-      setFlipped(false);  // Reset flip state on swipe
+      if (mode === 'study') {
+        onSwipe(false);
+      }
     },
     onSwipedRight: () => {
-      onSwipe(true);
-      setFlipped(false);  // Reset flip state on swipe
+      if (mode === 'study') {
+        onSwipe(true);
+      }
     },
     trackMouse: true
   });
@@ -123,23 +190,71 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
     return <div>Loading or no data available...</div>;
   }
 
+  const correctLetters = getCorrectLetters();
+  const isMultipleChoice = correctLetters.length > 1;
+
   return (
-    <div {...swipeHandlers} className={`flashcard`} onClick={() => setFlipped(f => !f)} tabIndex={0}>
+    <div {...swipeHandlers} className={`flashcard ${hasAnswered ? 'answered' : ''}`} tabIndex={0}>
       <div className={`card ${flipped ? 'flipped' : ''}`}>
-        <div className="front">
+        <div className="front" onClick={() => mode === 'study' && setFlipped(f => !f)}>
           <h3 className="question">{question}</h3>
-          <ol type="A">
-            {shuffledOptions.map((option, index) => (
-              <li key={index}>{option.text}</li>
-            ))}
+          {isMultipleChoice && (
+            <p className="multiple-choice-hint">(Selecciona todas las opciones correctas)</p>
+          )}
+          <ol type="A" className="options-list">
+            {shuffledOptions.map((option, index) => {
+              const isSelected = selectedLetters.includes(option.letter);
+              const isCorrect = correctLetters.includes(option.letter);
+              
+              let optionClass = 'option';
+              if (isSelected) optionClass += ' selected';
+              if (hasAnswered) {
+                if (isCorrect) optionClass += ' correct';
+                else if (isSelected && !isCorrect) optionClass += ' incorrect';
+              }
+              
+              return (
+                <li 
+                  key={option.letter}
+                  className={optionClass}
+                  onClick={(e) => handleOptionClick(e, option.letter)}
+                >
+                  <span className="option-letter">{String.fromCharCode(65 + index)}</span>
+                  <span className="option-text">{option.text}</span>
+                </li>
+              );
+            })}
           </ol>
+          
+          {mode === 'test' && !hasAnswered && (
+            <button 
+              className="submit-btn"
+              onClick={handleSubmit}
+              disabled={selectedLetters.length === 0}
+            >
+              Verificar Respuesta
+            </button>
+          )}
+          
+          {hasAnswered && (
+            <div className="answer-feedback">
+              <p className={checkAnswer() ? 'correct-feedback' : 'incorrect-feedback'}>
+                {checkAnswer() ? '✓ ¡Correcto!' : '✗ Incorrecto'}
+              </p>
+              <button className="next-btn" onClick={handleNext}>
+                Siguiente Pregunta →
+              </button>
+            </div>
+          )}
         </div>
+        
         {flipped && (
-          <div className="back">
-            <h3>Answer:</h3>
-            <ol type="A">
-              <p dangerouslySetInnerHTML={{ __html: getFullAnswers() }} />
-            </ol>
+          <div className="back" onClick={() => setFlipped(false)}>
+            <h3>Respuesta Correcta:</h3>
+            <ul className="answer-list" dangerouslySetInnerHTML={{ __html: getFullAnswers() }} />
+            {mode === 'study' && (
+              <p className="swipe-hint">Desliza para continuar</p>
+            )}
           </div>
         )}
       </div>
@@ -152,7 +267,8 @@ Flashcard.propTypes = {
   options: PropTypes.object.isRequired,
   answer_official: PropTypes.string,
   answer_community: PropTypes.string,
-  onSwipe: PropTypes.func.isRequired
+  onSwipe: PropTypes.func.isRequired,
+  mode: PropTypes.oneOf(['study', 'test'])
 };
 
 export default Flashcard;
