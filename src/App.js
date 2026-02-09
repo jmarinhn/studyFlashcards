@@ -12,9 +12,15 @@ import './App.css';
 const App = () => {
   const [stage, setStage] = useState('welcome');
   const [username, setUsername] = useState('');
-  const [questions, setQuestions] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);  // Pool completo de preguntas
+  const [questions, setQuestions] = useState([]);  // Preguntas para la sesión actual
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [scoreboard, setScoreboard] = useState([]);
+  const TEST_QUESTION_COUNT = 65;  // Preguntas en el examen
+  const PASSING_SCORE = 70;  // Porcentaje para aprobar
+  const [scoreboard, setScoreboard] = useState(() => {
+    const saved = localStorage.getItem('scoreboard');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [timeLeft, setTimeLeft] = useState(3600);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
@@ -47,6 +53,7 @@ const App = () => {
           };
         });
         if (questionsArray.length > 0) {
+          setAllQuestions(questionsArray);
           setQuestions(questionsArray);
           setStage('enterName');
         } else {
@@ -74,44 +81,63 @@ const App = () => {
 
   const handleSwipe = (isCorrect) => {
     if (stage === 'study') {
-      setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);  // Esto permitirá un bucle continuo de preguntas
+      setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);
     } else if (stage === 'test') {
-      // Agregar lógica para modo prueba si es necesario
-      if (stage === 'test' && currentQuestionIndex >= 59) {
-        console.log("Test completed.");
-        setLoading(true);
-        setTimeout(() => {
-          setLoading(false);
-          setFeedbackMessage("Calculating results...");
-          setTimeout(() => {
-            onAddToLeaderboard({
-              name: username,
-              score: Math.round((correctAnswers / 60) * 100),
-              jsonName: currentFile.name
-            });
-            setStage('results');
-          }, 2000);  // Tiempo para calcular resultados
-        }, 3000);  // Tiempo para mostrar carga
+      // Actualizar contadores primero
+      const newCorrect = isCorrect ? correctAnswers + 1 : correctAnswers;
+      const newIncorrect = isCorrect ? incorrectAnswers : incorrectAnswers + 1;
+
+      if (isCorrect) {
+        setCorrectAnswers(newCorrect);
+        setFeedbackMessage('✓ Correct!');
       } else {
-        setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);
-        if (isCorrect) {
-          setCorrectAnswers(correctAnswers + 1);
-          setFeedbackMessage('Correct! Well done.');
-        } else {
-          setIncorrectAnswers(incorrectAnswers + 1);
-          setFeedbackMessage('Oops! That’s not right.');
-        }
+        setIncorrectAnswers(newIncorrect);
+        setFeedbackMessage('✗ Incorrect');
       }
-    } else if (stage === 'menu' && selectedMode === 'test') {
-      let shuffledQuestions = shuffleArray([...questions]);
-      setQuestions(shuffledQuestions.slice(0, 60));
-      setCurrentQuestionIndex(0);
-      setCorrectAnswers(0);
-      setIncorrectAnswers(0);
-      setTimeLeft(3600);
-      setStage('test');
-      setTimerActive(true);
+
+      // Verificar si es la última pregunta
+      if (currentQuestionIndex >= questions.length - 1) {
+        console.log("Test completed.");
+        setTimerActive(false);
+        const finalScore = Math.round((newCorrect / questions.length) * 100);
+        const passed = finalScore >= PASSING_SCORE;
+        setFeedbackMessage(passed ? `🎉 PASSED! Score: ${finalScore}%` : `❌ FAILED. Score: ${finalScore}%`);
+        setStage('results');
+      } else {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
     }
+  };
+
+  // Iniciar modo test con 60 preguntas aleatorias
+  const startTestMode = () => {
+    const shuffled = shuffleArray([...allQuestions]);
+    const testQuestions = shuffled.slice(0, TEST_QUESTION_COUNT);
+    setQuestions(testQuestions);
+    setCurrentQuestionIndex(0);
+    setCorrectAnswers(0);
+    setIncorrectAnswers(0);
+    setTimeLeft(3600);
+    setFeedbackMessage('');
+    setStage('test');
+    setTimerActive(true);
+    console.log(`Test started with ${testQuestions.length} questions`);
+  };
+
+  // Volver al modo estudio con cantidad seleccionada
+  const startStudyMode = (count = null) => {
+    let studyQuestions;
+    if (count && count < allQuestions.length) {
+      const shuffled = shuffleArray([...allQuestions]);
+      studyQuestions = shuffled.slice(0, count);
+    } else {
+      studyQuestions = [...allQuestions];
+    }
+    setQuestions(studyQuestions);
+    setCurrentQuestionIndex(0);
+    setTimerActive(false);
+    setStage('study');
+    console.log(`Study mode started with ${studyQuestions.length} questions`);
   };
 
   const averageTimePerQuestion = correctAnswers > 0 ? Math.floor((3600 - timeLeft) / correctAnswers) : 0;
@@ -200,10 +226,26 @@ const App = () => {
           <>
             <h1>flashcardMatch</h1>
             <h2>Welcome, {username}!</h2>
-            <p>Total questions detected: {questions && questions.length}</p>
-            <button className='studyButton' onClick={() => { setStage('study'); setTimerActive(false); }}>Study</button>
-            <button className='quizButton' onClick={() => { setStage('test'); setTimerActive(true); }}>Test</button>
-            <button onClick={() => setStage('results')}>Leaderboard</button>
+            <p>Total questions available: {allQuestions.length}</p>
+
+            <div className="mode-section">
+              <h3>📚 Study Mode</h3>
+              <div className="button-group">
+                <button onClick={() => startStudyMode(25)}>25 questions</button>
+                <button onClick={() => startStudyMode(50)}>50 questions</button>
+                <button onClick={() => startStudyMode(100)}>100 questions</button>
+                <button onClick={() => startStudyMode()}>All ({allQuestions.length})</button>
+              </div>
+            </div>
+
+            <div className="mode-section">
+              <h3>📝 Test Mode</h3>
+              <button className='quizButton' onClick={startTestMode}>
+                Start Exam ({TEST_QUESTION_COUNT} random questions, {PASSING_SCORE}% to pass)
+              </button>
+            </div>
+
+            <button onClick={() => setStage('results')}>🏆 Leaderboard</button>
           </>
         );
       case 'study':

@@ -13,7 +13,7 @@
   width: 100%;
   margin-bottom: 20px;
   font-size: 2em;
-  font-family:system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
   font-weight: bold;
 }
 
@@ -26,8 +26,9 @@
 }
 
 .retry-mode {
-  background-color: salmon; 
+  background-color: salmon;
 }
+
 .error-indicator {
   position: absolute;
   top: 5px;
@@ -68,15 +69,54 @@
 
 .timer {
   font-size: 2em;
-  font-family:'Courier New', Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
   font-weight: bolder;
   color: red;
   text-align: center;
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
+.mode-section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.mode-section h3 {
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.button-group button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button-group button:hover {
+  background-color: #45a049;
+}
