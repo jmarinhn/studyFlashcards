@@ -98,16 +98,14 @@ const App = () => {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
     } else if (stage === 'test') {
-      // Actualizar contadores primero
+      // Actualizar contadores (sin feedback inmediato)
       const newCorrect = isCorrect ? correctAnswers + 1 : correctAnswers;
       const newIncorrect = isCorrect ? incorrectAnswers : incorrectAnswers + 1;
 
       if (isCorrect) {
         setCorrectAnswers(newCorrect);
-        setFeedbackMessage('✓ Correct!');
       } else {
         setIncorrectAnswers(newIncorrect);
-        setFeedbackMessage('✗ Incorrect');
       }
 
       // Verificar si es la última pregunta
@@ -116,6 +114,13 @@ const App = () => {
         setTimerActive(false);
         const finalScore = Math.round((newCorrect / questions.length) * 100);
         const passed = finalScore >= PASSING_SCORE;
+
+        // Guardar en leaderboard
+        onAddToLeaderboard({
+          name: username,
+          score: finalScore
+        });
+
         setFeedbackMessage(passed ? `🎉 PASSED! Score: ${finalScore}%` : `❌ FAILED. Score: ${finalScore}%`);
         setStage('results');
       } else {

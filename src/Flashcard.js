@@ -227,24 +227,23 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
                   className={optionClass}
                   onClick={(e) => handleOptionClick(e, option.letter)}
                 >
-                  <span className="option-letter">{String.fromCharCode(65 + index)}</span>
                   <span className="option-text">{option.text}</span>
                 </li>
               );
             })}
           </ol>
 
-          {mode === 'test' && !hasAnswered && (
+          {mode === 'test' && (
             <button
-              className="submit-btn"
-              onClick={handleSubmit}
+              className="next-btn"
+              onClick={handleNext}
               disabled={selectedLetters.length === 0}
             >
-              Verificar Respuesta
+              Siguiente Pregunta →
             </button>
           )}
 
-          {hasAnswered && (
+          {mode === 'study' && hasAnswered && (
             <div className="answer-feedback">
               <p className={checkAnswer() ? 'correct-feedback' : 'incorrect-feedback'}>
                 {checkAnswer() ? '✓ ¡Correcto!' : '✗ Incorrecto'}
