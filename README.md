@@ -1,31 +1,45 @@
-# Create React App
+# Study Flashcards
 
-This directory is a brief example of a [Create React App](https://github.com/facebook/create-react-app) site that can be deployed to Vercel with zero configuration.
+A flashcard application for studying multiple-choice questions. Supports custom JSON files with questions and answers.
 
-## Deploy Your Own
+## Features
 
-Deploy your own Create React App project with Vercel.
+- **Study Mode**: Freely navigate through questions, flip cards to reveal answers
+- **Test Mode**: Grading system with answer validation
+- **Multiple Selection Support**: Questions with one or multiple correct answers
+- **Shuffled Options**: Options are randomly shuffled while maintaining correct validation
+- **Leaderboard**: Score tracking
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/create-react-app&template=create-react-app)
+## JSON Format
 
-_Live Example: https://create-react-template.vercel.app/_
+```json
+{
+  "1": {
+    "question": "What is the capital of France?",
+    "options": {
+      "A": "Madrid",
+      "B": "Paris",
+      "C": "London",
+      "D": "Rome"
+    },
+    "answer_official": "B",
+    "answer_community": "B"
+  }
+}
+```
+
+For multiple selection questions, use multiple letters: `"answer_official": "AC"`
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
 
-Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes. You may also see any lint errors in the console.
+Runs the app in development mode at [http://localhost:3000](http://localhost:3000)
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode. See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.
-
-It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified and the filenames include the hashes.
+Builds the app for production to the `build` folder
