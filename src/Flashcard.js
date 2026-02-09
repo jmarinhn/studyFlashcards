@@ -95,6 +95,7 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
   const [flipped, setFlipped] = useState(false);
   const [selectedLetters, setSelectedLetters] = useState([]);
   const [hasAnswered, setHasAnswered] = useState(false);
+  const [swipeDirection, setSwipeDirection] = useState(null);  // 'left' or 'right' for animation
 
   // Baraja las opciones solo cuando cambian las options
   const shuffledOptions = useMemo(() => shuffleOptions(options), [options]);
@@ -104,6 +105,7 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
     setFlipped(false);
     setSelectedLetters([]);
     setHasAnswered(false);
+    setSwipeDirection(null);
   }, [question, options]);
 
   // Obtiene las letras de la respuesta correcta
@@ -116,22 +118,22 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
   const checkAnswer = () => {
     const correctLetters = getCorrectLetters();
     if (selectedLetters.length !== correctLetters.length) return false;
-    
+
     const sortedSelected = [...selectedLetters].sort();
     const sortedCorrect = [...correctLetters].sort();
-    
+
     return sortedSelected.every((letter, index) => letter === sortedCorrect[index]);
   };
 
   // Maneja click en una opción
   const handleOptionClick = (e, letter) => {
     e.stopPropagation(); // Evita que el click voltee la tarjeta
-    
+
     if (hasAnswered) return; // No permitir cambios después de responder
-    
+
     const correctLetters = getCorrectLetters();
     const isMultipleChoice = correctLetters.length > 1;
-    
+
     if (isMultipleChoice) {
       // Para preguntas de múltiple selección
       setSelectedLetters(prev => {
@@ -151,7 +153,7 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
   const handleSubmit = (e) => {
     e.stopPropagation();
     if (selectedLetters.length === 0) return;
-    
+
     setHasAnswered(true);
     setFlipped(true);
   };
@@ -175,12 +177,18 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
       if (mode === 'study') {
-        onSwipe(false);
+        setSwipeDirection('left');
+        setTimeout(() => {
+          onSwipe(false);
+        }, 200);
       }
     },
     onSwipedRight: () => {
       if (mode === 'study') {
-        onSwipe(true);
+        setSwipeDirection('right');
+        setTimeout(() => {
+          onSwipe(true);
+        }, 200);
       }
     },
     trackMouse: true
@@ -194,7 +202,7 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
   const isMultipleChoice = correctLetters.length > 1;
 
   return (
-    <div {...swipeHandlers} className={`flashcard ${hasAnswered ? 'answered' : ''}`} tabIndex={0}>
+    <div {...swipeHandlers} className={`flashcard ${hasAnswered ? 'answered' : ''} ${swipeDirection ? 'swipe-' + swipeDirection : ''}`} tabIndex={0}>
       <div className={`card ${flipped ? 'flipped' : ''}`}>
         <div className="front" onClick={() => mode === 'study' && setFlipped(f => !f)}>
           <h3 className="question">{question}</h3>
@@ -205,16 +213,16 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
             {shuffledOptions.map((option, index) => {
               const isSelected = selectedLetters.includes(option.letter);
               const isCorrect = correctLetters.includes(option.letter);
-              
+
               let optionClass = 'option';
               if (isSelected) optionClass += ' selected';
               if (hasAnswered) {
                 if (isCorrect) optionClass += ' correct';
                 else if (isSelected && !isCorrect) optionClass += ' incorrect';
               }
-              
+
               return (
-                <li 
+                <li
                   key={option.letter}
                   className={optionClass}
                   onClick={(e) => handleOptionClick(e, option.letter)}
@@ -225,9 +233,9 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
               );
             })}
           </ol>
-          
+
           {mode === 'test' && !hasAnswered && (
-            <button 
+            <button
               className="submit-btn"
               onClick={handleSubmit}
               disabled={selectedLetters.length === 0}
@@ -235,7 +243,7 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
               Verificar Respuesta
             </button>
           )}
-          
+
           {hasAnswered && (
             <div className="answer-feedback">
               <p className={checkAnswer() ? 'correct-feedback' : 'incorrect-feedback'}>
@@ -247,7 +255,7 @@ const Flashcard = ({ question, options, answer_official, answer_community, onSwi
             </div>
           )}
         </div>
-        
+
         {flipped && (
           <div className="back" onClick={() => setFlipped(false)}>
             <h3>Respuesta Correcta:</h3>

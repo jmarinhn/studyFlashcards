@@ -120,3 +120,166 @@
 .button-group button:hover {
   background-color: #45a049;
 }
+
+/* Study mode header */
+.study-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  padding: 10px 20px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.study-progress {
+  font-weight: bold;
+}
+
+.study-stats {
+  display: flex;
+  gap: 15px;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.correct-count {
+  color: #4CAF50;
+}
+
+.incorrect-count {
+  color: #f44336;
+}
+
+/* Swipe instructions */
+.swipe-instructions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.swipe-left {
+  color: #f44336;
+}
+
+.swipe-right {
+  color: #4CAF50;
+}
+
+/* Mobile responsive para study header */
+@media (max-width: 480px) {
+  .study-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .study-header .exitButton {
+    padding: 6px 12px;
+    font-size: 0.85em;
+  }
+
+  .study-progress {
+    font-size: 0.9em;
+  }
+
+  .study-stats {
+    font-size: 0.95em;
+    gap: 10px;
+  }
+
+  .swipe-instructions {
+    font-size: 0.8em;
+    margin-top: 10px;
+  }
+}
+
+/* Study results */
+.study-results {
+  text-align: center;
+  padding: 40px;
+  max-width: 500px;
+}
+
+.study-results h2 {
+  margin-bottom: 20px;
+}
+
+.results-stats {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.results-stats p {
+  margin: 10px 0;
+  font-size: 1.1em;
+}
+
+.review-section {
+  margin: 20px 0;
+}
+
+.review-btn {
+  background-color: #ff9800;
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.review-btn:hover {
+  background-color: #f57c00;
+}
+
+/* Enter name screen */
+.enter-name-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.enter-name-container h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.enter-name-container h2 {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.name-input {
+  font-size: 1.5em;
+  padding: 15px 30px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.hint {
+  color: #999;
+  margin-top: 15px;
+  font-size: 0.9em;
+}

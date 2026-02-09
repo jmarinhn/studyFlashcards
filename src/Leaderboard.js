@@ -1,50 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
+import './Leaderboard.css';
 
-const Leaderboard = ({ data, userTime, onAddToLeaderboard }) => {
-  const [nameToAdd, setNameToAdd] = useState('');
-  const [allowAdd, setAllowAdd] = useState(false);
-
-  // Suponiendo que data ya está ordenada por score de menor a mayor
-  const worstTime = data.length > 0 ? data[data.length - 1].score : null;
-
-  // Verificar si el usuario puede ser añadido
-  const checkIfCanAdd = () => {
-    if (userTime < worstTime || data.length < 10) {
-      setAllowAdd(true);
-    }
-  };
-
-  // Manejar la adición del usuario a la leaderboard
-  const handleAddUser = () => {
-    if (nameToAdd && allowAdd) {
-      onAddToLeaderboard({ name: nameToAdd, score: userTime });
-      setNameToAdd('');
-      setAllowAdd(false);
-    } else {
-      alert('Your time is not good enough to enter the leaderboard!');
-    }
-  };
-
+const Leaderboard = ({ data, onBack }) => {
   return (
-    <div>
-      <h2>Leaderboard</h2>
-      <ol>
-        {data.map((entry, index) => (
-          <li key={index}>{entry.name}: {entry.score}</li>
-        ))}
-      </ol>
-      {allowAdd && (
-        <div>
-          <input
-            type="text"
-            value={nameToAdd}
-            onChange={(e) => setNameToAdd(e.target.value)}
-            placeholder="Enter your name"
-          />
-          <button onClick={handleAddUser}>Add to Leaderboard</button>
+    <div className="leaderboard-container">
+      <h2>🏆 Leaderboard</h2>
+
+      {data.length === 0 ? (
+        <div className="no-data">
+          <p>No scores yet!</p>
+          <p>Complete a test to appear here.</p>
+        </div>
+      ) : (
+        <div className="leaderboard-table">
+          <div className="table-header">
+            <span className="rank">#</span>
+            <span className="name">Name</span>
+            <span className="score">Score</span>
+          </div>
+          {data.map((entry, index) => (
+            <div key={index} className={`table-row ${index < 3 ? 'top-' + (index + 1) : ''}`}>
+              <span className="rank">
+                {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+              </span>
+              <span className="name">{entry.name}</span>
+              <span className="score">{entry.score}%</span>
+            </div>
+          ))}
         </div>
       )}
-      <button onClick={checkIfCanAdd}>Check if you can be added</button>
+
+      <button className="back-btn" onClick={onBack}>
+        ← Back to Menu
+      </button>
     </div>
   );
 };

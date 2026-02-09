@@ -28,6 +28,40 @@
   transform: rotate(15deg);
 }
 
+/* Animación swipe izquierda (incorrecto) */
+.flashcard.swipe-left {
+  animation: swipeLeft 0.3s ease-out forwards;
+}
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-150px) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+/* Animación swipe derecha (correcto) */
+.flashcard.swipe-right {
+  animation: swipeRight 0.3s ease-out forwards;
+}
+
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(150px) rotate(15deg);
+    opacity: 0;
+  }
+}
+
 /* Estilos para el contenedor giratorio */
 .card {
   width: 100%;
@@ -326,4 +360,72 @@ p {
   margin-bottom: 10px;
   border-radius: 8px;
   font-weight: bold;
+}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 480px) {
+  .flashcard {
+    min-width: 95vw;
+    min-height: auto;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .front,
+  .back {
+    padding: 15px;
+  }
+
+  .question {
+    font-size: 1em !important;
+    line-height: 1.4;
+    margin-bottom: 15px;
+  }
+
+  .options-list {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .option {
+    padding: 10px 12px;
+    margin: 6px 0;
+    font-size: 0.9em;
+    border-radius: 6px;
+  }
+
+  .option-letter {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8em;
+    margin-right: 10px;
+  }
+
+  .option-text {
+    font-size: 0.9em;
+  }
+
+  .multiple-choice-hint {
+    font-size: 0.8em;
+    margin-bottom: 10px;
+  }
+
+  .submit-btn,
+  .next-btn {
+    padding: 10px 20px;
+    font-size: 0.9em;
+  }
+}
+
+/* Tablets y pantallas medianas */
+@media (min-width: 481px) and (max-width: 768px) {
+  .flashcard {
+    min-width: 90vw;
+    max-width: 600px;
+  }
+
+  .question {
+    font-size: 1.1em !important;
+  }
 }

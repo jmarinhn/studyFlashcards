@@ -24,6 +24,8 @@ const App = () => {
   const [timeLeft, setTimeLeft] = useState(3600);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
+  const [studyIncorrect, setStudyIncorrect] = useState([]);  // Preguntas incorrectas en estudio
+  const [studyCorrect, setStudyCorrect] = useState(0);  // Correctas en estudio
   const [timerActive, setTimerActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState('');
@@ -81,7 +83,20 @@ const App = () => {
 
   const handleSwipe = (isCorrect) => {
     if (stage === 'study') {
-      setCurrentQuestionIndex((currentQuestionIndex + 1) % questions.length);
+      // Tracking en modo estudio
+      if (isCorrect) {
+        setStudyCorrect(prev => prev + 1);
+      } else {
+        // Guardar la pregunta incorrecta para repaso
+        setStudyIncorrect(prev => [...prev, questions[currentQuestionIndex]]);
+      }
+
+      // Verificar si es la última pregunta
+      if (currentQuestionIndex >= questions.length - 1) {
+        setStage('studyResults');
+      } else {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
     } else if (stage === 'test') {
       // Actualizar contadores primero
       const newCorrect = isCorrect ? correctAnswers + 1 : correctAnswers;
@@ -135,9 +150,23 @@ const App = () => {
     }
     setQuestions(studyQuestions);
     setCurrentQuestionIndex(0);
+    setStudyCorrect(0);
+    setStudyIncorrect([]);
     setTimerActive(false);
     setStage('study');
     console.log(`Study mode started with ${studyQuestions.length} questions`);
+  };
+
+  // Repasar solo las incorrectas
+  const reviewIncorrect = () => {
+    if (studyIncorrect.length > 0) {
+      setQuestions([...studyIncorrect]);
+      setCurrentQuestionIndex(0);
+      setStudyCorrect(0);
+      setStudyIncorrect([]);
+      setStage('study');
+      console.log(`Reviewing ${studyIncorrect.length} incorrect questions`);
+    }
   };
 
   const averageTimePerQuestion = correctAnswers > 0 ? Math.floor((3600 - timeLeft) / correctAnswers) : 0;
@@ -161,7 +190,16 @@ const App = () => {
   const renderStudyMode = () => {
     return (
       <>
-        {renderExitButton()}
+        <div className="study-header">
+          <button className="exitButton" onClick={() => setStage('menu')}>← Menu</button>
+          <div className="study-progress">
+            Pregunta {currentQuestionIndex + 1} de {questions.length}
+          </div>
+          <div className="study-stats">
+            <span className="correct-count">✓ {studyCorrect}</span>
+            <span className="incorrect-count">✗ {studyIncorrect.length}</span>
+          </div>
+        </div>
         {questions.length > 0 ? (
           <Flashcard
             question={questions[currentQuestionIndex].question}
@@ -174,6 +212,10 @@ const App = () => {
         ) : (
           <div>No questions available</div>
         )}
+        <div className="swipe-instructions">
+          <span className="swipe-left">← Swipe left: Incorrect</span>
+          <span className="swipe-right">Swipe right: Correct →</span>
+        </div>
       </>
     );
   };
@@ -213,12 +255,18 @@ const App = () => {
       case 'enterName':
         console.log("File accepted, waiting for name...");
         return (
-          <input
-            type="text"
-            placeholder="Enter your name"
-            onKeyDown={handleNameSubmit}
-            autoFocus
-          />
+          <div className="enter-name-container">
+            <h1>flashcardMatch</h1>
+            <h2>👤 Enter Your Name</h2>
+            <input
+              className="name-input"
+              type="text"
+              placeholder="Your name..."
+              onKeyDown={handleNameSubmit}
+              autoFocus
+            />
+            <p className="hint">Press Enter to continue</p>
+          </div>
         );
       case 'menu':
         console.log("User has entered the room. Showing main menu...");
@@ -275,7 +323,36 @@ const App = () => {
         }
       case 'results':
         console.log("Results are in! Let's see how you did...");
-        return <Leaderboard data={scoreboard} userTime={averageTimePerQuestion} onAddToLeaderboard={onAddToLeaderboard} />
+        return <Leaderboard data={scoreboard} onBack={() => setStage('menu')} />
+      case 'studyResults':
+        const totalStudied = studyCorrect + studyIncorrect.length;
+        const accuracy = totalStudied > 0 ? Math.round((studyCorrect / totalStudied) * 100) : 0;
+        return (
+          <div className="study-results">
+            <h2>📊 Study Session Complete!</h2>
+            <div className="results-stats">
+              <p><strong>Questions studied:</strong> {totalStudied}</p>
+              <p className="correct-count"><strong>Correct:</strong> {studyCorrect}</p>
+              <p className="incorrect-count"><strong>Incorrect:</strong> {studyIncorrect.length}</p>
+              <p><strong>Accuracy:</strong> {accuracy}%</p>
+            </div>
+
+            {studyIncorrect.length > 0 && (
+              <div className="review-section">
+                <p>You got {studyIncorrect.length} questions wrong.</p>
+                <button className="review-btn" onClick={reviewIncorrect}>
+                  🔄 Review Incorrect ({studyIncorrect.length})
+                </button>
+              </div>
+            )}
+
+            <div className="button-group">
+              <button onClick={() => startStudyMode(25)}>Study 25 more</button>
+              <button onClick={() => startStudyMode(50)}>Study 50 more</button>
+              <button onClick={() => setStage('menu')}>Back to Menu</button>
+            </div>
+          </div>
+        );
       default:
         console.log('syntax error!')
         return <div>Unknown stage</div>;
