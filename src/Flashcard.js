@@ -91,21 +91,37 @@ function shuffleOptions(options) {
   return entries;
 }
 
-const Flashcard = ({ question, options, answer_official, answer_community, onSwipe, mode = 'study' }) => {
+const Flashcard = ({ question, options, answer_official, answer_community, onSwipe, mode, invertSwipe = false }) => {
   const [flipped, setFlipped] = useState(false);
   const [selectedLetters, setSelectedLetters] = useState([]);
   const [hasAnswered, setHasAnswered] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState(null);  // 'left' or 'right' for animation
 
   // Baraja las opciones solo cuando cambian las options
   const shuffledOptions = useMemo(() => shuffleOptions(options), [options]);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (!hasAnswered) {
+        // If invertSwipe is true: left = correct, otherwise: left = incorrect
+        onSwipe(invertSwipe ? true : false);
+        setHasAnswered(true);
+      }
+    },
+    onSwipedRight: () => {
+      if (!hasAnswered) {
+        // If invertSwipe is true: right = incorrect, otherwise: right = correct
+        onSwipe(invertSwipe ? false : true);
+        setHasAnswered(true);
+      }
+    },
+    trackMouse: true,
+  });
 
   // Reset estado cuando cambia la pregunta
   useEffect(() => {
     setFlipped(false);
     setSelectedLetters([]);
     setHasAnswered(false);
-    setSwipeDirection(null);
   }, [question, options]);
 
   // Obtiene las letras de la respuesta correcta

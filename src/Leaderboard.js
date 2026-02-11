@@ -16,6 +16,7 @@ const Leaderboard = ({ data, onBack }) => {
           <div className="table-header">
             <span className="rank">#</span>
             <span className="name">Name</span>
+            <span className="question-set">Question Set</span>
             <span className="score">Score</span>
           </div>
           {data.map((entry, index) => (
@@ -24,6 +25,7 @@ const Leaderboard = ({ data, onBack }) => {
                 {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
               </span>
               <span className="name">{entry.name}</span>
+              <span className="question-set">{entry.questionSet || 'N/A'}</span>
               <span className="score">{entry.score}%</span>
             </div>
           ))}

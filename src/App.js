@@ -3,24 +3,28 @@ import { useSwipeable } from 'react-swipeable';
 import { ThreeDots } from 'react-loader-spinner';
 import FingerprintJS from 'fingerprintjs2';
 import Cookies from 'js-cookie';
+import { onAuthStateChanged, signOut } from "firebase/auth"; // Firebase auth listener
+import { auth } from './firebase';
 import { useQuestions, shuffleArray } from './useQuestions';
 import FileDropzone from './FileDropzone';
 import Flashcard from './Flashcard';
 import Leaderboard from './Leaderboard';
+import Login from './Login'; // Import Login component
+import QuestionLibrary from './QuestionLibrary'; // Import Question Library
+import Settings from './Settings'; // Import Settings
 import './App.css';
 
 const App = () => {
+  const [user, setUser] = useState(null); // Track authenticated user
   const [stage, setStage] = useState('welcome');
   const [username, setUsername] = useState('');
+  const [questionSetName, setQuestionSetName] = useState(''); // Track current question set
   const [allQuestions, setAllQuestions] = useState([]);  // Pool completo de preguntas
   const [questions, setQuestions] = useState([]);  // Preguntas para la sesión actual
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const TEST_QUESTION_COUNT = 65;  // Preguntas en el examen
   const PASSING_SCORE = 70;  // Porcentaje para aprobar
-  const [scoreboard, setScoreboard] = useState(() => {
-    const saved = localStorage.getItem('scoreboard');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [scoreboard, setScoreboard] = useState([]); // Load from Firestore, not localStorage
   const [timeLeft, setTimeLeft] = useState(3600);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState(0);
@@ -30,14 +34,62 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
+  // Settings state with localStorage persistence
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem('flashcardSettings');
+    return saved ? JSON.parse(saved) : {
+      darkMode: false,
+      invertSwipe: false
+    };
+  });
+
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        if (currentUser.email.endsWith('@lynx-labs.com')) {
+          setUser(currentUser);
+          setUsername(currentUser.displayName || currentUser.email.split('@')[0]);
+          // Go to library after login where users can browse or upload JSONs
+          setStage(prev => (prev === 'welcome' || prev === 'login') ? 'library' : prev);
+        } else {
+          signOut(auth);
+          setUser(null);
+          setStage('login'); // Redirect to login if domain invalid
+        }
+      } else {
+        setUser(null);
+        // Allow welcome screen to play out, then go to login
+        if (stage !== 'welcome') {
+          setStage('login');
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [stage]);
+
+  // Persist settings to localStorage and apply dark mode
+  useEffect(() => {
+    localStorage.setItem('flashcardSettings', JSON.stringify(settings));
+
+    // Apply dark mode class to body
+    if (settings.darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [settings]);
 
   useEffect(() => {
     if (stage === 'welcome') {
-      setTimeout(() => {
-        setStage('upload');
+      const timer = setTimeout(() => {
+        // After welcome, check if user is already logged in
+        setStage(prev => user ? 'library' : 'login');
       }, 5000);
+      return () => clearTimeout(timer);
     }
-  }, [stage]);
+  }, [stage, user]);
 
   const handleFileAccepted = (file) => {
     const reader = new FileReader();
@@ -57,7 +109,12 @@ const App = () => {
         if (questionsArray.length > 0) {
           setAllQuestions(questionsArray);
           setQuestions(questionsArray);
-          setStage('enterName');
+          // If we already have a username (from Google Auth), skip the name entry
+          if (username) {
+            setStage('menu');
+          } else {
+            setStage('enterName');
+          }
         } else {
           setFeedbackMessage("No questions found in JSON");
           setQuestions([]);
@@ -72,6 +129,28 @@ const App = () => {
       setQuestions([]);
     };
     reader.readAsText(file);
+  };
+
+  const handleLibraryJSONSelect = (jsonData, name) => {
+    const questionsArray = Object.keys(jsonData).map((key) => {
+      const item = jsonData[key];
+      return {
+        id: key,
+        question: item.question,
+        options: item.options,
+        answer_official: item.answer_official,
+        answer_community: item.answer_community
+      };
+    });
+    if (questionsArray.length > 0) {
+      setAllQuestions(questionsArray);
+      setQuestions(questionsArray);
+      setQuestionSetName(name); // Save the question set name
+      setStage('menu');
+      console.log(`Loaded ${questionsArray.length} questions from library: ${name}`);
+    } else {
+      setFeedbackMessage("No questions found in selected JSON");
+    }
   };
 
   const handleNameSubmit = (event) => {
@@ -176,12 +255,24 @@ const App = () => {
 
   const averageTimePerQuestion = correctAnswers > 0 ? Math.floor((3600 - timeLeft) / correctAnswers) : 0;
 
-  // Función onAddToLeaderboard actualizada para usar localStorage
-  const onAddToLeaderboard = (newEntry) => {
-    const existingEntries = JSON.parse(localStorage.getItem('scoreboard') || '[]');
-    const updatedScoreboard = [...existingEntries, newEntry].sort((a, b) => b.score - a.score).slice(0, 10);
-    localStorage.setItem('scoreboard', JSON.stringify(updatedScoreboard));
-    setScoreboard(updatedScoreboard);
+  // Función onAddToLeaderboard actualizada para usar Firestore
+  const onAddToLeaderboard = async (newEntry) => {
+    try {
+      console.log('Attempting to save score:', newEntry);
+      const docRef = await addDoc(collection(db, 'scores'), {
+        name: newEntry.name,
+        score: newEntry.score,
+        questionSet: questionSetName || 'Unknown Question Set',
+        timestamp: new Date(),
+        userId: user?.uid || 'anonymous'
+      });
+      console.log('Score saved to Firestore with ID:', docRef.id);
+    } catch (error) {
+      console.error('Error saving score to Firestore:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      alert(`Failed to save score: ${error.message}. Check console for details.`);
+    }
   };
 
   // Agregar un botón para salir de la sesión actual y volver al menú
@@ -190,6 +281,11 @@ const App = () => {
       Exit Session
     </button>
   );
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setStage('login');
+  };
 
   // Modificar la renderización en los modos de estudio y prueba para incluir el botón de salida
   const renderStudyMode = () => {
@@ -213,13 +309,18 @@ const App = () => {
             answer_community={questions[currentQuestionIndex].answer_community}
             onSwipe={handleSwipe}
             mode="study"
+            invertSwipe={settings.invertSwipe}
           />
         ) : (
           <div>No questions available</div>
         )}
         <div className="swipe-instructions">
-          <span className="swipe-left">← Swipe left: Incorrect</span>
-          <span className="swipe-right">Swipe right: Correct →</span>
+          <span className="swipe-left">
+            ← Swipe left: {settings.invertSwipe ? 'Correct' : 'Incorrect'}
+          </span>
+          <span className="swipe-right">
+            Swipe right: {settings.invertSwipe ? 'Incorrect' : 'Correct'} →
+          </span>
         </div>
       </>
     );
@@ -231,7 +332,6 @@ const App = () => {
         <div className="test-header">
           <div>Tiempo restante: {Math.floor(timeLeft / 60)}:{('0' + timeLeft % 60).slice(-2)}</div>
           <div>Pregunta {currentQuestionIndex + 1} de {questions.length}</div>
-          <div>✓ {correctAnswers} | ✗ {incorrectAnswers}</div>
         </div>
         {feedbackMessage && <div className="feedback">{feedbackMessage}</div>}
         {questions.length > 0 ? (
@@ -242,6 +342,7 @@ const App = () => {
             answer_community={questions[currentQuestionIndex].answer_community}
             onSwipe={handleSwipe}
             mode="test"
+            invertSwipe={settings.invertSwipe}
           />
         ) : (
           <div>No questions available</div>
@@ -255,6 +356,8 @@ const App = () => {
     switch (stage) {
       case 'welcome':
         return <h1 className="fade-in-out">flashcardMatch</h1>;
+      case 'login':
+        return <Login onLoginSuccess={(u) => { setUser(u); setStage('library'); }} />;
       case 'upload':
         return <FileDropzone onFileAccepted={handleFileAccepted} />;
       case 'enterName':
@@ -278,29 +381,64 @@ const App = () => {
         return (
           <>
             <h1>flashcardMatch</h1>
-            <h2>Welcome, {username}!</h2>
-            <p>Total questions available: {allQuestions.length}</p>
-
-            <div className="mode-section">
-              <h3>📚 Study Mode</h3>
-              <div className="button-group">
-                <button onClick={() => startStudyMode(25)}>25 questions</button>
-                <button onClick={() => startStudyMode(50)}>50 questions</button>
-                <button onClick={() => startStudyMode(100)}>100 questions</button>
-                <button onClick={() => startStudyMode()}>All ({allQuestions.length})</button>
-              </div>
+            <div className="menu-header">
+              <h2>Welcome, {username}!</h2>
+              <button onClick={handleLogout} className="logout-button" style={{ marginLeft: '10px' }}>Logout</button>
             </div>
 
-            <div className="mode-section">
-              <h3>📝 Test Mode</h3>
-              <button className='quizButton' onClick={startTestMode}>
-                Start Exam ({TEST_QUESTION_COUNT} random questions, {PASSING_SCORE}% to pass)
+            {allQuestions.length === 0 ? (
+              <div className="no-questions-message">
+                <p>📚 No questions loaded yet!</p>
+                <p>Go to the Question Library to select or upload a question set.</p>
+              </div>
+            ) : (
+              <>
+                <p>Total questions available: {allQuestions.length}</p>
+
+                <div className="mode-section">
+                  <h3>📚 Study Mode</h3>
+                  <div className="button-group">
+                    <button onClick={() => startStudyMode(25)}>25 questions</button>
+                    <button onClick={() => startStudyMode(50)}>50 questions</button>
+                    <button onClick={() => startStudyMode(100)}>100 questions</button>
+                    <button onClick={() => startStudyMode()}>All ({allQuestions.length})</button>
+                  </div>
+                </div>
+
+                <div className="mode-section">
+                  <h3>📝 Test Mode</h3>
+                  <button className='quizButton' onClick={startTestMode}>
+                    Start Exam ({TEST_QUESTION_COUNT} random questions, {PASSING_SCORE}% to pass)
+                  </button>
+                </div>
+              </>
+            )}
+
+            <div className="menu-actions">
+              <button onClick={() => setStage('library')} className="menu-action-btn library-btn">
+                📚 Question Library
+              </button>
+              <button onClick={() => setStage('settings')} className="menu-action-btn settings-btn">
+                ⚙️ Settings
+              </button>
+              <button onClick={() => setStage('results')} className="menu-action-btn leaderboard-btn">
+                🏆 Leaderboard
               </button>
             </div>
-
-            <button onClick={() => setStage('results')}>🏆 Leaderboard</button>
           </>
         );
+      case 'settings':
+        return <Settings
+          settings={settings}
+          onSettingsChange={setSettings}
+          onBack={() => setStage('menu')}
+        />;
+      case 'library':
+        return <QuestionLibrary
+          onSelectJSON={handleLibraryJSONSelect}
+          onBack={() => setStage('menu')}
+          user={user}
+        />;
       case 'study':
         if (questions.length > 0) {
           if (currentQuestionIndex === 0) {
