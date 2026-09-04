@@ -1,0 +1,209 @@
+.leaderboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: calc(100vh - 40px);
+  padding: 20px 16px;
+  box-sizing: border-box;
+}
+
+.leaderboard-card {
+  width: 100%;
+  max-width: 540px;
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+  border-radius: 28px;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  text-align: center;
+  animation: fadeInScale 0.4s ease;
+}
+
+.leaderboard-header {
+  margin-bottom: 24px;
+}
+
+.leaderboard-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.leaderboard-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  color: #f8fafc;
+  margin: 0 0 6px 0;
+}
+
+.leaderboard-header p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.no-leaderboard-data {
+  padding: 36px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.no-data-icon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.no-leaderboard-data p {
+  color: #e2e8f0;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.no-data-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Lista de posiciones */
+.leaderboard-list {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.leaderboard-row-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.col-rank {
+  width: 40px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+.col-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+}
+
+.col-score {
+  width: 70px;
+  text-align: right;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.score-passed {
+  color: #10b981;
+}
+
+.score-failed {
+  color: #f43f5e;
+}
+
+.col-date {
+  width: 80px;
+  text-align: right;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.rank-gold {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.12), transparent);
+}
+
+.rank-silver {
+  background: linear-gradient(90deg, rgba(203, 213, 225, 0.1), transparent);
+}
+
+.rank-bronze {
+  background: linear-gradient(90deg, rgba(217, 119, 6, 0.1), transparent);
+}
+
+.leaderboard-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.leaderboard-back-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
+}
+
+.leaderboard-clear-btn {
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #f43f5e;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-clear-btn:hover {
+  background: rgba(244, 63, 94, 0.2);
+}

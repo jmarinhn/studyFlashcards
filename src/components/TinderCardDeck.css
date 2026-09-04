@@ -1,0 +1,642 @@
+/* Contenedor principal de Tinder Card Deck */
+.tinder-deck-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: calc(100vh - 40px);
+  padding: 10px 16px;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+/* Barra superior */
+.deck-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.deck-exit-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deck-exit-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #f8fafc;
+  transform: translateX(-2px);
+}
+
+.deck-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.study-badge {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+  color: #c084fc;
+  border: 1px solid rgba(192, 132, 252, 0.3);
+}
+
+.review-badge {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(239, 68, 68, 0.25));
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.2); }
+  50% { box-shadow: 0 0 12px 2px rgba(251, 191, 36, 0.4); }
+}
+
+.deck-progress-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.deck-stats-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stat-correct {
+  color: #10b981;
+}
+
+.stat-divider {
+  color: #475569;
+}
+
+.stat-incorrect {
+  color: #f43f5e;
+}
+
+/* Viewport de la pila de cartas */
+.card-stack-viewport {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  max-height: 68vh;
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  touch-action: none;
+}
+
+/* Estilos de las tarjetas Tinder */
+.tinder-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.next-card {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.active-card {
+  z-index: 2;
+}
+
+/* Sellos de Swipe dinámicos */
+.tinder-stamp {
+  position: absolute;
+  top: 24px;
+  padding: 6px 16px;
+  border: 4px solid;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  z-index: 20;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.stamp-correct {
+  right: 24px;
+  color: #10b981;
+  border-color: #10b981;
+  transform: rotate(14deg);
+  background: rgba(16, 185, 129, 0.15);
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.stamp-incorrect {
+  left: 24px;
+  color: #f43f5e;
+  border-color: #f43f5e;
+  transform: rotate(-14deg);
+  background: rgba(244, 63, 94, 0.15);
+  text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+}
+
+/* 3D Flip Container */
+.card-inner-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-inner-flip.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* Caras de la tarjeta (Front / Back) */
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 24px;
+  padding: 22px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.front-face {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+}
+
+.preview-face {
+  filter: brightness(0.85);
+}
+
+.back-face {
+  background: linear-gradient(145deg, #132338, #091222);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 16px 36px -10px rgba(14, 165, 233, 0.25), 0 0 0 1px rgba(56, 189, 248, 0.2);
+  color: #f8fafc;
+  transform: rotateY(180deg);
+}
+
+/* Cabecera interna de la carta */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.card-category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+}
+
+.back-title {
+  color: #38bdf8;
+}
+
+.card-id {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Pregunta */
+.card-question-box {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.card-question {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #f1f5f9;
+  margin: 0;
+  text-align: left;
+}
+
+.multi-choice-tag {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #d8b4fe;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  margin-bottom: 10px;
+}
+
+/* Opciones de respuesta */
+.options-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.option-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.opt-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.opt-text {
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: #cbd5e1;
+  text-align: left;
+}
+
+/* Hint para voltear */
+.tap-to-flip-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 12px;
+  padding: 6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.flip-icon {
+  font-size: 1rem;
+}
+
+.back-hint {
+  color: #38bdf8;
+}
+
+/* Reverso de la carta: Respuesta revelada */
+.answer-reveal-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+
+.reveal-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #34d399;
+  margin-bottom: 6px;
+}
+
+.revealed-letters {
+  display: flex;
+  gap: 8px;
+}
+
+.correct-letter-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: #10b981;
+  color: #064e3b;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.correct-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.revealed-option-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 10px;
+}
+
+.rev-letter {
+  font-weight: 800;
+  color: #34d399;
+}
+
+.rev-text {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: #ecfdf5;
+  text-align: left;
+}
+
+.card-explanation {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #e2e8f0;
+  text-align: left;
+  margin-bottom: 12px;
+  max-height: 110px;
+  overflow-y: auto;
+}
+
+.card-explanation strong {
+  color: #fbbf24;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.card-explanation p {
+  margin: 0;
+}
+
+.self-evaluate-prompt {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.self-evaluate-prompt p {
+  margin: 0 0 4px 0;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.evaluate-hints {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.evaluate-hints span:first-child {
+  color: #f43f5e;
+}
+
+.evaluate-hints span:last-child {
+  color: #10b981;
+}
+
+/* Barra de controles estilo Tinder */
+.tinder-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 18px;
+  width: 100%;
+}
+
+.tinder-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tinder-btn .btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.tinder-btn .btn-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botón Incorrecta / NOPE */
+.btn-nope .btn-icon {
+  background: rgba(244, 63, 94, 0.15);
+  color: #f43f5e;
+  border: 2px solid rgba(244, 63, 94, 0.5);
+}
+
+.btn-nope .btn-label {
+  color: #f43f5e;
+}
+
+.btn-nope:hover:not(:disabled) .btn-icon {
+  background: #f43f5e;
+  color: #ffffff;
+  transform: scale(1.12);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.6);
+}
+
+/* Botón Voltear / Flip */
+.btn-flip .btn-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 2px solid rgba(56, 189, 248, 0.4);
+  font-size: 1.1rem;
+}
+
+.btn-flip .btn-label {
+  color: #38bdf8;
+}
+
+.btn-flip:hover .btn-icon {
+  background: #38bdf8;
+  color: #0f172a;
+  transform: scale(1.1) rotate(180deg);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+}
+
+/* Botón Correcta / LIKE */
+.btn-like .btn-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 2px solid rgba(16, 185, 129, 0.5);
+}
+
+.btn-like .btn-label {
+  color: #10b981;
+}
+
+.btn-like:hover:not(:disabled) .btn-icon {
+  background: #10b981;
+  color: #ffffff;
+  transform: scale(1.12);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+}
+
+.tinder-btn:active {
+  transform: scale(0.92);
+}
+
+.tinder-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Atajos de teclado */
+.keyboard-shortcuts-pill {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.keyboard-shortcuts-pill kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-family: inherit;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Responsividad en Móviles */
+@media (max-width: 480px) {
+  .tinder-deck-container {
+    padding: 6px 12px;
+  }
+
+  .card-stack-viewport {
+    height: 480px;
+  }
+
+  .card-question {
+    font-size: 1.05rem;
+  }
+
+  .tinder-controls-bar {
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .tinder-btn .btn-icon {
+    width: 54px;
+    height: 54px;
+    font-size: 1.25rem;
+  }
+
+  .btn-flip .btn-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .keyboard-shortcuts-pill {
+    display: none; /* Ocultar en dispositivos táctiles */
+  }
+}
