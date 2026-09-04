@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCorrectLetters, isAnswerCorrect } from '../utils/deckUtils';
+import { getCorrectLetters, isAnswerCorrect, normalizeOptions } from '../utils/deckUtils';
 import './TestMode.css';
 
 export default function TestMode({
@@ -17,6 +17,7 @@ export default function TestMode({
 
   const currentCard = questions[currentIndex];
   const correctLetters = getCorrectLetters(currentCard);
+  const optionsList = normalizeOptions(currentCard?.options);
   const isMultipleChoice = correctLetters.length > 1;
 
   // Restaurar selección previa si regresa o resetear al cambiar
@@ -139,7 +140,7 @@ export default function TestMode({
         <h3 className="test-question-text">{currentCard.question}</h3>
 
         <div className="test-options-list">
-          {currentCard.options.map((opt) => {
+          {optionsList.map((opt) => {
             const isSelected = selectedLetters.includes(opt.letter);
             return (
               <div

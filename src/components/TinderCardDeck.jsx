@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { getCorrectLetters } from '../utils/deckUtils';
+import { getCorrectLetters, normalizeOptions } from '../utils/deckUtils';
 import './TinderCardDeck.css';
 
 export default function TinderCardDeck({
@@ -117,6 +117,7 @@ export default function TinderCardDeck({
   }
 
   const correctLetters = getCorrectLetters(currentCard);
+  const optionsList = normalizeOptions(currentCard?.options);
 
   // Cálculo de rotación y opacidades dinámicas
   const rotateDeg = dragOffset.x * 0.08;
@@ -247,7 +248,7 @@ export default function TinderCardDeck({
               )}
 
               <div className="options-stack">
-                {currentCard.options.map((opt) => (
+                {optionsList.map((opt) => (
                   <div key={opt.letter} className="option-row">
                     <span className="opt-letter">{opt.letter}</span>
                     <span className="opt-text">{opt.text}</span>
@@ -279,7 +280,7 @@ export default function TinderCardDeck({
               </div>
 
               <div className="correct-options-list">
-                {currentCard.options
+                {optionsList
                   .filter((opt) => correctLetters.includes(opt.letter))
                   .map((opt) => (
                     <div key={opt.letter} className="revealed-option-item">

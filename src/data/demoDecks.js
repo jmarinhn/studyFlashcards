@@ -1,5 +1,7 @@
 // Mazos de demostración precargados para jugar inmediatamente
-export const DEMO_DECKS = {
+import { normalizeQuestion } from '../utils/deckUtils.js';
+
+const rawDecks = {
   aws: {
     id: 'aws',
     title: '☁️ AWS Cloud & DevOps Essentials',
@@ -145,3 +147,14 @@ export const DEMO_DECKS = {
     ]
   }
 };
+
+// Exportar mazos con preguntas normalizadas
+export const DEMO_DECKS = Object.fromEntries(
+  Object.entries(rawDecks).map(([key, deck]) => [
+    key,
+    {
+      ...deck,
+      questions: deck.questions.map((q, idx) => normalizeQuestion(q, idx)),
+    },
+  ])
+);

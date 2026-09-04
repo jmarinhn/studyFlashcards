@@ -10,6 +10,46 @@ export const shuffle = (array) => {
   return copy;
 };
 
+// Normaliza las opciones siempre a un arreglo [{ letter: 'A', text: '...' }, ...]
+export const normalizeOptions = (rawOptions) => {
+  if (!rawOptions) return [];
+  if (Array.isArray(rawOptions)) {
+    return rawOptions.map((opt, i) => {
+      if (typeof opt === 'string') {
+        return { letter: String.fromCharCode(65 + i), text: opt };
+      }
+      return {
+        letter: (opt.letter || String.fromCharCode(65 + i)).toString().toUpperCase(),
+        text: opt.text || opt.label || '',
+      };
+    });
+  }
+  if (typeof rawOptions === 'object') {
+    return Object.keys(rawOptions).map((letter) => ({
+      letter: letter.toString().toUpperCase(),
+      text: rawOptions[letter],
+    }));
+  }
+  return [];
+};
+
+// Normaliza una pregunta individual
+export const normalizeQuestion = (item, index = 0) => {
+  if (!item) return null;
+  const optionsArray = normalizeOptions(item.options);
+  const official = (item.answer_official || item.answer || '').toString().trim().toUpperCase();
+  const community = (item.answer_community || '').toString().trim().toUpperCase();
+
+  return {
+    id: item.id || `q-${index + 1}`,
+    question: item.question || item.text || 'Sin pregunta especificada',
+    options: optionsArray,
+    answer_official: official,
+    answer_community: community || official,
+    explanation: item.explanation || item.notes || '',
+  };
+};
+
 // Parsea un objeto JSON a un arreglo de preguntas normalizadas
 export const parseQuestionsJson = (jsonResult) => {
   if (!jsonResult || typeof jsonResult !== 'object') {
@@ -21,39 +61,11 @@ export const parseQuestionsJson = (jsonResult) => {
     ? jsonResult
     : Object.keys(jsonResult).map((key) => ({ id: key, ...jsonResult[key] }));
 
-  const questions = items.map((item, index) => {
-    // Normalizar opciones a arreglo de pares { letter, text }
-    let rawOptions = item.options || {};
-    let optionsArray = [];
+  const questions = items
+    .map((item, index) => normalizeQuestion(item, index))
+    .filter((q) => q && q.question && q.options.length > 0);
 
-    if (Array.isArray(rawOptions)) {
-      optionsArray = rawOptions.map((opt, i) => {
-        if (typeof opt === 'string') {
-          return { letter: String.fromCharCode(65 + i), text: opt };
-        }
-        return { letter: opt.letter || String.fromCharCode(65 + i), text: opt.text || opt.label || '' };
-      });
-    } else {
-      optionsArray = Object.keys(rawOptions).map((letter) => ({
-        letter: letter.toUpperCase(),
-        text: rawOptions[letter],
-      }));
-    }
-
-    const official = (item.answer_official || item.answer || '').toString().trim().toUpperCase();
-    const community = (item.answer_community || '').toString().trim().toUpperCase();
-
-    return {
-      id: item.id || `q-${index + 1}`,
-      question: item.question || item.text || 'Sin pregunta especificada',
-      options: optionsArray,
-      answer_official: official,
-      answer_community: community || official,
-      explanation: item.explanation || item.notes || '',
-    };
-  });
-
-  return questions.filter((q) => q.question && q.options.length > 0);
+  return questions;
 };
 
 // Obtiene las letras correctas en forma de arreglo ordenado

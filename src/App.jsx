@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DEMO_DECKS } from './data/demoDecks';
-import { shuffle, parseQuestionsJson } from './utils/deckUtils';
+import { shuffle, parseQuestionsJson, normalizeQuestion } from './utils/deckUtils';
 import TinderCardDeck from './components/TinderCardDeck';
 import StudyResults from './components/StudyResults';
 import TestMode from './components/TestMode';
@@ -68,8 +68,11 @@ export default function App() {
       pool = deck ? [...deck.questions] : [];
     }
 
+    // Normalizar cada pregunta por seguridad
+    const normalizedPool = pool.map((q, idx) => normalizeQuestion(q, idx)).filter(Boolean);
+
     // Barajar preguntas
-    let shuffled = shuffle(pool);
+    let shuffled = shuffle(normalizedPool);
     if (count && count < shuffled.length) {
       shuffled = shuffled.slice(0, count);
     }
@@ -117,8 +120,9 @@ export default function App() {
     const deck = getActiveDeck();
     if (!deck || deck.questions.length === 0) return;
 
-    // Barajar preguntas para el examen (máximo 65)
-    const testPool = shuffle([...deck.questions]).slice(0, 65);
+    // Normalizar y barajar preguntas para el examen (máximo 65)
+    const normalizedPool = deck.questions.map((q, idx) => normalizeQuestion(q, idx)).filter(Boolean);
+    const testPool = shuffle(normalizedPool).slice(0, 65);
     setCurrentQuestions(testPool);
     setStage('test');
   };
