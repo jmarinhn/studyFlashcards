@@ -10,7 +10,9 @@ export default function TestMode({
   onCompleteTest,
   onExit,
   initialTimeSeconds = 3600, // 60 minutos por defecto
-  passingScore = 70
+  passingScore = 70,
+  theme = 'dark',
+  onToggleTheme,
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedLetters, setSelectedLetters] = useState([]);
@@ -126,8 +128,19 @@ export default function TestMode({
           </span>
         </div>
 
-        <div className={`test-timer ${timeLeft < 300 ? 'timer-urgent' : ''}`}>
-          ⏱ {formatTime(timeLeft)}
+        <div className="test-top-right">
+          <div className={`test-timer ${timeLeft < 300 ? 'timer-urgent' : ''}`}>
+            ⏱ {formatTime(timeLeft)}
+          </div>
+          {onToggleTheme && (
+            <button
+              className="deck-theme-btn"
+              onClick={onToggleTheme}
+              title={`Cambiar a modo ${theme === 'dark' ? 'claro' : 'oscuro'}`}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          )}
         </div>
       </div>
 

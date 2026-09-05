@@ -16,6 +16,21 @@ export default function App() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
 
+  // Tema Claro / Oscuro
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('study_theme') || 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('study_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   // Mazos
   const [activeDeckKey, setActiveDeckKey] = useState('gcp_master');
   const [customDecks, setCustomDecks] = useState([]);
@@ -34,10 +49,16 @@ export default function App() {
   const [leaderboardData, setLeaderboardData] = useState(() => {
     try {
       const raw = JSON.parse(localStorage.getItem('study_leaderboard') || '[]');
-      return raw.map((entry) => ({
+      const migrated = raw.map((entry) => ({
         ...entry,
-        deckTitle: entry.deckTitle || 'Examen General',
+        deckTitle:
+          !entry.deckTitle || entry.deckTitle === 'Examen General' || entry.deckTitle === 'Examen Cloud'
+            ? '☁️ AWS Cloud & DevOps Essentials'
+            : entry.deckTitle,
       }));
+      // Persistir la corrección automáticamente en localStorage
+      localStorage.setItem('study_leaderboard', JSON.stringify(migrated));
+      return migrated;
     } catch {
       return [];
     }
@@ -196,34 +217,44 @@ export default function App() {
               Modo Estudio interactivo tipo Tinder con volteo 3D y repaso iterativo de errores
             </p>
 
-            {/* Perfil del Usuario */}
-            <div className="user-profile-chip">
-              {isEditingName ? (
-                <div className="name-edit-box">
-                  <input
-                    type="text"
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    placeholder="Tu nombre..."
-                    autoFocus
-                    onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
-                  />
-                  <button onClick={handleSaveName}>Guardar</button>
-                </div>
-              ) : (
-                <div
-                  className="name-display"
-                  onClick={() => {
-                    setNameInput(username);
-                    setIsEditingName(true);
-                  }}
-                  title="Clic para cambiar tu nombre"
-                >
-                  <span className="user-avatar">👤</span>
-                  <span className="user-name">{username}</span>
-                  <span className="edit-hint">✏️</span>
-                </div>
-              )}
+            {/* Controles de Cabecera: Perfil y Tema */}
+            <div className="header-controls-row">
+              <div className="user-profile-chip">
+                {isEditingName ? (
+                  <div className="name-edit-box">
+                    <input
+                      type="text"
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      placeholder="Tu nombre..."
+                      autoFocus
+                      onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
+                    />
+                    <button onClick={handleSaveName}>Guardar</button>
+                  </div>
+                ) : (
+                  <div
+                    className="name-display"
+                    onClick={() => {
+                      setNameInput(username);
+                      setIsEditingName(true);
+                    }}
+                    title="Clic para cambiar tu nombre"
+                  >
+                    <span className="user-avatar">👤</span>
+                    <span className="user-name">{username}</span>
+                    <span className="edit-hint">✏️</span>
+                  </div>
+                )}
+              </div>
+
+              <button
+                className="theme-toggle-btn"
+                onClick={toggleTheme}
+                title="Cambiar entre Modo Claro y Modo Oscuro"
+              >
+                {theme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
+              </button>
             </div>
           </header>
 
@@ -336,6 +367,8 @@ export default function App() {
           isReviewRound={isReviewRound}
           roundNumber={reviewRoundNumber}
           deckTitle={getActiveDeck()?.title}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -361,6 +394,8 @@ export default function App() {
           deckTitle={getActiveDeck()?.title}
           onCompleteTest={handleCompleteTest}
           onExit={() => setStage('menu')}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 
@@ -381,6 +416,8 @@ export default function App() {
           data={leaderboardData}
           onBack={() => setStage('menu')}
           onClear={handleClearLeaderboard}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       )}
 

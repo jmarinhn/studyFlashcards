@@ -12,6 +12,8 @@ export default function TinderCardDeck({
   isReviewRound = false,
   roundNumber = 1,
   deckTitle = '',
+  theme = 'dark',
+  onToggleTheme,
 }) {
   const [flipped, setFlipped] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -175,10 +177,21 @@ export default function TinderCardDeck({
           </span>
         </div>
 
-        <div className="deck-stats-pill">
-          <span className="stat-correct" title="Correctas">✓ {stats?.correct || 0}</span>
-          <span className="stat-divider">|</span>
-          <span className="stat-incorrect" title="A repasar">✗ {stats?.incorrect || 0}</span>
+        <div className="deck-top-right-group">
+          <div className="deck-stats-pill">
+            <span className="stat-correct" title="Correctas">✓ {stats?.correct || 0}</span>
+            <span className="stat-divider">|</span>
+            <span className="stat-incorrect" title="A repasar">✗ {stats?.incorrect || 0}</span>
+          </div>
+          {onToggleTheme && (
+            <button
+              className="deck-theme-btn"
+              onClick={onToggleTheme}
+              title={`Cambiar a modo ${theme === 'dark' ? 'claro' : 'oscuro'}`}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          )}
         </div>
       </div>
 
