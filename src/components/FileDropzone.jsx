@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { parseQuestionsJson } from '../utils/deckUtils';
+import { importDeck } from '../utils/deckSharing';
 import './FileDropzone.css';
 
 export default function FileDropzone({ onDeckLoaded, onCancel }) {
@@ -16,18 +16,8 @@ export default function FileDropzone({ onDeckLoaded, onCancel }) {
     reader.onload = (e) => {
       try {
         const json = JSON.parse(e.target.result);
-        const questions = parseQuestionsJson(json);
-
-        if (questions.length === 0) {
-          setErrorMsg('No se encontraron preguntas válidas con opciones en el archivo JSON.');
-          setIsProcessing(false);
-          return;
-        }
-
-        onDeckLoaded({
-          title: file.name.replace(/\.[^/.]+$/, ''),
-          questions,
-        });
+        onDeckLoaded(importDeck(json, file.name.replace(/\.[^/.]+$/, '')));
+        setIsProcessing(false);
       } catch (err) {
         setErrorMsg('Error al leer el archivo JSON: ' + err.message);
         setIsProcessing(false);
@@ -61,7 +51,7 @@ export default function FileDropzone({ onDeckLoaded, onCancel }) {
         <div className="dropzone-header">
           <span className="dropzone-badge">Cargar Mazo</span>
           <h3>Importar Archivo JSON</h3>
-          <p>Arrastra tu archivo con preguntas o haz clic para explorar tu equipo.</p>
+          <p>Importa tus preguntas o un mazo JSON compartido por otra persona.</p>
         </div>
 
         <div

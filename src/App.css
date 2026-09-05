@@ -483,3 +483,39 @@
     width: 100%;
   }
 }
+.deck-sharing-help {
+  color: var(--text-secondary, #94a3b8);
+  font-size: .9rem;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+.deck-notice {
+  padding: 12px 16px;
+  border: 1px solid #818cf8;
+  border-radius: 12px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.deck-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.deck-actions button {
+  background: transparent;
+  color: inherit;
+  border: 1px solid #818cf8;
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-height: 44px;
+  cursor: pointer;
+  font: inherit;
+  font-size: .8rem;
+}
+.deck-actions button:hover, .deck-actions button[aria-pressed="true"] {
+  background: #4f46e5;
+  color: white;
+}
+.deck-actions button:focus-visible { outline: 3px solid #818cf8; outline-offset: 3px; }
+.deck-actions button:disabled { opacity: .6; cursor: wait; }

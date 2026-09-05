@@ -12,7 +12,7 @@ export default defineConfig({
       manifest: {
         name: 'FlashcardMatch - Estudio & Exámenes',
         short_name: 'FlashcardMatch',
-        description: 'Modo Estudio interactivo tipo Tinder con volteo 3D y simulador de exámenes técnicos de certificación.',
+        description: 'Modo Estudio interactivo con tarjetas deslizables, volteo 3D y simulador de exámenes técnicos de certificación.',
         theme_color: '#4f46e5',
         background_color: '#0f172a',
         display: 'standalone',

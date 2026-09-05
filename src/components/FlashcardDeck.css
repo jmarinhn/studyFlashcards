@@ -1,5 +1,5 @@
-/* Contenedor principal de Tinder Card Deck */
-.tinder-deck-container {
+/* Contenedor principal de Flashcard Deck */
+.flashcard-deck-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -139,8 +139,8 @@
   touch-action: none;
 }
 
-/* Estilos de las tarjetas Tinder */
-.tinder-card {
+/* Estilos de las tarjetas de estudio */
+.flashcard-card {
   position: absolute;
   top: 0;
   left: 0;
@@ -161,7 +161,7 @@
 }
 
 /* Sellos de Swipe dinámicos */
-.tinder-stamp {
+.deck-stamp {
   position: absolute;
   top: 20px;
   padding: 6px 14px;
@@ -503,8 +503,8 @@
   color: #10b981;
 }
 
-/* Barra de controles estilo Tinder */
-.tinder-controls-bar {
+/* Barra de controles de estudio */
+.deck-controls-bar {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -513,7 +513,7 @@
   width: 100%;
 }
 
-.tinder-btn {
+.deck-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -525,7 +525,7 @@
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.tinder-btn .btn-icon {
+.deck-btn .btn-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -537,7 +537,7 @@
   transition: all 0.2s ease;
 }
 
-.tinder-btn .btn-label {
+.deck-btn .btn-label {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -601,11 +601,11 @@
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
 }
 
-.tinder-btn:active:not(:disabled) {
+.deck-btn:active:not(:disabled) {
   transform: scale(0.92);
 }
 
-.tinder-btn:disabled {
+.deck-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -632,7 +632,7 @@
 
 /* Responsividad en Móviles */
 @media (max-width: 480px) {
-  .tinder-deck-container {
+  .flashcard-deck-container {
     padding: 6px 12px;
   }
 
@@ -644,12 +644,12 @@
     font-size: 0.88rem;
   }
 
-  .tinder-controls-bar {
+  .deck-controls-bar {
     gap: 16px;
     margin-top: 12px;
   }
 
-  .tinder-btn .btn-icon {
+  .deck-btn .btn-icon {
     width: 50px;
     height: 50px;
     font-size: 1.2rem;

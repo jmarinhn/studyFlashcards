@@ -1,6 +1,6 @@
 # ⚡ studyFlashcards
 
-Aplicación interactiva de Flashcards para estudio y exámenes, con experiencia de tarjetas **tipo Tinder**, soporte para volteo 3D con tap, bucle iterativo para repasar preguntas fallidas hasta dominarlas todas, y modo examen con temporizador y Leaderboard.
+Aplicación interactiva de Flashcards para estudio y exámenes, con experiencia de tarjetas deslizables (**Flashcards**), soporte para volteo 3D con tap, bucle iterativo para repasar preguntas fallidas hasta dominarlas todas, y modo examen con temporizador y Leaderboard.
 
 Totalmente modernizada con **Vite 6 + React 18**, con **0 vulnerabilidades (0 CVEs)** y lista para desplegarse con **Docker**.
 
@@ -8,7 +8,7 @@ Totalmente modernizada con **Vite 6 + React 18**, con **0 vulnerabilidades (0 CV
 
 ## ✨ Características Principales
 
-- **🔥 Modo Estudio Tipo Tinder**:
+- **🔥 Modo Estudio Interactivo (Flashcards)**:
   - **Arrastre interactivo (Mouse & Touch)**: Desplaza la carta con rotación física y sellos dinámicos:
     - **Swipe Derecha / Verde**: ¡Respuesta correcta!
     - **Swipe Izquierda / Rojo**: Respuesta incorrecta / Para repasar.

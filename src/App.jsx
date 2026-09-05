@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DEMO_DECKS } from './data/demoDecks';
 import { shuffle, parseQuestionsJson, normalizeQuestion } from './utils/deckUtils';
-import TinderCardDeck from './components/TinderCardDeck';
+import FlashcardDeck from './components/FlashcardDeck';
 import StudyResults from './components/StudyResults';
 import TestMode from './components/TestMode';
 import TestResults from './components/TestResults';
@@ -10,6 +10,7 @@ import FileDropzone from './components/FileDropzone';
 import GoogleAuthModal from './components/GoogleAuthModal';
 import { restoreGoogleProfile } from './utils/googleIdentity';
 import './App.css';
+import { downloadDeck, shareDeck, restoreDecks } from './utils/deckSharing';
 
 export default function App() {
   // Estado general
@@ -35,7 +36,30 @@ export default function App() {
 
   // Mazos
   const [activeDeckKey, setActiveDeckKey] = useState('gcp_master');
-  const [customDecks, setCustomDecks] = useState([]);
+  const [customDecks, setCustomDecks] = useState(() => restoreDecks(localStorage));
+  const [deckNotice, setDeckNotice] = useState('');
+  const [sharingDeckId, setSharingDeckId] = useState(null);
+
+  const handleDownloadDeck = (deck) => {
+    try {
+      downloadDeck(deck);
+      setDeckNotice(`Descarga iniciada: ${deck.title}. Puedes compartir el archivo e importarlo con «Cargar JSON».`);
+    } catch {
+      setDeckNotice('No se pudo descargar el mazo. Vuelve a intentarlo.');
+    }
+  };
+
+  const handleShareDeck = async (deck) => {
+    setSharingDeckId(deck.id);
+    setDeckNotice('');
+    try {
+      const result = await shareDeck(deck);
+      if (result === 'shared') setDeckNotice('Mazo compartido. Quien lo reciba puede abrirlo con «Cargar JSON».');
+      if (result === 'downloaded') setDeckNotice('Descargamos el JSON porque este navegador no permite compartirlo directamente. Envíalo a quien quieras; podrá importarlo con «Cargar JSON».');
+    } catch {
+      setDeckNotice('No se pudo compartir el mazo. Prueba con «Descargar JSON».');
+    } finally { setSharingDeckId(null); }
+  };
   const [currentQuestions, setCurrentQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -258,13 +282,20 @@ export default function App() {
   // Cargar mazo personalizado desde archivo JSON
   const handleCustomDeckLoaded = (newDeckData) => {
     const newDeck = {
-      id: `custom-${Date.now()}`,
-      title: `📁 ${newDeckData.title || 'Mazo Personalizado'}`,
-      description: `${newDeckData.questions.length} preguntas importadas desde archivo JSON.`,
+      id: `custom-${crypto.randomUUID()}`,
+      title: newDeckData.title || 'Mazo Personalizado',
+      description: newDeckData.description || `${newDeckData.questions.length} preguntas importadas desde archivo JSON.`,
       questions: newDeckData.questions,
       isCustom: true,
     };
-    setCustomDecks((prev) => [newDeck, ...prev]);
+    const updated = [newDeck, ...customDecks];
+    try {
+      localStorage.setItem('study_custom_decks', JSON.stringify(updated));
+      setDeckNotice('Mazo guardado en este navegador. Ya puedes descargarlo o compartir su archivo JSON.');
+    } catch {
+      setDeckNotice('Mazo cargado para esta sesión. No hay espacio para guardarlo; descarga una copia antes de cerrar.');
+    }
+    setCustomDecks(updated);
     setActiveDeckKey(newDeck.id);
     setStage('menu');
   };
@@ -282,7 +313,7 @@ export default function App() {
               <h1 className="brand-title">Flashcard<span>Match</span></h1>
             </div>
             <p className="brand-tagline">
-              Modo Estudio interactivo tipo Tinder con volteo 3D y repaso iterativo de errores
+              Modo Estudio interactivo con tarjetas deslizables, volteo 3D y repaso iterativo de errores
             </p>
 
             {/* Controles de Cabecera: Perfil y Tema */}
@@ -390,6 +421,8 @@ export default function App() {
               </button>
             </div>
 
+            <p className="deck-sharing-help">Descarga los demos o comparte tus mazos como JSON. Quien reciba un archivo puede abrirlo con «Cargar JSON».</p>
+            {deckNotice && <p className="deck-notice" role="status">{deckNotice}</p>}
             <div className="decks-grid">
               {getAllDecks().map((deck) => {
                 const isSelected = deck.id === activeDeckKey;
@@ -406,7 +439,17 @@ export default function App() {
                       </span>
                     </div>
                     <p className="deck-card-desc">{deck.description}</p>
-                    {isSelected && <span className="active-indicator">✓ Activo</span>}
+                    <div className="deck-actions" onClick={(event) => event.stopPropagation()}>
+                      <button type="button" aria-pressed={isSelected} onClick={() => setActiveDeckKey(deck.id)}>
+                        {isSelected ? '✓ Activo' : 'Seleccionar'}
+                      </button>
+                      <button type="button" onClick={() => handleDownloadDeck(deck)} aria-label={`Descargar JSON: ${deck.title}`}>↓ Descargar JSON</button>
+                      {deck.isCustom && (
+                        <button type="button" onClick={() => handleShareDeck(deck)} disabled={sharingDeckId !== null} aria-label={`Compartir JSON: ${deck.title}`}>
+                          {sharingDeckId === deck.id ? 'Compartiendo…' : '↗ Compartir JSON'}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -419,7 +462,7 @@ export default function App() {
               <div className="mode-card-header">
                 <span className="mode-icon">📚</span>
                 <div>
-                  <h3>Modo Estudio (Tinder Cards)</h3>
+                  <h3>Modo Estudio (Tarjetas Deslizables)</h3>
                   <p>Arrastra a la derecha si acertaste, a la izquierda para repasar. Toca para ver la respuesta.</p>
                 </div>
               </div>
@@ -479,9 +522,9 @@ export default function App() {
         </div>
       )}
 
-      {/* VISTA: MODO ESTUDIO (TINDER CARDS) */}
+      {/* VISTA: MODO ESTUDIO (FLASHCARDS) */}
       {stage === 'study' && (
-        <TinderCardDeck
+        <FlashcardDeck
           questions={currentQuestions}
           currentIndex={currentIndex}
           onSwipe={handleStudySwipe}

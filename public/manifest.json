@@ -1,7 +1,7 @@
 {
   "short_name": "FlashcardMatch",
   "name": "FlashcardMatch - Estudio & Exámenes",
-  "description": "Modo Estudio interactivo tipo Tinder con volteo 3D y simulador de exámenes de certificación.",
+  "description": "Modo Estudio interactivo con tarjetas deslizables, volteo 3D y simulador de exámenes de certificación.",
   "icons": [
     {
       "src": "/favicon.ico",

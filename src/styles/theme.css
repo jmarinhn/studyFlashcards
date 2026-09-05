@@ -334,7 +334,7 @@ body[data-theme="light"] {
 }
 
 /* =========================================================
-   TINDER CARD DECK (MODO ESTUDIO)
+   FLASHCARD DECK (MODO ESTUDIO)
    ========================================================= */
 [data-theme="light"] .deck-top-bar {
   background: rgba(255, 255, 255, 0.85);
@@ -482,7 +482,7 @@ body[data-theme="light"] {
 }
 
 /* Botones de acción circular */
-[data-theme="light"] .tinder-btn {
+[data-theme="light"] .deck-btn {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;

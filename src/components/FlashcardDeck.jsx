@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { getCorrectLetters, normalizeOptions } from '../utils/deckUtils';
 import MarkdownText from './MarkdownText';
-import './TinderCardDeck.css';
+import './FlashcardDeck.css';
 
-export default function TinderCardDeck({
+export default function FlashcardDeck({
   questions,
   currentIndex,
   onSwipe,
@@ -150,7 +150,7 @@ export default function TinderCardDeck({
   const nextCardOffsetY = 16 - swipeRatio * 16;
 
   return (
-    <div className="tinder-deck-container">
+    <div className="flashcard-deck-container">
       {/* Header superior con progreso y estadísticas */}
       <div className="deck-top-bar">
         <button className="deck-exit-btn" onClick={onExit} title="Volver al menú">
@@ -209,7 +209,7 @@ export default function TinderCardDeck({
         {/* Carta siguiente en el fondo */}
         {nextCard && (
           <div
-            className="tinder-card next-card"
+            className="flashcard-card next-card"
             style={{
               transform: `scale(${nextCardScale}) translateY(${nextCardOffsetY}px)`,
               opacity: 0.75 + swipeRatio * 0.25,
@@ -229,7 +229,7 @@ export default function TinderCardDeck({
 
         {/* Carta actual frontal e interactiva */}
         <div
-          className={`tinder-card active-card ${flyOutDirection ? 'flying-out' : ''}`}
+          className={`flashcard-card active-card ${flyOutDirection ? 'flying-out' : ''}`}
           style={{
             transform: topCardTransform,
             transition: topCardTransition,
@@ -238,13 +238,13 @@ export default function TinderCardDeck({
         >
           {/* Sellos dinámicos de Swipe */}
           <div
-            className="tinder-stamp stamp-correct"
+            className="deck-stamp stamp-correct"
             style={{ opacity: rightStampOpacity, display: showRightStamp ? 'block' : 'none' }}
           >
             CORRECTO ✓
           </div>
           <div
-            className="tinder-stamp stamp-incorrect"
+            className="deck-stamp stamp-incorrect"
             style={{ opacity: leftStampOpacity, display: showLeftStamp ? 'block' : 'none' }}
           >
             REPASAR ✗
@@ -343,10 +343,10 @@ export default function TinderCardDeck({
         </div>
       </div>
 
-      {/* Controles Flotantes estilo Tinder */}
-      <div className="tinder-controls-bar">
+      {/* Controles Flotantes de Estudio */}
+      <div className="deck-controls-bar">
         <button
-          className="tinder-btn btn-nope"
+          className="deck-btn btn-nope"
           onClick={() => triggerSwipe('left')}
           title="Marcar como incorrecta / Repasar (Flecha Izq)"
           disabled={!!flyOutDirection}
@@ -356,7 +356,7 @@ export default function TinderCardDeck({
         </button>
 
         <button
-          className="tinder-btn btn-flip"
+          className="deck-btn btn-flip"
           onClick={() => setFlipped((prev) => !prev)}
           title="Dar vuelta a la carta (Espacio o Enter)"
         >
@@ -365,7 +365,7 @@ export default function TinderCardDeck({
         </button>
 
         <button
-          className="tinder-btn btn-like"
+          className="deck-btn btn-like"
           onClick={() => triggerSwipe('right')}
           title="Marcar como correcta (Flecha Der)"
           disabled={!!flyOutDirection}
