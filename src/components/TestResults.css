@@ -21,6 +21,33 @@
   animation: fadeInScale 0.4s ease;
 }
 
+/* Indicador de Examen */
+.test-results-deck-indicator {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.exam-label-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+.exam-name-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  color: #f8fafc;
+  margin: 0;
+}
+
 .result-status-banner {
   display: flex;
   align-items: center;

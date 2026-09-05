@@ -1,0 +1,38 @@
+.md-bold {
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.md-italic {
+  font-style: italic;
+  color: #cbd5e1;
+}
+
+.md-inline-code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.88em;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #38bdf8;
+  padding: 2px 6px;
+  border-radius: 6px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.md-bullet-line {
+  display: block;
+  margin: 4px 0;
+  padding-left: 8px;
+}
+
+.md-bullet-dot {
+  display: inline-block;
+  color: #6366f1;
+  margin-right: 6px;
+  font-weight: bold;
+}
+
+.md-bullet-text {
+  display: inline;
+}

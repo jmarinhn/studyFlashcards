@@ -33,7 +33,11 @@ export default function App() {
   const [lastTestResult, setLastTestResult] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('study_leaderboard') || '[]');
+      const raw = JSON.parse(localStorage.getItem('study_leaderboard') || '[]');
+      return raw.map((entry) => ({
+        ...entry,
+        deckTitle: entry.deckTitle || 'Examen General',
+      }));
     } catch {
       return [];
     }
@@ -129,17 +133,25 @@ export default function App() {
 
   // Completar Modo Test
   const handleCompleteTest = (result) => {
-    setLastTestResult(result);
+    const activeDeck = getActiveDeck();
+    const resolvedTitle = result.deckTitle || activeDeck?.title || 'Examen General';
+
+    const enrichedResult = {
+      ...result,
+      deckTitle: resolvedTitle,
+    };
+    setLastTestResult(enrichedResult);
 
     // Guardar en Leaderboard
     const newEntry = {
       name: result.name,
+      deckTitle: resolvedTitle,
       score: result.score,
       date: new Date().toLocaleDateString(),
     };
     const updated = [...leaderboardData, newEntry]
       .sort((a, b) => b.score - a.score)
-      .slice(0, 20);
+      .slice(0, 30);
 
     setLeaderboardData(updated);
     localStorage.setItem('study_leaderboard', JSON.stringify(updated));
@@ -323,6 +335,7 @@ export default function App() {
           stats={studyStats}
           isReviewRound={isReviewRound}
           roundNumber={reviewRoundNumber}
+          deckTitle={getActiveDeck()?.title}
         />
       )}
 
@@ -333,6 +346,7 @@ export default function App() {
           incorrectCards={studyIncorrectList}
           totalStudied={totalQuestionsInRound}
           roundNumber={reviewRoundNumber}
+          deckTitle={getActiveDeck()?.title}
           onReviewIncorrect={handleReviewIncorrect}
           onRestartAll={() => startStudySession()}
           onBackToMenu={() => setStage('menu')}
@@ -344,6 +358,7 @@ export default function App() {
         <TestMode
           questions={currentQuestions}
           username={username}
+          deckTitle={getActiveDeck()?.title}
           onCompleteTest={handleCompleteTest}
           onExit={() => setStage('menu')}
         />
@@ -353,6 +368,7 @@ export default function App() {
       {stage === 'testResults' && lastTestResult && (
         <TestResults
           result={lastTestResult}
+          deckTitle={lastTestResult.deckTitle || getActiveDeck()?.title}
           onViewLeaderboard={() => setStage('leaderboard')}
           onBackToMenu={() => setStage('menu')}
           onRetryTest={startTestSession}

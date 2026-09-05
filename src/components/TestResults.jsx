@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import MarkdownText from './MarkdownText';
 import './TestResults.css';
 
 export default function TestResults({
   result,
+  deckTitle,
   onViewLeaderboard,
   onBackToMenu,
   onRetryTest
 }) {
   const [showReview, setShowReview] = useState(false);
   const { name, score, correctCount, totalCount, passed, timeTakenSeconds, reviewDetails } = result;
+  const examName = deckTitle || result.deckTitle || 'Modo Examen';
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60);
@@ -19,6 +22,12 @@ export default function TestResults({
   return (
     <div className="test-results-container">
       <div className="test-results-card">
+        {/* Indicador de Examen */}
+        <div className="test-results-deck-indicator">
+          <span className="exam-label-pill">Examen Evaluado</span>
+          <h3 className="exam-name-title">{examName}</h3>
+        </div>
+
         {/* Banner de Aprobado / Reprobado */}
         <div className={`result-status-banner ${passed ? 'banner-passed' : 'banner-failed'}`}>
           <div className="status-icon">{passed ? '🎉' : '⚠️'}</div>
@@ -78,7 +87,9 @@ export default function TestResults({
                       <span className="detail-id">#{item.question.id}</span>
                     </div>
 
-                    <p className="detail-question">{item.question.question}</p>
+                    <p className="detail-question">
+                      <MarkdownText text={item.question.question} />
+                    </p>
 
                     <div className="detail-answers-comparison">
                       <div className="user-ans">
@@ -92,7 +103,7 @@ export default function TestResults({
 
                     {item.question.explanation && (
                       <p className="detail-explanation">
-                        💡 {item.question.explanation}
+                        💡 <MarkdownText text={item.question.explanation} />
                       </p>
                     )}
                   </div>

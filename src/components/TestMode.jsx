@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getCorrectLetters, isAnswerCorrect, normalizeOptions } from '../utils/deckUtils';
+import MarkdownText from './MarkdownText';
 import './TestMode.css';
 
 export default function TestMode({
   questions,
   username,
+  deckTitle = '',
   onCompleteTest,
   onExit,
   initialTimeSeconds = 3600, // 60 minutos por defecto
@@ -84,6 +86,7 @@ export default function TestMode({
 
     onCompleteTest({
       name: username || 'Estudiante',
+      deckTitle: deckTitle || 'Modo Examen',
       score: scorePct,
       correctCount,
       totalCount: questions.length,
@@ -115,7 +118,9 @@ export default function TestMode({
         </button>
 
         <div className="test-meta">
-          <span className="test-pill-mode">📝 Modo Examen</span>
+          <span className="test-pill-mode" title={deckTitle || 'Modo Examen'}>
+            📝 {deckTitle || 'Modo Examen'}
+          </span>
           <span className="test-pill-progress">
             Pregunta {currentIndex + 1} de {questions.length}
           </span>
@@ -137,7 +142,9 @@ export default function TestMode({
           )}
         </div>
 
-        <h3 className="test-question-text">{currentCard.question}</h3>
+        <h3 className="test-question-text">
+          <MarkdownText text={currentCard.question} />
+        </h3>
 
         <div className="test-options-list">
           {optionsList.map((opt) => {
@@ -151,7 +158,9 @@ export default function TestMode({
                 <span className="test-opt-box">
                   {isSelected ? '✓' : opt.letter}
                 </span>
-                <span className="test-opt-text">{opt.text}</span>
+                <span className="test-opt-text">
+                  <MarkdownText text={opt.text} />
+                </span>
               </div>
             );
           })}

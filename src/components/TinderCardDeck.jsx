@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { getCorrectLetters, normalizeOptions } from '../utils/deckUtils';
+import MarkdownText from './MarkdownText';
 import './TinderCardDeck.css';
 
 export default function TinderCardDeck({
@@ -9,7 +10,8 @@ export default function TinderCardDeck({
   onExit,
   stats,
   isReviewRound = false,
-  roundNumber = 1
+  roundNumber = 1,
+  deckTitle = '',
 }) {
   const [flipped, setFlipped] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -154,6 +156,11 @@ export default function TinderCardDeck({
         </button>
 
         <div className="deck-badge-group">
+          {deckTitle && (
+            <span className="deck-title-pill" title={deckTitle}>
+              {deckTitle}
+            </span>
+          )}
           {isReviewRound ? (
             <span className="deck-badge review-badge">
               🔄 Repaso #{roundNumber}
@@ -200,7 +207,9 @@ export default function TinderCardDeck({
                 <span className="card-category">Siguiente</span>
                 <span className="card-id">#{nextCard.id}</span>
               </div>
-              <h3 className="card-question">{nextCard.question}</h3>
+              <h3 className="card-question">
+                <MarkdownText text={nextCard.question} />
+              </h3>
             </div>
           </div>
         )}
@@ -238,7 +247,9 @@ export default function TinderCardDeck({
               </div>
 
               <div className="card-question-box">
-                <h3 className="card-question">{currentCard.question}</h3>
+                <h3 className="card-question">
+                  <MarkdownText text={currentCard.question} />
+                </h3>
               </div>
 
               {correctLetters.length > 1 && (
@@ -251,7 +262,9 @@ export default function TinderCardDeck({
                 {optionsList.map((opt) => (
                   <div key={opt.letter} className="option-row">
                     <span className="opt-letter">{opt.letter}</span>
-                    <span className="opt-text">{opt.text}</span>
+                    <span className="opt-text">
+                      <MarkdownText text={opt.text} />
+                    </span>
                   </div>
                 ))}
               </div>
@@ -285,7 +298,9 @@ export default function TinderCardDeck({
                   .map((opt) => (
                     <div key={opt.letter} className="revealed-option-item">
                       <span className="rev-letter">{opt.letter}</span>
-                      <span className="rev-text">{opt.text}</span>
+                      <span className="rev-text">
+                        <MarkdownText text={opt.text} />
+                      </span>
                     </div>
                   ))}
               </div>
@@ -293,7 +308,9 @@ export default function TinderCardDeck({
               {currentCard.explanation && (
                 <div className="card-explanation">
                   <strong>💡 Explicación:</strong>
-                  <p>{currentCard.explanation}</p>
+                  <p>
+                    <MarkdownText text={currentCard.explanation} />
+                  </p>
                 </div>
               )}
 

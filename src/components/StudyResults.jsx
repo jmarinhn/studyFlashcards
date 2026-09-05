@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import MarkdownText from './MarkdownText';
 import './StudyResults.css';
 
 export default function StudyResults({
@@ -7,6 +8,7 @@ export default function StudyResults({
   incorrectCards,
   totalStudied,
   roundNumber,
+  deckTitle,
   onReviewIncorrect,
   onRestartAll,
   onBackToMenu,
@@ -49,6 +51,11 @@ export default function StudyResults({
       <div className="results-card">
         {/* Encabezado */}
         <div className="results-header">
+          {deckTitle && (
+            <div className="results-deck-pill" title={deckTitle}>
+              {deckTitle}
+            </div>
+          )}
           <div className="results-badge">
             {roundNumber > 1 ? `Ronda de Repaso #${roundNumber}` : 'Mazo Completado'}
           </div>
@@ -133,7 +140,9 @@ export default function StudyResults({
               {incorrectCards.map((q, idx) => (
                 <div key={q.id || idx} className="missed-item">
                   <span className="missed-index">#{idx + 1}</span>
-                  <span className="missed-text">{q.question}</span>
+                  <span className="missed-text">
+                    <MarkdownText text={q.question} />
+                  </span>
                 </div>
               ))}
             </div>
