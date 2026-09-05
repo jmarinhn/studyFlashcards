@@ -107,3 +107,13 @@ http://localhost:8080
 docker compose run --service-ports dev
 # Abrir en http://localhost:3000
 ```
+## Acceso con Google
+
+1. En [Google Auth Platform](https://console.cloud.google.com/auth/clients), configura Branding y Audience si el proyecto lo solicita y crea un cliente OAuth de tipo **Aplicación web**.
+2. Añade los orígenes exactos a **Orígenes autorizados de JavaScript**: `http://localhost:5173` para desarrollo, `http://localhost:8080` para Docker y `https://study-flashcards.vercel.app` para producción. No incluyas rutas. Este flujo usa el botón GIS con popup y callback JavaScript, sin ruta de redirección.
+3. Copia `.env.example` a `.env.local` y configura `VITE_GOOGLE_CLIENT_ID` con el ID público terminado en `.apps.googleusercontent.com`. Nunca pongas el Client Secret en variables `VITE_*`.
+4. Reinicia Vite. En Vercel configura esa variable en el entorno correspondiente y vuelve a desplegar: Vite la incorpora durante la compilación. Para Docker puedes proporcionar `VITE_GOOGLE_CLIENT_ID` mediante `.env` o el entorno de Docker Compose y reconstruir.
+
+Sin un Client ID válido, el modal explica que Google no está configurado y permite continuar estudiando. Si falla la carga de Google, ofrece reintentar. Si Google informa que el origen no está permitido, comprueba el esquema, dominio y puerto del cliente OAuth.
+
+El perfil, progreso y leaderboard se almacenan localmente en el navegador; no hay sincronización entre dispositivos ni sesión de servidor. Los claims del ID token se leen para mostrar el perfil, sin guardar el token. Antes de usar esta identidad para proteger una API o datos remotos, el servidor deberá verificar criptográficamente el ID token y crear una sesión segura.

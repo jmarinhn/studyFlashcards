@@ -8,6 +8,7 @@ import TestResults from './components/TestResults';
 import Leaderboard from './components/Leaderboard';
 import FileDropzone from './components/FileDropzone';
 import GoogleAuthModal from './components/GoogleAuthModal';
+import { restoreGoogleProfile } from './utils/googleIdentity';
 import './App.css';
 
 export default function App() {
@@ -100,7 +101,7 @@ export default function App() {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('study_user');
-      return saved ? JSON.parse(saved) : null;
+      return restoreGoogleProfile(saved);
     } catch {
       return null;
     }
@@ -115,6 +116,7 @@ export default function App() {
   };
 
   const handleGoogleSignOut = () => {
+    window.google?.accounts?.id?.disableAutoSelect();
     setUser(null);
     localStorage.removeItem('study_user');
   };

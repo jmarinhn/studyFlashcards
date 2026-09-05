@@ -10,7 +10,8 @@ RUN npm ci
 
 # Copiar código fuente y compilar estáticos de producción
 COPY . .
-RUN npm run build
+ARG VITE_GOOGLE_CLIENT_ID
+RUN if [ -n "$VITE_GOOGLE_CLIENT_ID" ]; then export VITE_GOOGLE_CLIENT_ID; else unset VITE_GOOGLE_CLIENT_ID; fi && npm run build
 
 # Etapa 2: Servidor web de producción Nginx ultraliviano (~25MB)
 FROM nginx:alpine AS runner
