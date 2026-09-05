@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-}
         VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
     container_name: study-flashcards-prod
     ports:
@@ -13,7 +15,7 @@ services:
 
   # Servicio de Desarrollo con Hot-Reload (Opcional: docker compose run --service-ports dev)
   dev:
-    image: node:20-alpine
+    image: node:22-alpine
     container_name: study-flashcards-dev
     working_dir: /app
     volumes:

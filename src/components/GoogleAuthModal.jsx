@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './GoogleAuthModal.css';
-import { loadGoogleIdentity, bindGoogleIdentity, profileFromCredential } from '../utils/googleIdentity';
+import { communityClient, verifyGoogleCredential, cloudProfile } from '../community/client';
+import { loadGoogleIdentity, bindGoogleIdentity, profileFromCredential, getGoogleNonce } from '../utils/googleIdentity';
 
 export default function GoogleAuthModal({
   isOpen,
@@ -31,16 +32,20 @@ export default function GoogleAuthModal({
     const container = googleBtnContainerRef.current;
     container.replaceChildren();
     setStatus('loading');
-    loadGoogleIdentity().then((api) => {
+    Promise.all([loadGoogleIdentity(), communityClient ? getGoogleNonce() : Promise.resolve({})]).then(([api, { nonce, hashedNonce }]) => {
       if (!active) return;
-      unbind = bindGoogleIdentity(api, clientId, (response) => {
+      unbind = bindGoogleIdentity(api, clientId, async (response) => {
         if (!active) return;
         try {
-          const profile = profileFromCredential(response.credential, clientId);
-          callbacks.current.onSignIn(profile);
+          setStatus('verifying');
+          const profile = communityClient
+            ? cloudProfile(await verifyGoogleCredential(response.credential, nonce))
+            : profileFromCredential(response.credential, clientId);
+          if (!active) return;
+          await callbacks.current.onSignIn(profile);
           callbacks.current.onClose();
-        } catch (error) { setErrorMsg(error.message); }
-      });
+        } catch (error) { if (active) { setErrorMsg(error.message); setStatus('ready'); } }
+      }, hashedNonce);
       api.renderButton(container, {
         theme: 'filled_blue', size: 'large', shape: 'pill',
         text: 'continue_with', locale: 'es', width: 280,
@@ -132,12 +137,12 @@ export default function GoogleAuthModal({
               Tus puntuaciones en el Leaderboard se registrarán con este perfil.
             </p>
 
+            {errorMsg && <p className="google-error-text" role="alert">{errorMsg}</p>}
             <div className="profile-actions-row">
               <button
                 className="google-signout-btn"
-                onClick={() => {
-                  onSignOut();
-                  onClose();
+                onClick={async () => {
+                  try { await onSignOut(); onClose(); } catch (error) { setErrorMsg(error.message); }
                 }}
               >
                 🚪 Cerrar Sesión
@@ -186,6 +191,7 @@ export default function GoogleAuthModal({
             </div>
 
             {status === 'loading' && <p role="status">Cargando Google…</p>}
+            {status === 'verifying' && <p role="status">Verificando tu cuenta…</p>}
             {errorMsg && <p className="google-error-text" role="alert">{errorMsg}</p>}
             {status === 'error' && (
               <button className="google-action-submit-btn" onClick={() => setAttempt((value) => value + 1)}>

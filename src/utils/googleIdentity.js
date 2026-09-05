@@ -1,5 +1,18 @@
 let sdkPromise;
 let initializedClientId;
+let initializedNonce;
+let noncePromise;
+
+export function getGoogleNonce() {
+  if (!noncePromise) noncePromise = (async () => {
+    const nonce = Array.from(crypto.getRandomValues(new Uint8Array(32)), b => b.toString(16).padStart(2, '0')).join('');
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(nonce));
+    const hashedNonce = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
+    return { nonce, hashedNonce };
+  })();
+  return noncePromise;
+}
+
 let credentialHandler;
 
 export function loadGoogleIdentity() {
@@ -27,15 +40,17 @@ export function loadGoogleIdentity() {
   return sdkPromise;
 }
 
-export function bindGoogleIdentity(api, clientId, handler) {
+export function bindGoogleIdentity(api, clientId, handler, nonce) {
   credentialHandler = handler;
-  if (initializedClientId !== clientId) {
+  if (initializedClientId !== clientId || initializedNonce !== nonce) {
     api.initialize({
       client_id: clientId,
+      ...(nonce ? { nonce } : {}),
       callback: (response) => credentialHandler?.(response),
       auto_select: false,
     });
     initializedClientId = clientId;
+    initializedNonce = nonce;
   }
   return () => {
     if (credentialHandler === handler) credentialHandler = undefined;

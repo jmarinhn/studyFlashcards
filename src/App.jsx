@@ -10,12 +10,14 @@ import FileDropzone from './components/FileDropzone';
 import GoogleAuthModal from './components/GoogleAuthModal';
 import { restoreGoogleProfile } from './utils/googleIdentity';
 import './App.css';
+import CommunityHub from './community/CommunityHub';
+import { communityClient, communityApi, cloudProfile } from './community/client';
 import { MISTAKES_KEY, loadMistakes, mergeMistakes } from './utils/mistakeHistory';
 import { downloadDeck, shareDeck, restoreDecks } from './utils/deckSharing';
 
 export default function App() {
   // Estado general
-  const [stage, setStage] = useState('menu'); // 'menu' | 'study' | 'studyResults' | 'test' | 'testResults' | 'leaderboard' | 'upload'
+  const [stage, setStage] = useState(() => new URLSearchParams(window.location.search).has('deck') ? 'community' : 'menu'); // 'menu' | 'study' | 'studyResults' | 'test' | 'testResults' | 'leaderboard' | 'upload'
   const [username, setUsername] = useState(() => localStorage.getItem('study_username') || 'Estudiante');
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState('');
@@ -44,6 +46,7 @@ export default function App() {
   const handleDownloadDeck = (deck) => {
     try {
       downloadDeck(deck);
+      recordActivity('download', deck);
       setDeckNotice(`Descarga iniciada: ${deck.title}. Puedes compartir el archivo e importarlo con «Cargar JSON».`);
     } catch {
       setDeckNotice('No se pudo descargar el mazo. Vuelve a intentarlo.');
@@ -136,8 +139,13 @@ export default function App() {
     }
   };
 
+  const [communityStudyDeck, setCommunityStudyDeck] = useState(null);
+  const [editorSeed, setEditorSeed] = useState(null);
+  const [cloudError, setCloudError] = useState('');
+
   // Usuario y Cuenta de Google
   const [user, setUser] = useState(() => {
+    if (communityClient) return null;
     try {
       const saved = localStorage.getItem('study_user');
       return restoreGoogleProfile(saved);
@@ -147,17 +155,49 @@ export default function App() {
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (!communityClient) return;
+    const { data: { subscription } } = communityClient.auth.onAuthStateChange((_event, session) => {
+      const profile = cloudProfile(session?.user);
+      setUser(profile);
+      if (profile) setUsername(profile.name);
+      setCloudError('');
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!user?.cloud) return;
+    let active = true;
+    communityApi('profile').catch(error => { if (active) setCloudError(error.message); });
+    return () => { active = false; };
+  }, [user?.id, user?.cloud]);
+
   const handleGoogleSignIn = (googleUser) => {
     setUser(googleUser);
     setUsername(googleUser.name);
-    localStorage.setItem('study_user', JSON.stringify(googleUser));
+    if (!communityClient) localStorage.setItem('study_user', JSON.stringify(googleUser));
     localStorage.setItem('study_username', googleUser.name);
   };
 
-  const handleGoogleSignOut = () => {
+  const handleGoogleSignOut = async () => {
+    if (communityClient) {
+      const { error } = await communityClient.auth.signOut();
+      if (error) throw new Error('No se pudo cerrar la sesión. Vuelve a intentarlo.');
+    }
     window.google?.accounts?.id?.disableAutoSelect();
     setUser(null);
+    setEditorSeed(null);
+    setCommunityStudyDeck(null);
+    setStage('menu');
     localStorage.removeItem('study_user');
+  };
+
+  const recordActivity = (kind, deck = getActiveDeck()) => {
+    if (!user?.cloud) return;
+    communityApi('activity', { kind, deck_id: deck?.communityId || null }).catch(() => {
+      // Analytics failures must not interrupt studying.
+    });
   };
 
   const getUserStats = () => {
@@ -183,7 +223,7 @@ export default function App() {
   // Obtener lista completa de mazos (demos + personalizados)
   const getAllDecks = () => {
     const demos = Object.values(DEMO_DECKS);
-    return [...demos, ...customDecks];
+    return [...demos, ...customDecks, ...(communityStudyDeck ? [communityStudyDeck] : [])];
   };
 
   const getActiveDeck = () => {
@@ -208,6 +248,7 @@ export default function App() {
       shuffled = shuffled.slice(0, count);
     }
 
+    recordActivity('study');
     setCurrentQuestions(shuffled);
     setCurrentIndex(0);
     setStudyStats({ correct: 0, incorrect: 0 });
@@ -255,6 +296,7 @@ export default function App() {
     // Normalizar y barajar preguntas para el examen (máximo 65)
     const normalizedPool = deck.questions.map((q, idx) => normalizeQuestion(q, idx)).filter(Boolean);
     const testPool = shuffle(normalizedPool).slice(0, 65);
+    recordActivity('exam');
     setCurrentQuestions(testPool);
     setStage('test');
   };
@@ -322,6 +364,10 @@ export default function App() {
   return (
     <div className="app-main-layout">
       {mistakeSaveError && <p className="deck-notice" role="alert">{mistakeSaveError}</p>}
+      {cloudError && <p className="deck-notice" role="alert">Comunidad: {cloudError}</p>}
+      {stage === 'community' && <CommunityHub key={user?.id || 'guest'} user={user} initialGuide={editorSeed}
+        onLogin={() => setIsAuthModalOpen(true)} onBack={() => { setStage('menu'); setEditorSeed(null); }}
+        onStudy={(deck) => { setCommunityStudyDeck(deck); setActiveDeckKey(deck.id); setStage('menu'); setEditorSeed(null); }} />}
       {/* VISTA: MENÚ PRINCIPAL */}
       {stage === 'menu' && (
         <div className="menu-container">
@@ -430,6 +476,11 @@ export default function App() {
             </div>
           </header>
 
+          <section className="decks-section">
+            <div className="section-title-row"><h3>🌍 Community Decks</h3>
+              <button className="import-btn" onClick={() => { setEditorSeed(null); setStage('community'); }}>Explorar y crear guías →</button>
+            </div><p className="deck-sharing-help">Crea tus propias guías, envíalas a revisión y participa en las respuestas de la comunidad.</p>
+          </section>
           {/* Selector de Mazos */}
           <section className="decks-section">
             <div className="section-title-row">
@@ -462,6 +513,7 @@ export default function App() {
                         {isSelected ? '✓ Activo' : 'Seleccionar'}
                       </button>
                       <button type="button" onClick={() => handleDownloadDeck(deck)} aria-label={`Descargar JSON: ${deck.title}`}>↓ Descargar JSON</button>
+                      {deck.isCustom && <button type="button" onClick={() => { setEditorSeed({ title: deck.title, description: deck.description, questions: deck.questions.map(q => ({ ...q, id: crypto.randomUUID() })) }); setStage('community'); }}>Crear guía en mi cuenta</button>}
                       {deck.isCustom && (
                         <button type="button" onClick={() => handleShareDeck(deck)} disabled={sharingDeckId !== null} aria-label={`Compartir JSON: ${deck.title}`}>
                           {sharingDeckId === deck.id ? 'Compartiendo…' : '↗ Compartir JSON'}

@@ -117,3 +117,7 @@ docker compose run --service-ports dev
 Sin un Client ID válido, el modal explica que Google no está configurado y permite continuar estudiando. Si falla la carga de Google, ofrece reintentar. Si Google informa que el origen no está permitido, comprueba el esquema, dominio y puerto del cliente OAuth.
 
 El perfil, progreso y leaderboard se almacenan localmente en el navegador; no hay sincronización entre dispositivos ni sesión de servidor. Los claims del ID token se leen para mostrar el perfil, sin guardar el token. Antes de usar esta identidad para proteger una API o datos remotos, el servidor deberá verificar criptográficamente el ID token y crear una sesión segura.
+
+## Community Decks y editor de guías
+
+Las cuentas verificadas pueden crear guías con el editor manual o importar JSON, guardarlas como borradores y enviarlas a revisión. El administrador aprueba la publicación y ve usuarios, mazos y actividad. Las respuestas comunitarias se calculan mediante votos únicos por cuenta. Consulta [la configuración del servicio](supabase/README.md). Requiere Node 22 o posterior.
