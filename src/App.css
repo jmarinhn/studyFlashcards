@@ -119,6 +119,39 @@
   font-size: 0.85rem;
 }
 
+/* Botón de instalación PWA */
+.pwa-install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  transition: all 0.2s ease;
+  animation: pwaPulse 3s infinite ease-in-out;
+}
+
+.pwa-install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+}
+
+@keyframes pwaPulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.65);
+  }
+}
+
 /* Sección de Mazos */
 .decks-section {
   display: flex;

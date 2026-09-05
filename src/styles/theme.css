@@ -81,6 +81,12 @@
   background: #f1f5f9;
 }
 
+[data-theme="light"] .pwa-install-btn {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
 .header-controls-row {
   display: flex;
   align-items: center;

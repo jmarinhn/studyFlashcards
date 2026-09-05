@@ -64,6 +64,37 @@ export default function App() {
     }
   });
 
+  // PWA Install Prompt
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    const handleAppInstalled = () => {
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
+
   // Guardar nombre
   const handleSaveName = () => {
     const trimmed = nameInput.trim();
@@ -247,6 +278,16 @@ export default function App() {
                   </div>
                 )}
               </div>
+
+              {deferredPrompt && (
+                <button
+                  className="pwa-install-btn"
+                  onClick={handleInstallApp}
+                  title="Instalar FlashcardMatch en tu computadora o móvil"
+                >
+                  📲 Instalar App
+                </button>
+              )}
 
               <button
                 className="theme-toggle-btn"
