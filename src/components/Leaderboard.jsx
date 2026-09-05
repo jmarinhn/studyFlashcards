@@ -77,7 +77,19 @@ export default function Leaderboard({ data, onBack, onClear }) {
                   {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
                 </span>
                 <span className="col-name" title={entry.name}>
-                  {entry.name || 'Anónimo'}
+                  {entry.picture ? (
+                    <img
+                      src={entry.picture}
+                      alt={entry.name}
+                      className="lb-avatar-img"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <span className="lb-avatar-fallback">👤</span>
+                  )}
+                  <span className="lb-name-text">{entry.name || 'Anónimo'}</span>
                 </span>
                 <span className="col-deck" title={entry.deckTitle || 'Examen General'}>
                   <span className="deck-tag">
