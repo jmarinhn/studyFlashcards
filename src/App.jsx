@@ -10,6 +10,7 @@ import FileDropzone from './components/FileDropzone';
 import GoogleAuthModal from './components/GoogleAuthModal';
 import { restoreGoogleProfile } from './utils/googleIdentity';
 import './App.css';
+import { MISTAKES_KEY, loadMistakes, mergeMistakes } from './utils/mistakeHistory';
 import { downloadDeck, shareDeck, restoreDecks } from './utils/deckSharing';
 
 export default function App() {
@@ -64,6 +65,20 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Modo Estudio
+  const [mistakeHistory, setMistakeHistory] = useState(() => loadMistakes(localStorage));
+  const [mistakeSaveError, setMistakeSaveError] = useState('');
+  const saveMistakes = (questions) => {
+    if (!questions.length) return;
+    const updated = { ...mistakeHistory, [activeDeckKey]: mergeMistakes(mistakeHistory[activeDeckKey], questions) };
+    setMistakeHistory(updated);
+    try {
+      localStorage.setItem(MISTAKES_KEY, JSON.stringify(updated));
+      setMistakeSaveError('');
+    } catch {
+      setMistakeSaveError('No se pudo guardar el historial en este navegador. Los errores se conservarán solo durante esta sesión.');
+    }
+  };
+  const accumulatedMistakes = mistakeHistory[activeDeckKey] || [];
   const [studyStats, setStudyStats] = useState({ correct: 0, incorrect: 0 });
   const [studyIncorrectList, setStudyIncorrectList] = useState([]);
   const [isReviewRound, setIsReviewRound] = useState(false);
@@ -214,6 +229,7 @@ export default function App() {
     } else {
       setStudyStats((prev) => ({ ...prev, incorrect: prev.incorrect + 1 }));
       setStudyIncorrectList((prev) => [...prev, currentQ]);
+      saveMistakes([currentQ]);
     }
 
     if (currentIndex < currentQuestions.length - 1) {
@@ -226,9 +242,9 @@ export default function App() {
 
   // Repasar únicamente las preguntas incorrectas
   const handleReviewIncorrect = () => {
-    if (studyIncorrectList.length === 0) return;
+    if (accumulatedMistakes.length === 0) return;
     setReviewRoundNumber((prev) => prev + 1);
-    startStudySession(null, studyIncorrectList, true);
+    startStudySession(null, accumulatedMistakes, true);
   };
 
   // Iniciar Modo Test
@@ -245,6 +261,7 @@ export default function App() {
 
   // Completar Modo Test
   const handleCompleteTest = (result) => {
+    saveMistakes((result.reviewDetails || []).filter((item) => !item.isCorrect).map((item) => item.question));
     const activeDeck = getActiveDeck();
     const resolvedTitle = result.deckTitle || activeDeck?.title || 'Examen General';
 
@@ -304,6 +321,7 @@ export default function App() {
 
   return (
     <div className="app-main-layout">
+      {mistakeSaveError && <p className="deck-notice" role="alert">{mistakeSaveError}</p>}
       {/* VISTA: MENÚ PRINCIPAL */}
       {stage === 'menu' && (
         <div className="menu-container">
@@ -467,7 +485,11 @@ export default function App() {
                 </div>
               </div>
 
+              <p className="deck-sharing-help">Errores acumulados de este mazo: {accumulatedMistakes.length}. Se conservan entre sesiones en este navegador, incluso si después aciertas.</p>
               <div className="study-actions-row">
+                <button className="study-launch-btn" onClick={handleReviewIncorrect} disabled={!accumulatedMistakes.length}>
+                  🔄 Repasar errores acumulados ({accumulatedMistakes.length})
+                </button>
                 <button
                   className="study-launch-btn primary-launch"
                   onClick={() => startStudySession()}
@@ -543,6 +565,7 @@ export default function App() {
         <StudyResults
           stats={studyStats}
           incorrectCards={studyIncorrectList}
+          accumulatedMistakes={accumulatedMistakes}
           totalStudied={totalQuestionsInRound}
           roundNumber={reviewRoundNumber}
           deckTitle={getActiveDeck()?.title}

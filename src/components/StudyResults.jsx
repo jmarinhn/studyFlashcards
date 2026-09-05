@@ -6,6 +6,7 @@ import './StudyResults.css';
 export default function StudyResults({
   stats,
   incorrectCards,
+  accumulatedMistakes = [],
   totalStudied,
   roundNumber,
   deckTitle,
@@ -60,11 +61,11 @@ export default function StudyResults({
             {roundNumber > 1 ? `Ronda de Repaso #${roundNumber}` : 'Mazo Completado'}
           </div>
           <h2 className="results-title">
-            {isAllMastered ? '🏆 ¡100% Dominado!' : '📊 Resumen de tu Sesión'}
+            {isAllMastered ? '🏆 ¡Ronda sin errores!' : '📊 Resumen de tu Sesión'}
           </h2>
           <p className="results-subtitle">
             {isAllMastered
-              ? '¡Excelente trabajo! Has respondido correctamente todas las preguntas de este mazo.'
+              ? '¡Excelente trabajo! Has respondido correctamente todas las preguntas de esta ronda.'
               : 'Has terminado esta pasada por el mazo. Revisa tus resultados a continuación:'}
           </p>
         </div>
@@ -97,7 +98,7 @@ export default function StudyResults({
           <div className="stat-box stat-incorrect-box">
             <span className="stat-icon">✕</span>
             <div className="stat-number">{incorrectCards.length}</div>
-            <div className="stat-desc">A Repasar</div>
+            <div className="stat-desc">Errores de esta ronda</div>
           </div>
 
           <div className="stat-box stat-total-box">
@@ -107,28 +108,15 @@ export default function StudyResults({
           </div>
         </div>
 
-        {/* Acción Principal: Repasar las malas */}
-        {!isAllMastered ? (
+        {accumulatedMistakes.length > 0 && (
           <div className="review-action-panel">
-            <div className="review-info">
-              <span className="alert-dot"></span>
-              <span>Te quedaron <strong>{incorrectCards.length} preguntas</strong> por dominar.</span>
-            </div>
             <button className="cta-btn review-btn" onClick={onReviewIncorrect}>
-              <span className="cta-icon">🔄</span>
-              <span>Repasar solo las malas ({incorrectCards.length})</span>
+              🔄 Repasar errores acumulados ({accumulatedMistakes.length})
             </button>
             <p className="review-hint">
-              Te mostraremos únicamente las preguntas incorrectas en una nueva ronda hasta que las domines todas.
+              Incluye todas las preguntas que has fallado en este mazo, en estudio y exámenes anteriores.
+              No se eliminan al acertarlas y se guardan en este navegador para próximas sesiones.
             </p>
-          </div>
-        ) : (
-          <div className="mastery-banner">
-            <div className="mastery-icon">🎉</div>
-            <div className="mastery-text">
-              <h4>¡Mazo totalmente dominado!</h4>
-              <p>No tienes preguntas pendientes en la lista de errores.</p>
-            </div>
           </div>
         )}
 
@@ -138,7 +126,7 @@ export default function StudyResults({
             <h4>Preguntas a repasar ({incorrectCards.length}):</h4>
             <div className="missed-list">
               {incorrectCards.map((q, idx) => (
-                <div key={q.id || idx} className="missed-item">
+                <div key={idx} className="missed-item">
                   <span className="missed-index">#{idx + 1}</span>
                   <span className="missed-text">
                     <MarkdownText text={q.question} />
