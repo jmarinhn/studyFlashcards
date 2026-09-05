@@ -5,10 +5,10 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  max-width: 520px;
+  max-width: 740px;
   margin: 0 auto;
-  min-height: calc(100vh - 40px);
-  padding: 10px 16px;
+  min-height: calc(100vh - 30px);
+  padding: 8px 16px;
   box-sizing: border-box;
   user-select: none;
 }
@@ -19,12 +19,12 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 10px 14px;
-  margin-bottom: 12px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  border-radius: 14px;
   box-sizing: border-box;
 }
 
@@ -32,9 +32,9 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #94a3b8;
-  padding: 6px 14px;
-  border-radius: 10px;
-  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -58,9 +58,9 @@
   border: 1px solid rgba(99, 102, 241, 0.3);
   color: #c7d2fe;
   border-radius: 8px;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  max-width: 140px;
+  max-width: 180px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,7 +69,7 @@
 .deck-badge {
   padding: 4px 10px;
   border-radius: 8px;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -94,7 +94,7 @@
 }
 
 .deck-progress-pill {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #e2e8f0;
   background: rgba(255, 255, 255, 0.08);
@@ -106,11 +106,11 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   background: rgba(15, 23, 42, 0.6);
   padding: 4px 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -130,8 +130,8 @@
 .card-stack-viewport {
   position: relative;
   width: 100%;
-  height: 520px;
-  max-height: 68vh;
+  height: 460px;
+  max-height: 62vh;
   perspective: 1200px;
   display: flex;
   justify-content: center;
@@ -146,7 +146,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 20px;
   transform-style: preserve-3d;
   will-change: transform;
 }
@@ -163,12 +163,12 @@
 /* Sellos de Swipe dinámicos */
 .tinder-stamp {
   position: absolute;
-  top: 24px;
-  padding: 6px 16px;
-  border: 4px solid;
-  border-radius: 12px;
+  top: 20px;
+  padding: 6px 14px;
+  border: 3px solid;
+  border-radius: 10px;
   font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -178,19 +178,19 @@
 }
 
 .stamp-correct {
-  right: 24px;
+  right: 20px;
   color: #10b981;
   border-color: #10b981;
-  transform: rotate(14deg);
+  transform: rotate(12deg);
   background: rgba(16, 185, 129, 0.15);
   text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
 .stamp-incorrect {
-  left: 24px;
+  left: 20px;
   color: #f43f5e;
   border-color: #f43f5e;
-  transform: rotate(-14deg);
+  transform: rotate(-12deg);
   background: rgba(244, 63, 94, 0.15);
   text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
 }
@@ -200,7 +200,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 20px;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -218,8 +218,8 @@
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 24px;
-  padding: 22px 20px;
+  border-radius: 20px;
+  padding: 16px 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -254,14 +254,14 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .card-category {
-  font-size: 0.75rem;
+  font-size: 0.70rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: #94a3b8;
 }
 
@@ -270,7 +270,7 @@
 }
 
 .card-id {
-  font-size: 0.75rem;
+  font-size: 0.70rem;
   font-weight: 600;
   color: #64748b;
 }
@@ -278,14 +278,14 @@
 /* Pregunta */
 .card-question-box {
   flex-shrink: 0;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .card-question {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.15rem;
+  font-size: 0.90rem;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.4;
   color: #f1f5f9;
   margin: 0;
   text-align: left;
@@ -294,21 +294,21 @@
 .multi-choice-tag {
   display: inline-block;
   align-self: flex-start;
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 600;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 6px;
   background: rgba(168, 85, 247, 0.2);
   color: #d8b4fe;
   border: 1px solid rgba(168, 85, 247, 0.3);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 /* Opciones de respuesta */
 .options-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   width: 100%;
   flex-grow: 1;
   overflow-y: auto;
@@ -318,11 +318,11 @@
 .option-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
@@ -330,19 +330,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
-  border-radius: 6px;
+  border-radius: 4px;
   background: rgba(255, 255, 255, 0.1);
   color: #cbd5e1;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
 .opt-text {
-  font-size: 0.9rem;
-  line-height: 1.35;
+  font-size: 0.80rem;
+  line-height: 1.32;
   color: #cbd5e1;
   text-align: left;
 }
@@ -353,19 +353,20 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 0.8rem;
+  font-size: 0.70rem;
   color: #64748b;
-  margin-top: 12px;
-  padding: 6px;
+  margin-top: 6px;
+  padding: 3px;
   border-top: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
 .flip-icon {
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 .back-hint {
-  color: #38bdf8;
+  border-top-color: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
 }
 
 /* Reverso de la carta: Respuesta revelada */
@@ -373,20 +374,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px;
+  padding: 6px 10px;
   background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 16px;
-  margin-bottom: 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
 }
 
 .reveal-badge {
-  font-size: 0.8rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #34d399;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .revealed-letters {
@@ -398,44 +399,45 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 26px;
+  height: 26px;
   background: #10b981;
   color: #064e3b;
   font-family: 'Outfit', sans-serif;
-  font-size: 1.3rem;
+  font-size: 0.95rem;
   font-weight: 800;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.4);
 }
 
 .correct-options-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-  max-height: 120px;
+  gap: 5px;
+  margin-bottom: 6px;
+  max-height: 110px;
   overflow-y: auto;
 }
 
 .revealed-option-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 5px 8px;
   background: rgba(16, 185, 129, 0.15);
   border: 1px solid rgba(16, 185, 129, 0.25);
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 .rev-letter {
   font-weight: 800;
   color: #34d399;
+  font-size: 0.76rem;
 }
 
 .rev-text {
-  font-size: 0.88rem;
-  line-height: 1.35;
+  font-size: 0.78rem;
+  line-height: 1.28;
   color: #ecfdf5;
   text-align: left;
 }
@@ -443,21 +445,22 @@
 .card-explanation {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  line-height: 1.32;
   color: #e2e8f0;
   text-align: left;
-  margin-bottom: 12px;
-  max-height: 110px;
+  margin-bottom: 6px;
+  max-height: 120px;
   overflow-y: auto;
 }
 
 .card-explanation strong {
   color: #fbbf24;
   display: block;
-  margin-bottom: 4px;
+  font-size: 0.76rem;
+  margin-bottom: 2px;
 }
 
 .card-explanation p {
@@ -467,22 +470,29 @@
 .self-evaluate-prompt {
   text-align: center;
   background: rgba(255, 255, 255, 0.03);
-  padding: 8px;
-  border-radius: 12px;
+  padding: 4px;
+  border-radius: 8px;
 }
 
 .self-evaluate-prompt p {
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   color: #94a3b8;
 }
 
 .evaluate-hints {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
-  font-weight: 600;
+  justify-content: center;
+  gap: 10px;
+}
+
+.evaluate-hints span {
+  font-size: 0.68rem;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .evaluate-hints span:first-child {
@@ -498,8 +508,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  margin-top: 18px;
+  gap: 20px;
+  margin-top: 14px;
   width: 100%;
 }
 
@@ -519,16 +529,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  font-size: 1.4rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-size: 1.3rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   transition: all 0.2s ease;
 }
 
 .tinder-btn .btn-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -554,12 +564,12 @@
 
 /* Botón Voltear / Flip */
 .btn-flip .btn-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: rgba(56, 189, 248, 0.15);
   color: #38bdf8;
   border: 2px solid rgba(56, 189, 248, 0.4);
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .btn-flip .btn-label {
@@ -591,7 +601,7 @@
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
 }
 
-.tinder-btn:active {
+.tinder-btn:active:not(:disabled) {
   transform: scale(0.92);
 }
 
@@ -604,8 +614,8 @@
 .keyboard-shortcuts-pill {
   display: flex;
   gap: 16px;
-  margin-top: 14px;
-  font-size: 0.75rem;
+  margin-top: 12px;
+  font-size: 0.72rem;
   color: #64748b;
 }
 
@@ -614,7 +624,7 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
   padding: 2px 6px;
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   color: #94a3b8;
   font-family: inherit;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
@@ -631,7 +641,7 @@
   }
 
   .card-question {
-    font-size: 1.05rem;
+    font-size: 0.88rem;
   }
 
   .tinder-controls-bar {
@@ -640,14 +650,14 @@
   }
 
   .tinder-btn .btn-icon {
-    width: 54px;
-    height: 54px;
-    font-size: 1.25rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
   }
 
   .btn-flip .btn-icon {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
 
   .keyboard-shortcuts-pill {

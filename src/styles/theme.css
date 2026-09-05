@@ -74,6 +74,11 @@
   background: #ffffff;
   border-color: #cbd5e1;
   color: #1e293b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .deck-theme-btn:hover {
+  background: #f1f5f9;
 }
 
 .header-controls-row {
@@ -114,6 +119,8 @@ body[data-theme="light"] {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding: 4px 0;
+  line-height: 1.15;
 }
 
 [data-theme="light"] .brand-tagline {
@@ -209,14 +216,35 @@ body[data-theme="light"] {
   color: #475569;
 }
 
-[data-theme="light"] .secondary-launch {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #1e293b;
+/* Botones de lanzamiento de estudio */
+[data-theme="light"] .study-launch-btn {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
 }
 
-[data-theme="light"] .secondary-launch:hover {
-  background: #f1f5f9;
+[data-theme="light"] .study-launch-btn:hover:not(:disabled) {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .study-launch-btn.primary-launch {
+  background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+}
+
+[data-theme="light"] .study-launch-btn.primary-launch:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(79, 70, 229, 0.45) !important;
+}
+
+[data-theme="light"] .test-launch-btn {
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+  color: #ffffff !important;
 }
 
 [data-theme="light"] .test-badge-chip {
@@ -299,7 +327,7 @@ body[data-theme="light"] {
 [data-theme="light"] .card-face {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 36px -10px rgba(0, 0, 0, 0.08);
   color: #0f172a;
 }
 
@@ -350,6 +378,7 @@ body[data-theme="light"] {
 
 [data-theme="light"] .tap-to-flip-hint {
   color: #64748b;
+  border-top-color: #e2e8f0;
 }
 
 [data-theme="light"] .back-title {
@@ -357,12 +386,18 @@ body[data-theme="light"] {
 }
 
 [data-theme="light"] .answer-reveal-box {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
 }
 
 [data-theme="light"] .reveal-badge {
-  color: #15803d;
+  color: #065f46;
+}
+
+[data-theme="light"] .correct-letter-badge {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
 }
 
 [data-theme="light"] .revealed-option-item {
@@ -390,8 +425,12 @@ body[data-theme="light"] {
   color: #b45309;
 }
 
+[data-theme="light"] .self-evaluate-prompt {
+  background: #f8fafc;
+}
+
 [data-theme="light"] .self-evaluate-prompt p {
-  color: #0f172a;
+  color: #475569;
 }
 
 [data-theme="light"] .evaluate-hints span {
@@ -400,15 +439,73 @@ body[data-theme="light"] {
   color: #475569;
 }
 
+/* Botones de acción circular */
 [data-theme="light"] .tinder-btn {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-[data-theme="light"] .btn-flip {
-  border-color: #cbd5e1;
+[data-theme="light"] .btn-nope .btn-icon {
+  background: #fff1f2;
+  border: 2px solid #fda4af;
+  color: #e11d48;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+}
+
+[data-theme="light"] .btn-nope:hover:not(:disabled) .btn-icon {
+  background: #e11d48;
+  color: #ffffff;
+  border-color: #e11d48;
+}
+
+[data-theme="light"] .btn-flip .btn-icon {
+  background: #f0f9ff;
+  border: 2px solid #bae6fd;
+  color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+}
+
+[data-theme="light"] .btn-flip:hover .btn-icon {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+[data-theme="light"] .btn-like .btn-icon {
+  background: #ecfdf5;
+  border: 2px solid #a7f3d0;
+  color: #059669;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
+}
+
+[data-theme="light"] .btn-like:hover:not(:disabled) .btn-icon {
+  background: #059669;
+  color: #ffffff;
+  border-color: #059669;
+}
+
+[data-theme="light"] .btn-nope .btn-label {
+  color: #e11d48;
+}
+
+[data-theme="light"] .btn-flip .btn-label {
+  color: #0284c7;
+}
+
+[data-theme="light"] .btn-like .btn-label {
+  color: #059669;
+}
+
+[data-theme="light"] .keyboard-shortcuts-pill {
+  color: #64748b;
+}
+
+[data-theme="light"] .keyboard-shortcuts-pill kbd {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
   color: #475569;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* =========================================================
