@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "An administrator needs to archive audit logs for seven years to comply with regulatory standards. The logs should be stored as cost-effectively as possible, and rapid search access is not required. Where should the administrator configure a Cloud Logging Sink to route these logs?",
+    "options": {
+      "A": "A BigQuery dataset.",
+      "B": "A Pub/Sub topic routed to a SIEM.",
+      "C": "A Cloud Storage bucket with Archive class files.",
+      "D": "An external third-party file database."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Directing logs through a Cloud Logging Sink to an Archive class Cloud Storage bucket provides the most cost-efficient long-term retention."
+  },
+  "2": {
+    "question": "You want to verify that your global e-commerce web application is accessible to users outside the local network. You need to verify status codes and response times every 5 minutes from multiple global regions. Which feature of Cloud Monitoring should you configure?",
+    "options": {
+      "A": "Metric Explorer queries.",
+      "B": "Uptime Checks.",
+      "C": "Cloud Logging Sinks.",
+      "D": "Cloud Trace spans."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Uptime Checks target web endpoints from global source locations to verify connection status, response codes, and network latency periodically."
+  },
+  "3": {
+    "question": "An application operations team wants to analyze application latency profiles and identify the exact database queries that are slowing down HTTP response cycles. Which tool should they use?",
+    "options": {
+      "A": "Cloud Logging",
+      "B": "Cloud Monitoring",
+      "C": "Cloud Trace",
+      "D": "Cloud Profiler"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Trace collects latency metrics across distributed microservices, tracking individual requests through call graphs to identify performance bottlenecks."
+  }
+}

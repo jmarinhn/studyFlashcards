@@ -1,0 +1,50 @@
+{
+  "1": {
+    "question": "Which of the following tasks falls directly within the primary responsibilities of an Associate Cloud Engineer?",
+    "options": {
+      "A": "Defining long-term corporate cloud business strategies.",
+      "B": "Implementing, securing, and deploying applications and monitoring operations of multiple projects.",
+      "C": "Designing hardware components for custom on-premises servers.",
+      "D": "Negotiating pricing contracts directly with Google Cloud executives."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "An ACE focuses on operational and deployment tasks: configuring access, securing workloads, and monitoring health indicators."
+  },
+  "2": {
+    "question": "Under which exam domain does managing billing accounts, defining budgets, and setting up spend alerts fall?",
+    "options": {
+      "A": "Planning and Implementing a Cloud Solution",
+      "B": "Ensuring Successful Operation of a Cloud Solution",
+      "C": "Setting up a Cloud Solution Environment",
+      "D": "Configuring Access and Security"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Domain 1 (Setting up the Cloud Solution Environment) includes configuring GCP resource hierarchy, billing budgets, and basic IAM security profiles."
+  },
+  "3": {
+    "question": "An Associate Cloud Engineer needs to verify that a deployed microservice meets target performance metrics and troubleshoot recent high-latency issues. Which Google Cloud suite is best suited for this task?",
+    "options": {
+      "A": "Google Cloud Identity",
+      "B": "Google Cloud Observability (formerly Stackdriver)",
+      "C": "Cloud Identity-Aware Proxy (IAP)",
+      "D": "Workforce Identity Federation"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud Observability collects logs, tracks application metrics (latencies, resource usage), and monitors health via dashboards."
+  },
+  "4": {
+    "question": "What are the formal prerequisites and recommended experience levels required before registering for the standard Associate Cloud Engineer exam?",
+    "options": {
+      "A": "Prerequisite: Professional Cloud Architect certification; Recommended: 2+ years of experience.",
+      "B": "Prerequisite: None; Recommended: More than 6 months of hands-on experience with Google Cloud.",
+      "C": "Prerequisite: Cloud Digital Leader certification; Recommended: 1 year of software engineering experience.",
+      "D": "Prerequisite: A degree in Computer Science; Recommended: No prior cloud experience."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud imposes no formal academic or certification requirements before taking the ACE exam, though 6+ months of hands-on practice is strongly advised."
+  }
+}

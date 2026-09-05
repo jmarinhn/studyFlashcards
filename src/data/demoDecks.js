@@ -1,7 +1,20 @@
-// Mazos de demostración precargados para jugar inmediatamente
-import { normalizeQuestion } from '../utils/deckUtils.js';
+import { normalizeQuestion, parseQuestionsJson } from '../utils/deckUtils.js';
+import gcpMasterRaw from './decks/master_quiz.json';
+import gcpNetworkRaw from './decks/network_architecture.json';
 
 const rawDecks = {
+  gcp_master: {
+    id: 'gcp_master',
+    title: '🎯 Google Cloud ACE: Master Quiz',
+    description: '85 preguntas oficiales: IAM, Jerarquía, VPC, GKE, Cloud Run, Spanner, Observabilidad y Terraform.',
+    questions: parseQuestionsJson(gcpMasterRaw),
+  },
+  gcp_network: {
+    id: 'gcp_network',
+    title: '🌐 GCP: Network Architecture & VPCs',
+    description: '13 preguntas: Subredes, Cloud NAT, Peering transitivo, NCC y Stateful Firewalls.',
+    questions: parseQuestionsJson(gcpNetworkRaw),
+  },
   aws: {
     id: 'aws',
     title: '☁️ AWS Cloud & DevOps Essentials',

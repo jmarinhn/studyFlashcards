@@ -1,0 +1,62 @@
+{
+  "1": {
+    "question": "A security administrator grants a user the `Compute Admin` role at the Folder level. Can a project manager revoke this permission for a specific project contained within that Folder?",
+    "options": {
+      "A": "Yes, by applying a Deny Policy at the project level.",
+      "B": "No, because IAM permissions flow down the resource hierarchy, and parent permissions are always inherited and cannot be overridden by child resources.",
+      "C": "Yes, by deleting the user's project-level binding.",
+      "D": "No, unless they delete the entire folder hierarchy first."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "The resource hierarchy strictly enforces downstream policy inheritance. If permissions are set at a higher folder node, lower project resources inherit them automatically and cannot block them."
+  },
+  "2": {
+    "question": "An organization runs a daily batch data processing job that is highly fault-tolerant and can resume without data loss if interrupted. Which billing model provides the most cost-effective compute solution?",
+    "options": {
+      "A": "Committed Use Discounts (CUDs) for 3 years.",
+      "B": "On-demand pricing.",
+      "C": "Spot VMs.",
+      "D": "Sole-tenant nodes."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Spot VMs take advantage of unused compute capacity. They are highly discounted but can be preempted. This matches fault-tolerant batch workloads."
+  },
+  "3": {
+    "question": "Which state does a Compute Engine VM enter when it is shut down from the Google Cloud Console, and does it still incur billing charges?",
+    "options": {
+      "A": "`SUSPENDED`; charges for vCPUs and memory still apply.",
+      "B": "`TERMINATED`; charges for vCPUs and memory stop, but attached persistent disks and external IP allocations still incur fees.",
+      "C": "`STOPPING`; all billing for disks and IPs immediately ceases.",
+      "D": "`DELETED`; all resource definitions are destroyed."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "In the `TERMINATED` state, CPU and memory billing stops, but you still pay for associated persistent disks (storage capacity) and any statically reserved IPs."
+  },
+  "4": {
+    "question": "An engineer regularly works in Cloud Shell and wants specific environment variables (such as default project ID and region) to be automatically loaded whenever a new Cloud Shell session is provisioned. How should they configure this?",
+    "options": {
+      "A": "Reinstall the Cloud SDK every time the VM boots.",
+      "B": "Store the configuration script in the `$HOME` directory and source it within `~/.profile`.",
+      "C": "Store the variables in `/tmp` because `/tmp` persists across session resets.",
+      "D": "Grant the user the `Project Editor` role so that variables persist automatically."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Shell provides 5 GB of persistent storage in $HOME. System files outside $HOME are discarded when the VM is recycled after 1 hour of inactivity. Adding configuration scripts to ~/.profile ensures environment variables persist across sessions."
+  },
+  "5": {
+    "question": "Which capabilities are natively provided by Cloud Shell out-of-the-box? (Select all that apply)",
+    "options": {
+      "A": "5 GB of persistent `$HOME` storage.",
+      "B": "Built-in authorization using the active Console credentials.",
+      "C": "Pre-installed CLI tools including `gcloud`, `kubectl`, `bq`, and `gcloud storage`.",
+      "D": "Permanent non-recyclable VM hardware that never resets after inactivity."
+    },
+    "answer_official": "ABC",
+    "answer_community": "ABC",
+    "explanation": "Cloud Shell includes 5 GB of persistent $HOME storage, automatic authentication via Google Cloud Console credentials, and pre-installed developer tools (gcloud, kubectl, bq, docker). Cloud Shell VMs are recycled after inactivity, not permanent."
+  }
+}

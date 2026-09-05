@@ -1,0 +1,122 @@
+{
+  "1": {
+    "question": "What does it mean that Gemini Notebook is \"source-grounded\"?",
+    "options": {
+      "A": "It can only search the live internet for information.",
+      "B": "It prioritizes and restricts its answers to the documents you explicitly upload, citing them directly.",
+      "C": "It requires a constant connection to a local database.",
+      "D": "It only operates when local files are saved on your computer's desktop."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Source-grounded means the model targets your specific files first. It reduces hallucinations and maps answers back to verified uploads with inline citations."
+  },
+  "2": {
+    "question": "You are studying for a Google Cloud certification exam using Gemini Notebook. What is the recommended way to prevent the AI from generating answers based on outdated or out-of-scope training data?",
+    "options": {
+      "A": "Upload as many documents from the internet as possible to dilute its training data.",
+      "B": "Append the instruction \"Answer only using the provided sources\" to your complex technical queries.",
+      "C": "Disconnect your computer from the internet before querying the AI.",
+      "D": "Use the primitive Owner role in IAM to restrict the notebook's API."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Prompts specifying \"Answer only using the provided sources\" force the model to anchor its logical deductions inside your verified files, ignoring unrelated training parameters."
+  },
+  "3": {
+    "question": "An Associate Cloud Engineer student wants to review their study materials during their daily commute without looking at a screen. Which feature of Gemini Notebook is best suited for this?",
+    "options": {
+      "A": "Studio Flashcards",
+      "B": "Deep Research Panel",
+      "C": "Audio Overviews (Deep Dives)",
+      "D": "Inline Citation Highlighting"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Audio Overviews generate a conversational, podcast-style dialogue between two AI voices talking about your sources, which is great for off-screen study."
+  },
+  "4": {
+    "question": "Which of the following describes a limitation of Gemini Notebook?",
+    "options": {
+      "A": "Each notebook has access to all the sources uploaded in your other notebooks.",
+      "B": "The free plan limits users to 3 notebooks total.",
+      "C": "It does not provide citations or references for its answers.",
+      "D": "Notebooks are isolated; there is no automated cross-pollination of information between separate notebooks."
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "Each notebook acts as an isolated workspace. Information uploaded in one notebook is inaccessible from another unless duplicated."
+  },
+  "5": {
+    "question": "How does Gemini Notebook retrieve information to answer your prompts?",
+    "options": {
+      "A": "It performs a live Google Search across the public internet.",
+      "B": "It searches all Google Cloud product documentation automatically.",
+      "C": "It prioritizes the sources you upload to the notebook.",
+      "D": "It accesses your personal Google Workspace to find relevant files."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Unlike standard models, Gemini Notebook relies on a dedicated, user-curated knowledge base by prioritizing and scanning your checked sources."
+  },
+  "6": {
+    "question": "How can you incorporate your own insights into a Gemini Notebook project?",
+    "options": {
+      "A": "Create a note in the Studio panel and select \"Convert to source\".",
+      "B": "Edit the original PDF documents and re-upload them to the project.",
+      "C": "Send a chat message asking Gemini Notebook to permanently remember a fact.",
+      "D": "Export the notebook to Google Docs and type your insights there."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Creating a note in the Studio panel and selecting \"Convert to source\" adds your personal input directly to the source list, making it queryable."
+  },
+  "7": {
+    "question": "Which approach yields the most accurate and useful responses from Gemini Notebook?",
+    "options": {
+      "A": "Writing the shortest possible prompts to minimize processing time.",
+      "B": "Providing detailed prompts grounded in high-quality, comprehensive source documents.",
+      "C": "Asking Gemini Notebook to search the public internet for the latest technical articles.",
+      "D": "Relying entirely on Gemini Notebook’s pre-trained base model knowledge."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Detail-rich prompts tied to solid, authoritative source documents supply the context necessary for correct, grounded answers."
+  },
+  "8": {
+    "question": "How can Gemini Notebook assist you with a complex topic like configuring Workload Identity Federation?",
+    "options": {
+      "A": "It can automatically provision the required identity resources in your Google Cloud project.",
+      "B": "It can rewrite the official Google Cloud documentation to permanently change the source URL.",
+      "C": "It can analyze your uploaded course materials and summarize the key concepts and steps.",
+      "D": "It can contact Google Cloud Support on your behalf to request a technical explanation."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Gemini Notebook is an informational assistant. It cannot provision resources, execute code, or make API calls, but it is excellent at summarizing and explaining complex processes from your files."
+  },
+  "9": {
+    "question": "How can you customize a generated study resource, such as a quiz or study guide, in the Studio panel?",
+    "options": {
+      "A": "Modify the underlying HTML code of the Gemini Notebook interface to change the output format.",
+      "B": "Send a chat prompt asking Gemini Notebook to permanently change its default output style for all future resources.",
+      "C": "You cannot customize Studio features. They always generate standard, unchangeable outputs.",
+      "D": "Select the pencil icon next to the feature to provide specific instructions or set context before generating."
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "The pencil icon allows users to input custom instructions, tailoring the quizzes or reports to specific styles, focuses, or depths."
+  },
+  "10": {
+    "question": "When you generate a new study resource (like an Audio Overview or a set of flashcards), which documents does Gemini Notebook use to create the content?",
+    "options": {
+      "A": "Every document you have ever uploaded to any notebook in your account.",
+      "B": "Only the single most recently uploaded document in your current notebook.",
+      "C": "Only the specific documents that are currently checked in the Sources panel.",
+      "D": "All documents in the current notebook, regardless of whether they are checked or unchecked."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Checking and unchecking items in the Sources panel lets you target the model. It ignores unchecked documents in the current workspace."
+  }
+}

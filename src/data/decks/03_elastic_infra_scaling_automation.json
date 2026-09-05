@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "A systems administrator wants to ensure that a web server pool dynamically adds instances when average CPU utilization exceeds 75%, and automatically deletes and recreates any VM that stops responding to HTTP status checks. Which configuration is required?",
+    "options": {
+      "A": "An Unmanaged Instance Group with an autoscaling policy.",
+      "B": "A Managed Instance Group (MIG) configured with both an autoscaling policy and an HTTP health check for autohealing.",
+      "C": "A global load balancer with an autoscaling group.",
+      "D": "A startup script that runs on standalone VMs to query Compute Engine metrics."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Autoscaling policies add/remove instances, and Health Checks linked to MIGs (Autohealing) monitor application status to replace failed or unresponsive instances."
+  },
+  "2": {
+    "question": "Your enterprise requires that separate development teams manage their own compute resources (VMs and databases) in isolated projects. However, security policy mandates that all network routing, firewall rules, and IP spaces must be centrally administered by a networking team. Which architecture meets this requirement?",
+    "options": {
+      "A": "Establish VPC Network Peering between each team's project.",
+      "B": "Configure a Shared VPC, designating the networking project as the Host Project and the development projects as Service Projects.",
+      "C": "Set up a transit VPC using Cloud VPN tunnels connecting each project.",
+      "D": "Give each developer the `Network Admin` role at the organization level."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Shared VPC lets you configure a Host Project where the central team manages the IP layout and firewalls, while Service Projects contain compute assets deployed directly into those subnets."
+  },
+  "3": {
+    "question": "An enterprise requires a hybrid network connection between their on-premises data center and Google Cloud. The connection must provide high bandwidth, low latency, and bypass the public internet entirely. Which option should the network architect choose?",
+    "options": {
+      "A": "High-Availability (HA) Cloud VPN",
+      "B": "Classic VPN",
+      "C": "Cloud Interconnect (Dedicated or Partner)",
+      "D": "Private Google Access"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Interconnect provides physical circuits (via Google edge locations or partners) that route traffic directly to GCP, bypassing the internet to ensure consistent throughput."
+  }
+}

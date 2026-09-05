@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "You want to deploy an internal web application packaged as a Docker container. The application receives unpredictable traffic spikes but is completely idle during nights and weekends. You want to scale to zero instances when idle to save costs and avoid managing VM nodes or clusters. Which service should you choose?",
+    "options": {
+      "A": "GKE Standard",
+      "B": "Compute Engine Managed Instance Groups",
+      "C": "Cloud Run (Service)",
+      "D": "Cloud Run (Job)"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Run services deploy containerized HTTP apps and can scale to zero instances automatically during idle periods to eliminate resource costs."
+  },
+  "2": {
+    "question": "An engineer needs to deploy a script that automatically processes and extracts metadata from images as soon as they are uploaded to a specific Cloud Storage bucket. Which service is best suited for this event-driven, single-purpose task?",
+    "options": {
+      "A": "Cloud Run (Service)",
+      "B": "Cloud Run Functions (Event-driven Function)",
+      "C": "GKE Autopilot",
+      "D": "BigQuery Omni"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Run Functions are built for event-driven workflows, responding instantly to events (like a new object in Cloud Storage) without keeping servers running."
+  },
+  "3": {
+    "question": "Which IAM configuration is required to expose a Cloud Run service publicly to the internet, allowing unauthenticated users to access its web endpoint?",
+    "options": {
+      "A": "Grant the `allAuthenticatedUsers` group the `Cloud Run Admin` role.",
+      "B": "Grant the `allUsers` principal the `Cloud Run Invoker` role.",
+      "C": "Disable firewalls for the VPC subnet hosting the container.",
+      "D": "Create a custom role containing the `compute.instances.create` permission."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Exposing a Cloud Run service requires giving the specialized `allUsers` principal the permission to invoke (run) the service."
+  }
+}

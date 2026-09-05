@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "An organization is deploying a multi-tier web application. They need to distribute public HTTPS traffic to web servers based on the URL path (e.g., routing `/cart` to a dedicated VM instance group and `/catalog` to another). They also want to cache static images at edge locations near users. Which load balancer should they choose?",
+    "options": {
+      "A": "Regional External Network Load Balancer (L4 TCP)",
+      "B": "Global External Application Load Balancer (L7 HTTP/S)",
+      "C": "Internal TCP/UDP Load Balancer",
+      "D": "Classic Network Load Balancer"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Layer 7 routing (based on paths like `/cart`) and integration with Cloud CDN to cache content require an Application Load Balancer (HTTP/S)."
+  },
+  "2": {
+    "question": "You want to distribute private internal traffic among backend database helper servers within your VPC. The database helpers communicate over raw TCP. The load balancer must have a private IP address within your subnet and not be exposed to the internet. Which load balancer should you use?",
+    "options": {
+      "A": "Global External Application Load Balancer",
+      "B": "Regional External Network Load Balancer",
+      "C": "Regional Internal Proxy TCP Load Balancer",
+      "D": "Regional Internal Passthrough Network Load Balancer (Internal TCP/UDP)"
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "Distributing internal TCP traffic securely within a VPC requires a regional, internal passthrough network load balancer."
+  },
+  "3": {
+    "question": "How does a Google Cloud load balancer determine if an individual VM instance in a backend Managed Instance Group has failed and should no longer receive user traffic?",
+    "options": {
+      "A": "By checking if the VM is in the `TERMINATED` state via Compute Engine API.",
+      "B": "By utilizing configured Health Checks to periodically probe the application port.",
+      "C": "By monitoring the VM's CPU usage; if it drops to 0%, traffic is routed away.",
+      "D": "The load balancer relies on manual administrator configuration to remove failed VMs."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Load balancers use periodic health checks to query backend ports. If a node fails to respond, it is marked unhealthy and traffic is diverted automatically."
+  }
+}

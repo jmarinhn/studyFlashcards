@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "You want to deploy a containerized application to GKE. You want to pay only for the CPU, memory, and storage that your pods actually request, without managing VM instance nodes, OS patching, or cluster upgrade settings. Which GKE operating mode should you select?",
+    "options": {
+      "A": "GKE Standard with cluster autoscaler enabled.",
+      "B": "GKE Autopilot.",
+      "C": "Cloud Run.",
+      "D": "Compute Engine with container-optimized OS."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "GKE Autopilot manages node provisioning and lifecycle entirely. It bills based on pod resource allocations, whereas GKE Standard bills for the underlying nodes."
+  },
+  "2": {
+    "question": "Which Kubernetes resource type should you configure to expose your microservice pod replicas to the public internet using a Google Cloud External Load Balancer?",
+    "options": {
+      "A": "A deployment config with replica status.",
+      "B": "A Service of type `ClusterIP`.",
+      "C": "A Service of type `LoadBalancer`.",
+      "D": "An Ingress resource with custom path routing."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Exposing a service as type `LoadBalancer` signals GKE to automatically request and configure an external GCP network load balancer routing directly to your pods."
+  },
+  "3": {
+    "question": "An engineer is troubleshooting a deployment. They want to check the logs of a container running inside a pod named `api-pod-xyz`. Which CLI command should they run?",
+    "options": {
+      "A": "`gcloud compute instances get-serial-port-output api-pod-xyz`",
+      "B": "`kubectl logs api-pod-xyz`",
+      "C": "`gcloud container clusters describe api-pod-xyz`",
+      "D": "`kubectl get events --filter api-pod-xyz`"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "`kubectl logs` is the standard tool used to retrieve console output from container processes inside active Kubernetes pods."
+  }
+}

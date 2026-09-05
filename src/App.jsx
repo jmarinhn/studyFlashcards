@@ -17,7 +17,7 @@ export default function App() {
   const [nameInput, setNameInput] = useState('');
 
   // Mazos
-  const [activeDeckKey, setActiveDeckKey] = useState('aws');
+  const [activeDeckKey, setActiveDeckKey] = useState('gcp_master');
   const [customDecks, setCustomDecks] = useState([]);
   const [currentQuestions, setCurrentQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);

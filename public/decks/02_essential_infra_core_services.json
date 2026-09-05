@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "An administrator needs to configure a storage solution for audit logs. The logs must be retained for seven years, will rarely (if ever) be accessed, but must not be lost. Which Cloud Storage class provides the most cost-effective storage?",
+    "options": {
+      "A": "Standard Storage",
+      "B": "Nearline Storage",
+      "C": "Archive Storage",
+      "D": "Coldline Storage"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Archive Storage has the lowest storage cost per gigabyte and is designed for data accessed less than once a year, making it ideal for multi-year compliance archives."
+  },
+  "2": {
+    "question": "You want to grant a custom application running on an on-premises server access to write backups to a Cloud Storage bucket in your project without managing long-lived JSON keys. What is the most secure method to accomplish this?",
+    "options": {
+      "A": "Download a Service Account key file and store it on the on-premises server.",
+      "B": "Configure Workforce Identity Federation to federate the application's identity.",
+      "C": "Set up Workload Identity Federation using an OIDC/SAML token provider to dynamically obtain short-lived Google Cloud credentials.",
+      "D": "Make the Cloud Storage bucket public so anyone can write to it."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Workload Identity Federation replaces static keys by establishing federation with external token providers (e.g., AWS, Azure, or OpenID Connect) to exchange external credentials for temporary GCP OAuth tokens."
+  },
+  "3": {
+    "question": "An application requires a globally scalable relational database with transactional integrity (ACID compliance) and strong consistency across multiple continents. Which database service should you choose?",
+    "options": {
+      "A": "Cloud SQL",
+      "B": "Cloud Spanner",
+      "C": "Bigtable",
+      "D": "Firestore"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Spanner provides a fully managed, globally distributed relational database with horizontal scale and strong external ACID consistency across multiple regions and continents."
+  }
+}

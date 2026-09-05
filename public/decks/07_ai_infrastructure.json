@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "An ML research team is training a custom deep learning transformer model from scratch. The training process consists of massive matrix multiplication operations and will run for several weeks. The team is writing their code in PyTorch. Which accelerator is specifically designed by Google to optimize this type of matrix math?",
+    "options": {
+      "A": "Intel Xeon CPU",
+      "B": "AMD EPYC CPU",
+      "C": "NVIDIA L4 GPU",
+      "D": "Google Tensor Processing Unit (TPU)"
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "TPUs are Google-designed ASICs optimized for high-performance tensor operations (matrix multiplications) found in large deep learning model training."
+  },
+  "2": {
+    "question": "You need to deploy a low-latency model inference service that analyzes customer feedback in real-time. The application requires high computational flexibility and runs on a custom Python library not supported directly by Vertex AI. Which deployment option provides the best balance of container orchestration and GPU resource allocation?",
+    "options": {
+      "A": "GKE node pools configured with attached GPUs.",
+      "B": "Standalone Compute Engine VMs using standard E2 machine types.",
+      "C": "Serverless Cloud Run Functions without accelerators.",
+      "D": "Google Cloud Storage buckets."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "GKE node pools with attached GPUs allow developers to deploy custom containerized inference services with full scheduling control over hardware accelerators."
+  },
+  "3": {
+    "question": "What is a key difference between GPUs and TPUs regarding framework flexibility?",
+    "options": {
+      "A": "TPUs support any custom C++ application, whereas GPUs are restricted to TensorFlow.",
+      "B": "GPUs offer broader compatibility with diverse software frameworks, while TPUs are custom ASICs optimized specifically for select ML libraries like JAX, PyTorch, and TensorFlow.",
+      "C": "GPUs are only used for graphics, while TPUs perform all other system arithmetic.",
+      "D": "There is no architectural difference; they are synonymous."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "GPUs are generic parallel processing hardware with wide software compatibility. TPUs are specialized ASICs that require specific ML frameworks (TensorFlow, PyTorch, JAX) to utilize the hardware architecture."
+  }
+}

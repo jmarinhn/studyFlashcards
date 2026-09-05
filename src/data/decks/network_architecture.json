@@ -1,0 +1,158 @@
+{
+  "1": {
+    "question": "An administrator needs to allow a third-party developer to inspect configuration settings and read log structures within a GCP project, without granting modification permissions. Which IAM configuration best aligns with security best practices?",
+    "options": {
+      "A": "Add the developer's identity to the project and grant the **Editor** role.",
+      "B": "Create a custom role with full project write permissions but exclude delete permissions.",
+      "C": "Add the developer's identity to the project and grant the **Viewer** role.",
+      "D": "Enable a public IP address on the resources and share the endpoint URL."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "The Primitive \"Viewer\" role grants read-only access to most Google Cloud services, making it ideal for auditing without risking configuration drift or accidental resource changes."
+  },
+  "2": {
+    "question": "Which of the following architectural patterns is considered a security risk and is **LEAST** likely to improve network security in a Google Cloud VPC?",
+    "options": {
+      "A": "Enabling VPC Flow Logs to record metadata of network transactions.",
+      "B": "Assigning public IP addresses directly to all virtual machines to facilitate troubleshooting.",
+      "C": "Configuring stateful firewall rules targeting specific Service Accounts.",
+      "D": "Using Cloud NAT to provide private instances with outbound-only internet connectivity."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Allocating public IP addresses to all VMs exposes them to the public internet, dramatically increasing the attack surface. High security relies on keeping VMs private and utilizing Cloud NAT or proxies for outbound connections."
+  },
+  "3": {
+    "question": "An organization has three VPCs: `VPC-Prod`, `VPC-Shared-Services`, and `VPC-Corp`. They configure standard **VPC Network Peering** between `VPC-Prod` and `VPC-Shared-Services`, and between `VPC-Corp` and `VPC-Shared-Services`. Which statement is true regarding the traffic flow?",
+    "options": {
+      "A": "Traffic can transit from `VPC-Prod` through `VPC-Shared-Services` to reach `VPC-Corp`.",
+      "B": "Traffic cannot transit between `VPC-Prod` and `VPC-Corp` because VPC Network Peering is non-transitive.",
+      "C": "VPC Network Peering automatically configures a dynamic mesh topology allowing transitive route exchange.",
+      "D": "Pings will succeed because VPC Peering disables all stateful firewalls between peered networks."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "VPC Network Peering is strictly non-transitive. Traffic cannot pass through a middle VPC to reach a third VPC. Connecting them requires a direct peering link or a transitive hub."
+  },
+  "4": {
+    "question": "What is the primary operational advantage of using **Network Connectivity Center (NCC)** with VPC Spokes compared to traditional VPC Peering?",
+    "options": {
+      "A": "NCC allows overlapping IP addresses across all VPC spokes to simplify subnets.",
+      "B": "NCC enforces absolute separation of routing tables so spokes never exchange routes.",
+      "C": "NCC provides a centralized hub-and-spoke management model that enables transitive routing among attached VPC spokes.",
+      "D": "NCC automatically assigns public IP addresses to all VMs in spokes to facilitate easier connectivity."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "NCC simplifies management of complex topologies by using a centralized Hub and Spoke design that transitively routes traffic across connected VPC spokes, reducing the necessity of configuring a full pairwise mesh."
+  },
+  "5": {
+    "question": "You have created a custom subnet with a CIDR block of `192.168.10.0/29`. How many usable IP addresses are available for your Compute Engine VM instances within this subnet?",
+    "options": {
+      "A": "8 usable addresses.",
+      "B": "6 usable addresses.",
+      "C": "4 usable addresses (`.2`, `.3`, `.4`, `.5`), because Google reserves 4 addresses (`.0`, `.1`, second-to-last, and last).",
+      "D": "2 usable addresses."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "A /29 subnet has 8 total addresses (2^(32-29) = 8). Google Cloud reserves 4 addresses (.0 network, .1 default gateway, second-to-last reserved for future use, and last broadcast), leaving exactly 4 usable host IP addresses (.2 through .5)."
+  },
+  "6": {
+    "question": "Your engineering team needs to expand the IP range of an active production subnet because the IP pool has been exhausted. What is the expected impact on running virtual machines when you expand the subnet CIDR in Google Cloud?",
+    "options": {
+      "A": "VMs must be stopped, modified, and restarted.",
+      "B": "Subnet expansion occurs with zero downtime without interrupting any running workloads.",
+      "C": "Subnets cannot be expanded once created; you must delete and recreate the subnet.",
+      "D": "Subnets can only be expanded if you first downgrade the network to Auto Mode."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Expanding the CIDR block of an existing subnet in Google Cloud is a hitless, non-disruptive operation with zero downtime for running virtual machines."
+  },
+  "7": {
+    "question": "Which of the following statements regarding Google Cloud external IP addresses is correct regarding billing and behavior?",
+    "options": {
+      "A": "Reserving a static external IP address and leaving it unattached to any running resource incurs a higher hourly charge than when it is attached to a running VM.",
+      "B": "Ephemeral IP addresses are retained even when a VM instance is deleted.",
+      "C": "Static external IP addresses are completely free of charge whether used or unused.",
+      "D": "You can import any custom IPv4 block via BYOIP with a minimum size of `/32`."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Google Cloud charges a higher hourly rate for reserved static external IP addresses that are unattached to any running instance, to discourage IP address waste and encourage efficient IPv4 allocation."
+  },
+  "8": {
+    "question": "An incoming request from the internet reaches a web server VM over port 443 because an Ingress firewall rule allows it. However, the administrator has deleted all user-defined Egress rules, leaving only the default rules. Why does the web server successfully return the HTTPS response packet back to the client?",
+    "options": {
+      "A": "Egress traffic always bypasses firewalls completely.",
+      "B": "Google Cloud firewalls are stateful; once an ingress connection is allowed, all subsequent bidirectional response traffic for that session is automatically permitted.",
+      "C": "The Cloud NAT gateway creates an exception tunnel for the response.",
+      "D": "HTTPS traffic is encrypted and cannot be inspected by firewall rules."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud firewall rules are stateful. When a session is permitted in one direction (e.g. Ingress allowed on port 443), return traffic for that established flow is allowed automatically in the opposite direction regardless of other egress rules."
+  },
+  "9": {
+    "question": "A security engineer creates two ingress firewall rules matching the same target instance: 1. `Rule-Allow-Web`: Priority `1000`, Action `ALLOW`, Source `0.0.0.0/0`, Port `tcp:80`. 2. `Rule-Block-Web`: Priority `500`, Action `DENY`, Source `0.0.0.0/0`, Port `tcp:80`. What happens when an external client attempts to connect to port 80 of the target VM?",
+    "options": {
+      "A": "The connection is allowed because `ALLOW` rules always override `DENY` rules regardless of priority.",
+      "B": "The connection is denied because `Rule-Block-Web` has a lower priority number (`500`), which represents higher evaluation precedence, and the first matching rule terminates evaluation.",
+      "C": "Both rules cancel each other out, defaulting to the implied allow rule.",
+      "D": "The connection is allowed because priority 1000 is numerically larger than 500."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Firewall rule priorities range from 0 to 65535, with lower numbers having higher priority. The firewall evaluates rules in ascending numerical order, and the first rule that matches the packet terminates evaluation."
+  },
+  "10": {
+    "question": "You configure a custom static Route in your VPC directing traffic destined for `10.50.0.0/16` to a Next-Generation Firewall VM appliance. However, when instances attempt to ping hosts in `10.50.0.0/16`, the packets are dropped. What is the most likely cause?",
+    "options": {
+      "A": "Custom routes only apply to regional load balancers, not VM instances.",
+      "B": "An existing or implied firewall rule is denying the egress or ingress traffic; packets require both a matching route AND a matching allow firewall rule to flow.",
+      "C": "Google Cloud VPC requires BGP peering before any static route can be activated.",
+      "D": "The subnet mask `/16` is too large for the Andromeda virtual router."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "In Google Cloud networking, having a route to a destination is a necessary but not sufficient condition. Traffic will only flow if both a valid matching Route exists AND a matching Allow Firewall Rule permits the packet."
+  },
+  "11": {
+    "question": "Two Compute Engine virtual machines (`VM-A` and `VM-B`) reside within the exact same zone (`us-central1-a`) and subnet. `VM-A` communicates with `VM-B` using `VM-B`'s public (external) IP address instead of its internal IP address. How will Google Cloud bill the egress traffic originating from `VM-A`?",
+    "options": {
+      "A": "The egress traffic is completely free because both VMs reside in the same physical zone.",
+      "B": "The egress traffic is charged at inter-zone egress rates because Compute Engine cannot resolve the zone of the target through its external IP address at the edge layer.",
+      "C": "The traffic is billed double as inter-continental international data transfer.",
+      "D": "Google Cloud drops the packets because VMs in the same zone cannot use external IPs to communicate."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Egress traffic to another VM in the same zone is only free when routed via internal IP addresses. When using external IPs, traffic traverses Google edge routing, which cannot determine instance zones, resulting in inter-zone egress billing."
+  },
+  "12": {
+    "question": "An administrator deletes all VPC networks in a test project. Afterward, a developer attempts to provision a new Compute Engine virtual machine instance. What will happen?",
+    "options": {
+      "A": "Compute Engine automatically provisions a temporary hidden VPC for the VM.",
+      "B": "The VM creation fails immediately with a \"No more networks available\" error because Compute Engine instances require a VPC network and subnet to attach a network interface (`nic0`).",
+      "C": "The VM launches in a standalone bridge mode without an IP address.",
+      "D": "The instance starts and communicates over Google's public edge network."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "A VPC network is a mandatory prerequisite for provisioning Compute Engine VMs, GKE clusters, and App Engine Flexible environments. Without a network and regional subnet, no virtual network interface can be allocated."
+  },
+  "13": {
+    "question": "You have four VMs deployed in Google Cloud: * `VM-1` and `VM-2` are in the SAME VPC network (`vpc-prod`), but `VM-1` is in `us-central1` (Iowa) and `VM-2` is in `asia-east1` (Taiwan). * `VM-3` and `VM-4` are in SEPARATE VPC networks (`vpc-dev` and `vpc-qa`), but both reside in the exact SAME zone (`us-central1-a`). Assuming all firewalls allow internal ICMP traffic, what is the internal ping behavior?",
+    "options": {
+      "A": "`VM-1` can ping `VM-2` using internal IPs; `VM-3` CANNOT ping `VM-4` using internal IPs.",
+      "B": "`VM-3` can ping `VM-4` because they share the same physical zone; `VM-1` cannot ping `VM-2` because they are in different regions.",
+      "C": "Neither pair can ping each other internally without Cloud VPN.",
+      "D": "Both pairs can ping each other because GCP networks automatically bridge same-project resources."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Google Cloud VPCs are global resources that allow cross-region internal communication over Google's private backbone. Conversely, separate VPC networks are completely isolated private networking domains and cannot communicate internally regardless of zone proximity, unless VPC Peering or VPN is established."
+  }
+}

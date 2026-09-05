@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "A global retail company is building an inventory system that requires strong consistency and transactional integrity across databases located in Asia, Europe, and North America. They must scale write throughput horizontally to support seasonal shopping spikes. Which database should they use?",
+    "options": {
+      "A": "Cloud SQL (PostgreSQL)",
+      "B": "Cloud Spanner",
+      "C": "Cloud Bigtable",
+      "D": "Firestore"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Spanner is the only relational database on Google Cloud that scales horizontally for both reads and writes globally while maintaining full ACID compliance."
+  },
+  "2": {
+    "question": "An IoT startup needs to ingest time-series sensor telemetry data from millions of connected smart meters. The database must handle a continuous stream of write requests at a rate of 100,000 writes per second, and require sub-10 millisecond read latencies for dashboard queries. Which database is best suited for this?",
+    "options": {
+      "A": "Cloud SQL (MySQL)",
+      "B": "Cloud Spanner",
+      "C": "Cloud Bigtable",
+      "D": "Firestore"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Bigtable is a wide-column NoSQL service designed specifically for high-throughput streaming writes and low-latency single-key lookups, making it ideal for IoT time-series data."
+  },
+  "3": {
+    "question": "Which Google Cloud database service is a serverless document store that supports real-time client SDK connections and offline data synchronization for mobile applications?",
+    "options": {
+      "A": "BigQuery",
+      "B": "Firestore",
+      "C": "AlloyDB",
+      "D": "Cloud Bigtable"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Firestore is a serverless document database offering SDK client sync features that allow mobile and web clients to cache queries offline and listen to modifications in real-time."
+  }
+}

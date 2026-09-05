@@ -1,0 +1,38 @@
+{
+  "1": {
+    "question": "A DevOps team wants to collaborate on a Google Cloud infrastructure repository using Terraform. They need to ensure that the state file is stored securely in a central location, and that concurrent executions by different team members do not conflict or corrupt the state. Which configuration should they use?",
+    "options": {
+      "A": "Store the state file in a Git repository and use branch locking.",
+      "B": "Configure a remote backend storing the state in a Cloud Storage bucket, which natively supports state locking.",
+      "C": "Run a local cron job to sync the state file with Google Drive.",
+      "D": "Use the primitive Editor role to share local workspace access."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Storing state in Cloud Storage using a `gcs` backend provides centralized access control and native state locking to prevent concurrent deployment runs."
+  },
+  "2": {
+    "question": "Which Terraform CLI command should an engineer run to preview a dry-run listing of the resources that Terraform will create, modify, or destroy, without actually making changes to their live Google Cloud environment?",
+    "options": {
+      "A": "`terraform init`",
+      "B": "`terraform validate`",
+      "C": "`terraform plan`",
+      "D": "`terraform apply`"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "`terraform plan` queries the current state, compares it with local files, and shows the dry-run operations (add/change/destroy) without applying them."
+  },
+  "3": {
+    "question": "An engineer modifies an instance configuration file to change the machine type of a VM from `e2-medium` to `e2-standard-4`. Which block type in Terraform defines this resource?",
+    "options": {
+      "A": "`variable \"machine_type\"`",
+      "B": "`resource \"google_compute_instance\"`",
+      "C": "`output \"instance_ip\"`",
+      "D": "`provider \"google\"`"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "In Terraform, infrastructure assets are defined within `resource` blocks (such as `google_compute_instance`), whereas `variable` defines input parameters."
+  }
+}

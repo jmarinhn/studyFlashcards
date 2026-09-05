@@ -1,0 +1,58 @@
+[
+  {
+    "file": "01_essential_infra_foundation.json",
+    "questions": 5
+  },
+  {
+    "file": "02_essential_infra_core_services.json",
+    "questions": 3
+  },
+  {
+    "file": "03_elastic_infra_scaling_automation.json",
+    "questions": 3
+  },
+  {
+    "file": "04_google_kubernetes_engine.json",
+    "questions": 3
+  },
+  {
+    "file": "05_serverless_cloud_run.json",
+    "questions": 3
+  },
+  {
+    "file": "06_databases_and_storage.json",
+    "questions": 3
+  },
+  {
+    "file": "07_ai_infrastructure.json",
+    "questions": 3
+  },
+  {
+    "file": "08_logging_and_monitoring.json",
+    "questions": 3
+  },
+  {
+    "file": "09_terraform_infrastructure.json",
+    "questions": 3
+  },
+  {
+    "file": "10_cloud_load_balancing.json",
+    "questions": 3
+  },
+  {
+    "file": "associate_cloud_engineer_guide.json",
+    "questions": 4
+  },
+  {
+    "file": "gemini_notebook.json",
+    "questions": 10
+  },
+  {
+    "file": "master_quiz.json",
+    "questions": 85
+  },
+  {
+    "file": "network_architecture.json",
+    "questions": 13
+  }
+]

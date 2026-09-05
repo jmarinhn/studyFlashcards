@@ -1,0 +1,1022 @@
+{
+  "1": {
+    "question": "You are designing the resource hierarchy for a large enterprise. You want to apply different organizational policies (e.g., restricting public IP creation) for your Development, Staging, and Production environments. What is the best way to structure this resource hierarchy?",
+    "options": {
+      "A": "Create a single project and use naming prefixes like `dev-`, `stage-`, and `prod-` on resources.",
+      "B": "Create separate folders named `Development`, `Staging`, and `Production` under the Organization, apply the specific organizational policies to each folder, and place the respective projects inside them.",
+      "C": "Configure separate billing accounts for each environment.",
+      "D": "Set up separate Google Groups for each environment and assign policies to the groups."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Folders are the primary administrative boundary under the Organization where you can apply distinct inheritance boundaries, including different Organization Policies and access controls."
+  },
+  "2": {
+    "question": "A security administrator grants a user the `Compute Admin` role at the Folder level. Can a project manager revoke this permission for a specific project contained within that Folder?",
+    "options": {
+      "A": "Yes, by applying a Deny Policy at the project level.",
+      "B": "No, because IAM permissions flow down the resource hierarchy, and parent permissions are always inherited and cannot be overridden by child resources.",
+      "C": "Yes, by deleting the user's project-level binding.",
+      "D": "No, unless they delete the entire folder hierarchy first."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "The resource hierarchy strictly enforces downstream policy inheritance. If permissions are set at a higher folder node, lower project resources inherit them automatically and cannot block them."
+  },
+  "3": {
+    "question": "An administrator needs to allow a third-party developer to inspect configuration settings and read log structures within a GCP project, without granting modification permissions. Which IAM configuration best aligns with security best practices?",
+    "options": {
+      "A": "Add the developer's identity to the project and grant the **Editor** role.",
+      "B": "Create a custom role with full project write permissions but exclude delete permissions.",
+      "C": "Add the developer's identity to the project and grant the **Viewer** role.",
+      "D": "Enable a public IP address on the resources and share the endpoint URL."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "The Primitive \"Viewer\" role grants read-only access to most Google Cloud services, making it ideal for auditing without risking configuration drift or accidental resource changes."
+  },
+  "4": {
+    "question": "You need to grant a new junior developer the permission to stop and start Compute Engine virtual machines in a staging project. However, the developer must not have permissions to delete virtual machines or create new ones. Which predefined IAM role best satisfies this requirement?",
+    "options": {
+      "A": "`roles/compute.admin` (Compute Admin)",
+      "B": "`roles/compute.instanceAdmin.v1` (Compute Instance Admin)",
+      "C": "`roles/compute.viewer` (Compute Viewer)",
+      "D": "`roles/compute.securityAdmin` (Compute Security Admin)"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "The `Compute Instance Admin` role (`roles/compute.instanceAdmin.v1`) grants permissions to view, stop, start, and configure VM instances, but does not allow deleting or creating disks/firewalls that are handled by full Compute Admins."
+  },
+  "5": {
+    "question": "Under which exam domain does managing billing accounts, defining budgets, and setting up spend alerts fall?",
+    "options": {
+      "A": "Planning and Implementing a Cloud Solution",
+      "B": "Ensuring Successful Operation of a Cloud Solution",
+      "C": "Setting up a Cloud Solution Environment",
+      "D": "Configuring Access and Security"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Domain 1 (Setting up the Cloud Solution Environment) includes configuring GCP resource hierarchy, billing budgets, and basic IAM security profiles."
+  },
+  "6": {
+    "question": "A finance analyst needs permission to associate Google Cloud projects with your organization's Cloud Billing account. However, security policy dictates that the analyst must not be allowed to view or modify any of the resources (such as VMs or buckets) inside those projects. Which IAM role should you grant?",
+    "options": {
+      "A": "`roles/billing.admin` (Billing Account Administrator) at the project level",
+      "B": "`roles/billing.user` (Billing Account User) on the billing account",
+      "C": "`roles/owner` (Owner) at the organization level",
+      "D": "`roles/resourcemanager.projectCreator` (Project Creator) on the folder"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "The `Billing Account User` role allows a principal to associate projects with a billing account. It does not grant read or write permissions to the resources inside the projects."
+  },
+  "7": {
+    "question": "You want to grant a custom application running on an on-premises server access to write backups to a Cloud Storage bucket in your project without managing long-lived JSON keys. What is the most secure method to accomplish this?",
+    "options": {
+      "A": "Download a Service Account key file and store it on the on-premises server.",
+      "B": "Configure Workforce Identity Federation to federate the application's identity.",
+      "C": "Set up Workload Identity Federation using an OIDC/SAML token provider to dynamically obtain short-lived Google Cloud credentials.",
+      "D": "Make the Cloud Storage bucket public so anyone can write to it."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Workload Identity Federation replaces static keys by establishing federation with external token providers (e.g., AWS, Azure, or OpenID Connect) to exchange external credentials for temporary GCP OAuth tokens."
+  },
+  "8": {
+    "question": "You are a Cloud Engineer managing multiple environments. You frequently switch between your company’s `staging-project` and `production-project` which use different user accounts. You need to configure the `gcloud` CLI to switch between these contexts easily without re-authenticating every time. What should you do?",
+    "options": {
+      "A": "Run `gcloud auth login` every time you switch projects.",
+      "B": "Create two distinct configurations using `gcloud config configurations create` for staging and production, and switch between them using `gcloud config configurations activate`.",
+      "C": "Write a bash script that overwrites the active project ID in the default `gcloud` configuration files.",
+      "D": "Use separate terminal applications (e.g., Terminal and iTerm2) for each project."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Using `gcloud config configurations` allows you to define multiple named configurations (which store account, project, region, and zone properties) and switch between them instantly using `gcloud config configurations activate <name>`."
+  },
+  "9": {
+    "question": "You are using the `bq` command-line tool in your terminal to query datasets. You want to quickly change the default project context of your command-line tools (such as `gcloud` and `bq`) to target a different project ID called `development-sandbox-1`. Which command should you run?",
+    "options": {
+      "A": "`gcloud config set project development-sandbox-1`",
+      "B": "`bq set project development-sandbox-1`",
+      "C": "`gcloud auth application-default login`",
+      "D": "`export GOOGLE_CLOUD_PROJECT=development-sandbox-1`"
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "The command `gcloud config set project <PROJECT_ID>` updates the default project property in the active configuration, which is automatically inherited by other Google Cloud SDK tools (like `bq` and `gsutil`)."
+  },
+  "10": {
+    "question": "You need to run several command-line instructions using the Google Cloud CLI, but you do not want to install the Google Cloud SDK on your local computer. You decide to use Cloud Shell in the Google Cloud Console. What are the key technical specifications of the Cloud Shell environment?",
+    "options": {
+      "A": "A persistent dedicated VM with 100 GB of SSD storage that is running 24/7.",
+      "B": "A temporary virtual machine with 5 GB of persistent home directory storage and the Google Cloud CLI pre-installed.",
+      "C": "A container running directly on your local machine using web sockets.",
+      "D": "A serverless Cloud Run Function configured with a read-only local storage volume."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Shell is a temporary Compute Engine VM provisioned for your session. It comes with 5 GB of persistent home directory storage (which persists between sessions) and has the Google Cloud CLI and other utilities pre-installed."
+  },
+  "11": {
+    "question": "Your DevOps team wants to write a custom scripting tool in Python to automate the provisioning, tagging, and deletion of Google Cloud resources (like VMs and buckets) in your staging project. Which category of Google Cloud client library APIs should they use?",
+    "options": {
+      "A": "Application APIs (App APIs)",
+      "B": "Resource APIs (Res APIs)",
+      "C": "Administration APIs (Admin APIs)",
+      "D": "Operational APIs (Ops APIs)"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Google Cloud client libraries expose two main categories of APIs: Application (App) APIs, which let application code access services (e.g., writing to Firestore), and Administration (Admin) APIs, which provide functionality for resource management and automation tools."
+  },
+  "12": {
+    "question": "An engineer frequently works across different sessions in Cloud Shell. Because the underlying Compute Engine VM resets after 1 hour of inactivity, the custom environment variables defined during the session are lost. What is the recommended Google Cloud best practice to automatically persist custom environment variables across Cloud Shell sessions?",
+    "options": {
+      "A": "Store the variables in `/etc/environment` using `sudo`.",
+      "B": "Re-authenticate using `gcloud auth login` on each startup.",
+      "C": "Save the variables in a configuration file inside `$HOME` (e.g., `~/infraclass/config`) and add `source ~/infraclass/config` to the user's `~/.profile` file.",
+      "D": "Attach an external persistent SSD to `/tmp` and mount it upon opening the terminal."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Because Cloud Shell preserves up to 5 GB in the user's `$HOME` directory, storing custom configuration scripts in `$HOME` and sourcing them in `~/.profile` ensures that environment variables are loaded automatically every time a new Cloud Shell terminal session starts."
+  },
+  "13": {
+    "question": "Which of the following tasks falls directly within the primary responsibilities of an Associate Cloud Engineer?",
+    "options": {
+      "A": "Defining long-term corporate cloud business strategies.",
+      "B": "Implementing, securing, and deploying applications and monitoring operations of multiple projects.",
+      "C": "Designing hardware components for custom on-premises servers.",
+      "D": "Negotiating pricing contracts directly with Google Cloud executives."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "An ACE focuses on operational and deployment tasks: configuring access, securing workloads, and monitoring health indicators."
+  },
+  "14": {
+    "question": "What are the formal prerequisites and recommended experience levels required before registering for the standard Associate Cloud Engineer exam?",
+    "options": {
+      "A": "Prerequisite: Professional Cloud Architect certification; Recommended: 2+ years of experience.",
+      "B": "Prerequisite: None; Recommended: More than 6 months of hands-on experience with Google Cloud.",
+      "C": "Prerequisite: Cloud Digital Leader certification; Recommended: 1 year of software engineering experience.",
+      "D": "Prerequisite: A degree in Computer Science; Recommended: No prior cloud experience."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud imposes no formal academic or certification requirements before taking the ACE exam, though 6+ months of hands-on practice is strongly advised."
+  },
+  "15": {
+    "question": "Which of the following architectural patterns is considered a security risk and is **LEAST** likely to improve network security in a Google Cloud VPC?",
+    "options": {
+      "A": "Enabling VPC Flow Logs to record metadata of network transactions.",
+      "B": "Assigning public IP addresses directly to all virtual machines to facilitate troubleshooting.",
+      "C": "Configuring stateful firewall rules targeting specific Service Accounts.",
+      "D": "Using Cloud NAT to provide private instances with outbound-only internet connectivity."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Allocating public IP addresses to all VMs exposes them to the public internet, dramatically increasing the attack surface. High security relies on keeping VMs private and utilizing Cloud NAT or proxies for outbound connections."
+  },
+  "16": {
+    "question": "You create a custom VPC subnet with the CIDR prefix `10.10.1.0/29`. Compute Engine VM instances will be deployed inside this subnet. How many total VM instances can simultaneously receive a primary internal IP address from this subnet?",
+    "options": {
+      "A": "8 instances.",
+      "B": "6 instances.",
+      "C": "4 instances, because Google Cloud reserves 4 addresses (`.0` network, `.1` gateway, second-to-last, and last broadcast).",
+      "D": "2 instances."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "A `/29` block has 8 total addresses. In every VPC subnet primary CIDR range, Google reserves 4 addresses: the network address (`.0`), the default subnet gateway (`.1`), the second-to-last address (`.6`), and the broadcast address (`.7`). This leaves 4 usable internal IP addresses (`.2`, `.3`, `.4`, and `.5`) for Compute Engine VMs."
+  },
+  "17": {
+    "question": "Your organization runs a production workload on Compute Engine instances within a custom VPC subnet. Due to rapid traffic growth, the subnet has run out of available internal IP addresses. You need to expand the subnet CIDR block from `10.0.0.0/24` to `10.0.0.0/22`. What will happen to the running VM instances during this expansion?",
+    "options": {
+      "A": "All VMs in the subnet will be automatically terminated and restarted with new IPs.",
+      "B": "Subnet expansion occurs dynamically with zero downtime, and existing running VMs are completely unaffected.",
+      "C": "The expansion will fail because subnet CIDR blocks are immutable once created.",
+      "D": "The network must first be converted to Auto Mode before an expansion can take place."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud VPC supports live subnet expansion with zero downtime. The prefix length number decreases (e.g., from `/24` to `/22`), increasing available addresses without shutting down or disrupting any active virtual machines."
+  },
+  "18": {
+    "question": "An engineer reserves five static external IP addresses in a Google Cloud project to prepare for a future migration, but does not attach them to any running VM instance or forwarding rule. How does Google Cloud bill for these reserved IP addresses?",
+    "options": {
+      "A": "They are completely free because no network traffic is flowing through them.",
+      "B": "They incur a higher hourly fee when unattached/unused than when attached to an active resource.",
+      "C": "The project is immediately suspended for violating resource quotas.",
+      "D": "Google Cloud converts them automatically to ephemeral internal IP addresses."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "To prevent public IPv4 address hoarding and wastage, Google Cloud charges a higher hourly rate for reserved static external IP addresses that are not currently in use by a running VM instance or load balancing forwarding rule."
+  },
+  "19": {
+    "question": "You have a cluster of Compute Engine virtual machines deployed in a private VPC subnet. To comply with security policies, none of these VMs have external (public) IP addresses. However, these VMs need to fetch configuration files from a Google Cloud Storage bucket. How can you enable this?",
+    "options": {
+      "A": "Assign a temporary public IP address to each VM.",
+      "B": "Establish a Cloud VPN tunnel between the VMs and Cloud Storage.",
+      "C": "Enable **Private Google Access** on the subnet where the VMs are deployed.",
+      "D": "Deploy a NAT Gateway VM with public IP addresses in the same subnet."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Private Google Access allows VMs in a VPC subnet that have only internal (private) IP addresses to access Google Cloud APIs and services (such as Cloud Storage, BigQuery, etc.) privately."
+  },
+  "20": {
+    "question": "Your company has an application running on Compute Engine VMs that queries a third-party API. The API provider charges your company based on the number of source IP addresses making calls. To minimize costs, you want to route all outbound internet traffic from your private VMs through a single, static public IP address. Which Google Cloud service should you deploy?",
+    "options": {
+      "A": "Cloud Router",
+      "B": "Cloud NAT",
+      "C": "External Load Balancer",
+      "D": "VPC Peering"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "**Cloud NAT** allows VM instances without public IP addresses to access the internet. You can configure Cloud NAT to use a manual allocation of static public IP addresses (e.g., reserving a single static External IP), ensuring all outbound traffic originates from that specific IP."
+  },
+  "21": {
+    "question": "An organization has three VPCs: `VPC-Prod`, `VPC-Shared-Services`, and `VPC-Corp`. They configure standard **VPC Network Peering** between `VPC-Prod` and `VPC-Shared-Services`, and between `VPC-Corp` and `VPC-Shared-Services`. Which statement is true regarding the traffic flow?",
+    "options": {
+      "A": "Traffic can transit from `VPC-Prod` through `VPC-Shared-Services` to reach `VPC-Corp`.",
+      "B": "Traffic cannot transit between `VPC-Prod` and `VPC-Corp` because VPC Network Peering is non-transitive.",
+      "C": "VPC Network Peering automatically configures a dynamic mesh topology allowing transitive route exchange.",
+      "D": "Pings will succeed because VPC Peering disables all stateful firewalls between peered networks."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "VPC Network Peering is strictly non-transitive. Traffic cannot pass through a middle VPC to reach a third VPC. Connecting them requires a direct peering link or a transitive hub."
+  },
+  "22": {
+    "question": "What is the primary operational advantage of using **Network Connectivity Center (NCC)** with VPC Spokes compared to traditional VPC Peering at scale?",
+    "options": {
+      "A": "NCC allows overlapping IP addresses across all VPC spokes to simplify subnets.",
+      "B": "NCC enforces absolute separation of routing tables so spokes never exchange routes.",
+      "C": "NCC provides a centralized hub-and-spoke management model that enables transitive routing among attached VPC spokes.",
+      "D": "NCC automatically assigns public IP addresses to all VMs in spokes to facilitate easier connectivity."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "NCC simplifies management of complex topologies by using a centralized Hub and Spoke design that transitively routes traffic across connected VPC spokes, reducing the necessity of configuring a full pairwise mesh."
+  },
+  "23": {
+    "question": "Your enterprise requires that separate development teams manage their own compute resources (VMs and databases) in isolated projects. However, security policy mandates that all network routing, firewall rules, and IP spaces must be centrally administered by a networking team. Which architecture meets this requirement?",
+    "options": {
+      "A": "Establish VPC Network Peering between each team's project.",
+      "B": "Configure a Shared VPC, designating the networking project as the Host Project and the development projects as Service Projects.",
+      "C": "Set up a transit VPC using Cloud VPN tunnels connecting each project.",
+      "D": "Give each developer the `Network Admin` role at the organization level."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Shared VPC lets you configure a Host Project where the central team manages the IP layout and firewalls, while Service Projects contain compute assets deployed directly into those subnets."
+  },
+  "24": {
+    "question": "An enterprise requires a hybrid network connection between their on-premises data center and Google Cloud. The connection must provide high bandwidth, low latency, and bypass the public internet entirely. Which option should the network architect choose?",
+    "options": {
+      "A": "High-Availability (HA) Cloud VPN",
+      "B": "Classic VPN",
+      "C": "Cloud Interconnect (Dedicated or Partner)",
+      "D": "Private Google Access"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Interconnect provides physical circuits (via Google edge locations or partners) that route traffic directly to GCP, bypassing the internet to ensure consistent throughput."
+  },
+  "25": {
+    "question": "Your network team has deployed a third-party firewall virtual appliance on a Compute Engine VM in your VPC. You want to route all egress traffic heading to the internet through this firewall appliance instead of Google Cloud's default internet gateway. What should you configure?",
+    "options": {
+      "A": "A firewall rule with a high priority rejecting all egress traffic.",
+      "B": "A custom Route in your VPC network with destination `0.0.0.0/0` and next hop set to the firewall VM instance.",
+      "C": "An IPsec VPN tunnel between the subnet and the VM.",
+      "D": "A Cloud NAT gateway attached to the firewall VM's subnet."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Custom routes allow you to redirect VPC traffic to a specific destination (e.g., `0.0.0.0/0` for the internet) using a specific VM instance (in this case, the firewall appliance) as the next hop."
+  },
+  "26": {
+    "question": "An organization is deploying a multi-tier web application. They need to distribute public HTTPS traffic to web servers based on the URL path (e.g., routing `/cart` to a dedicated VM instance group and `/catalog` to another). They also want to cache static images at edge locations near users. Which load balancer should they choose?",
+    "options": {
+      "A": "Regional External Network Load Balancer (L4 TCP)",
+      "B": "Global External Application Load Balancer (L7 HTTP/S)",
+      "C": "Internal TCP/UDP Load Balancer",
+      "D": "Classic Network Load Balancer"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Layer 7 routing (based on paths like `/cart`) and integration with Cloud CDN to cache content require an Application Load Balancer (HTTP/S)."
+  },
+  "27": {
+    "question": "You want to distribute private internal traffic among backend database helper servers within your VPC. The database helpers communicate over raw TCP. The load balancer must have a private IP address within your subnet and not be exposed to the internet. Which load balancer should you use?",
+    "options": {
+      "A": "Global External Application Load Balancer",
+      "B": "Regional External Network Load Balancer",
+      "C": "Regional Internal Proxy TCP Load Balancer",
+      "D": "Regional Internal Passthrough Network Load Balancer (Internal TCP/UDP)"
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "Distributing internal TCP traffic securely within a VPC requires a regional, internal passthrough network load balancer."
+  },
+  "28": {
+    "question": "How does a Google Cloud load balancer determine if an individual VM instance in a backend Managed Instance Group has failed and should no longer receive user traffic?",
+    "options": {
+      "A": "By checking if the VM is in the `TERMINATED` state via Compute Engine API.",
+      "B": "By utilizing configured Health Checks to periodically probe the application port.",
+      "C": "By monitoring the VM's CPU usage; if it drops to 0%, traffic is routed away.",
+      "D": "The load balancer relies on manual administrator configuration to remove failed VMs."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Load balancers use periodic health checks to query backend ports. If a node fails to respond, it is marked unhealthy and traffic is diverted automatically."
+  },
+  "29": {
+    "question": "An incoming request from the internet reaches a web server VM over port 443 because an Ingress firewall rule allows it. However, the administrator has deleted all user-defined Egress rules, leaving only the default rules. Why does the web server successfully return the HTTPS response packet back to the client?",
+    "options": {
+      "A": "Egress traffic always bypasses firewalls completely.",
+      "B": "Google Cloud firewalls are stateful; once an ingress connection is allowed, all subsequent bidirectional response traffic for that session is automatically permitted.",
+      "C": "The Cloud NAT gateway creates an exception tunnel for the response.",
+      "D": "HTTPS traffic is encrypted and cannot be inspected by firewall rules."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud firewall rules are stateful. When a session is permitted in one direction (e.g. Ingress allowed on port 443), return traffic for that established flow is allowed automatically in the opposite direction regardless of other egress rules."
+  },
+  "30": {
+    "question": "A security engineer creates two ingress firewall rules matching the same target instance: 1. `Rule-Allow-Web`: Priority `1000`, Action `ALLOW`, Source `0.0.0.0/0`, Port `tcp:80`. 2. `Rule-Block-Web`: Priority `500`, Action `DENY`, Source `0.0.0.0/0`, Port `tcp:80`. What happens when an external client attempts to connect to port 80 of the target VM?",
+    "options": {
+      "A": "The connection is allowed because `ALLOW` rules always override `DENY` rules regardless of priority.",
+      "B": "The connection is denied because `Rule-Block-Web` has a lower priority number (`500`), which represents higher evaluation precedence, and the first matching rule terminates evaluation.",
+      "C": "Both rules cancel each other out, defaulting to the implied allow rule.",
+      "D": "The connection is allowed because priority 1000 is numerically larger than 500."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Firewall rule priorities range from 0 to 65535, with lower numbers having higher priority. The firewall evaluates rules in ascending numerical order, and the first rule that matches the packet terminates evaluation."
+  },
+  "31": {
+    "question": "You configure a custom static Route in your VPC directing traffic destined for `10.50.0.0/16` to a Next-Generation Firewall VM appliance. However, when instances attempt to ping hosts in `10.50.0.0/16`, the packets are dropped. What is the most likely cause?",
+    "options": {
+      "A": "Custom routes only apply to regional load balancers, not VM instances.",
+      "B": "An existing or implied firewall rule is denying the egress or ingress traffic; packets require both a matching route AND a matching allow firewall rule to flow.",
+      "C": "Google Cloud VPC requires BGP peering before any static route can be activated.",
+      "D": "The subnet mask `/16` is too large for the Andromeda virtual router."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "In Google Cloud networking, having a route to a destination is a necessary but not sufficient condition. Traffic will only flow if both a valid matching Route exists AND a matching Allow Firewall Rule permits the packet."
+  },
+  "32": {
+    "question": "Two Compute Engine virtual machines (`VM-A` and `VM-B`) reside within the exact same zone (`us-central1-a`) and subnet. `VM-A` communicates with `VM-B` using `VM-B`'s public (external) IP address instead of its internal IP address. How will Google Cloud bill the egress traffic originating from `VM-A`?",
+    "options": {
+      "A": "The egress traffic is completely free because both VMs reside in the same physical zone.",
+      "B": "The egress traffic is charged at inter-zone egress rates because Compute Engine cannot resolve the zone of the target through its external IP address at the edge layer.",
+      "C": "The traffic is billed double as inter-continental international data transfer.",
+      "D": "Google Cloud drops the packets because VMs in the same zone cannot use external IPs to communicate."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Egress traffic to another VM in the same zone is only free when routed via internal IP addresses. When using external IPs, traffic traverses Google edge routing, which cannot determine instance zones, resulting in inter-zone egress billing."
+  },
+  "33": {
+    "question": "An administrator deletes all VPC networks in a test project. Afterward, a developer attempts to provision a new Compute Engine virtual machine instance. What will happen?",
+    "options": {
+      "A": "Compute Engine automatically provisions a temporary hidden VPC for the VM.",
+      "B": "The VM creation fails immediately with a \"No more networks available\" error because Compute Engine instances require a VPC network and subnet to attach a network interface (`nic0`).",
+      "C": "The VM launches in a standalone bridge mode without an IP address.",
+      "D": "The instance starts and communicates over Google's public edge network."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "A VPC network is a mandatory prerequisite for provisioning Compute Engine VMs, GKE clusters, and App Engine Flexible environments. Without a network and regional subnet, no virtual network interface can be allocated."
+  },
+  "34": {
+    "question": "You have four VMs deployed in Google Cloud: * `VM-1` and `VM-2` are in the SAME VPC network (`vpc-prod`), but `VM-1` is in `us-central1` (Iowa) and `VM-2` is in `asia-east1` (Taiwan). * `VM-3` and `VM-4` are in SEPARATE VPC networks (`vpc-dev` and `vpc-qa`), but both reside in the exact SAME zone (`us-central1-a`). Assuming all firewalls allow internal ICMP traffic, what is the internal ping behavior?",
+    "options": {
+      "A": "`VM-1` can ping `VM-2` using internal IPs; `VM-3` CANNOT ping `VM-4` using internal IPs.",
+      "B": "`VM-3` can ping `VM-4` because they share the same physical zone; `VM-1` cannot ping `VM-2` because they are in different regions.",
+      "C": "Neither pair can ping each other internally without Cloud VPN.",
+      "D": "Both pairs can ping each other because GCP networks automatically bridge same-project resources."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Google Cloud VPCs are global resources that allow cross-region internal communication over Google's private backbone. Conversely, separate VPC networks are completely isolated private networking domains and cannot communicate internally regardless of zone proximity, unless VPC Peering or VPN is established."
+  },
+  "35": {
+    "question": "Which state does a Compute Engine VM enter when it is shut down from the Google Cloud Console, and does it still incur billing charges?",
+    "options": {
+      "A": "`SUSPENDED`; charges for vCPUs and memory still apply.",
+      "B": "`TERMINATED`; charges for vCPUs and memory stop, but attached persistent disks and external IP allocations still incur fees.",
+      "C": "`STOPPING`; all billing for disks and IPs immediately ceases.",
+      "D": "`DELETED`; all resource definitions are destroyed."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "In the `TERMINATED` state, CPU and memory billing stops, but you still pay for associated persistent disks (storage capacity) and any statically reserved IPs."
+  },
+  "36": {
+    "question": "An organization runs a daily batch data processing job that is highly fault-tolerant and can resume without data loss if interrupted. Which billing model provides the most cost-effective compute solution?",
+    "options": {
+      "A": "Committed Use Discounts (CUDs) for 3 years.",
+      "B": "On-demand pricing.",
+      "C": "Spot VMs.",
+      "D": "Sole-tenant nodes."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Spot VMs take advantage of unused compute capacity. They are highly discounted but can be preempted. This matches fault-tolerant batch workloads."
+  },
+  "37": {
+    "question": "You want to deploy a legacy web application on Compute Engine. The application requires a customized environment, but you also want to automate the installation of dependencies (such as Apache and PHP) during the VM launch process so that newly scaled instances are ready automatically. How should you configure this?",
+    "options": {
+      "A": "Use a startup script passed via the instance metadata key `startup-script`.",
+      "B": "Manually SSH into each VM after it is created and run the install commands.",
+      "C": "Create a custom script and run it using Cloud Scheduler via API.",
+      "D": "Inject the commands directly into the OS kernel configuration before launching."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Startup scripts specified in VM metadata (using the key `startup-script` or `startup-script-url`) execute automatically as root when the VM boot sequence finishes, making them the standard tool for automated software provisioning on launch."
+  },
+  "38": {
+    "question": "A systems administrator wants to ensure that a web server pool dynamically adds instances when average CPU utilization exceeds 75%, and automatically deletes and recreates any VM that stops responding to HTTP status checks. Which configuration is required?",
+    "options": {
+      "A": "An Unmanaged Instance Group with an autoscaling policy.",
+      "B": "A Managed Instance Group (MIG) configured with both an autoscaling policy and an HTTP health check for autohealing.",
+      "C": "A global load balancer with an autoscaling group.",
+      "D": "A startup script that runs on standalone VMs to query Compute Engine metrics."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Autoscaling policies add/remove instances, and Health Checks linked to MIGs (Autohealing) monitor application status to replace failed or unresponsive instances."
+  },
+  "39": {
+    "question": "Your company has a critical virtual machine `instance-1` running in zone `us-central1-a`. Due to zone maintenance, you need to migrate this VM’s boot disk to zone `us-central1-f` in the same region with the least amount of downtime. How should you do this?",
+    "options": {
+      "A": "Use `gcloud compute instances move` to live-migrate the instance across zones.",
+      "B": "Create an image of the boot disk, export it to Cloud Storage, download it, and upload it as a new disk in `us-central1-f`.",
+      "C": "Take a snapshot of the boot disk. Create a new persistent disk from the snapshot in zone `us-central1-f`. Create a new VM instance in `us-central1-f` using that new disk as the boot disk.",
+      "D": "Create a replica disk in `us-central1-f` using a local replication service."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Taking a snapshot is the standard, low-overhead way to backup and move disks. Snapshots are global resources within a region, meaning you can restore them as new persistent disks in any zone within the same region."
+  },
+  "40": {
+    "question": "Your company requires that all persistent disks attached to production Compute Engine instances be backed up daily. The backups must be retained for 30 days. You want to accomplish this with the **least** amount of operational overhead and without writing custom scripts. What should you do?",
+    "options": {
+      "A": "Create a Cloud Function triggered by a Cloud Scheduler cron job to take daily snapshots.",
+      "B": "Configure an Automated Snapshot Schedule in Compute Engine with a 30-day retention policy and attach it to the production disks.",
+      "C": "Write a startup script that runs on the VMs and runs `gcloud compute disks snapshot` daily.",
+      "D": "Manually take snapshots of each disk at the end of every business day."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Automated Snapshot Schedules are built-in features of Compute Engine. They automate snapshot creation and deletion (retention) directly, requiring zero custom code or management overhead."
+  },
+  "41": {
+    "question": "You are running a high-performance database cluster on Compute Engine. The database requires extremely high write speed and low latency scratch space for temporary session storage. The temporary data does not need to persist if the instance stops or is terminated. Which storage option offers the lowest latency and highest IOPS?",
+    "options": {
+      "A": "Balanced Persistent Disk",
+      "B": "Extreme Persistent Disk",
+      "C": "Local SSD",
+      "D": "Cloud Storage bucket mounted via FUSE"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Local SSDs are physically attached to the host server hosting the VM, offering sub-millisecond latency and massive IOPS. However, because they are physical disks, their data is lost when the instance is stopped or terminated."
+  },
+  "42": {
+    "question": "You want to deploy a containerized application to GKE. You want to pay only for the CPU, memory, and storage that your pods actually request, without managing VM instance nodes, OS patching, or cluster upgrade settings. Which GKE operating mode should you select?",
+    "options": {
+      "A": "GKE Standard with cluster autoscaler enabled.",
+      "B": "GKE Autopilot.",
+      "C": "Cloud Run.",
+      "D": "Compute Engine with container-optimized OS."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "GKE Autopilot manages node provisioning and lifecycle entirely. It bills based on pod resource allocations, whereas GKE Standard bills for the underlying nodes."
+  },
+  "43": {
+    "question": "You are configuring a GKE Autopilot cluster to host a critical API. You need to verify how GKE handles node upgrades. You want to ensure that during a node upgrade, the workloads are migrated gracefully with minimum disruption. How does GKE execute this?",
+    "options": {
+      "A": "GKE immediately deletes the old nodes, forcing pods to restart on new nodes.",
+      "B": "GKE performs a surge upgrade: it creates a new node, waits for it to become ready, cordons and drains the old node (gracefully migrating pods), and then deletes the old node.",
+      "C": "GKE requires you to manually spin down node pools during maintenance windows.",
+      "D": "GKE pauses all network routing to the cluster until the OS upgrade is finished on all nodes."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "GKE uses surge upgrades by default. It provisions extra nodes to hold workloads while cordoning (marking unschedulable) and draining (evicting pods) the older nodes to ensure high availability during updates."
+  },
+  "44": {
+    "question": "Your team is deploying a containerized application to GKE that needs to pull private container images from Artifact Registry. The Artifact Registry is located in `project-a`, but the GKE cluster is deployed in `project-b`. What is the most secure way to authorize GKE to pull these images?",
+    "options": {
+      "A": "Make the Artifact Registry repository public so GKE can pull images without credentials.",
+      "B": "Create a service account key in `project-a`, and store it as a Kubernetes Secret in the GKE cluster.",
+      "C": "Grant the GKE service account of the GKE nodes (usually the Compute Engine default service account) in `project-b` the **Artifact Registry Reader** role on the repository in `project-a`.",
+      "D": "Enable VPC Network Peering between the registry network and GKE network."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "GKE nodes use their associated service account to pull images. Granting the GKE node service account read access to the external Artifact Registry registry maintains a secure, keyless configuration across projects."
+  },
+  "45": {
+    "question": "Which Kubernetes resource type should you configure to expose your microservice pod replicas to the public internet using a Google Cloud External Load Balancer?",
+    "options": {
+      "A": "A deployment config with replica status.",
+      "B": "A Service of type `ClusterIP`.",
+      "C": "A Service of type `LoadBalancer`.",
+      "D": "An Ingress resource with custom path routing."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Exposing a service as type `LoadBalancer` signals GKE to automatically request and configure an external GCP network load balancer routing directly to your pods."
+  },
+  "46": {
+    "question": "An engineer is troubleshooting a deployment. They want to check the logs of a container running inside a pod named `api-pod-xyz`. Which CLI command should they run?",
+    "options": {
+      "A": "`gcloud compute instances get-serial-port-output api-pod-xyz`",
+      "B": "`kubectl logs api-pod-xyz`",
+      "C": "`gcloud container clusters describe api-pod-xyz`",
+      "D": "`kubectl get events --filter api-pod-xyz`"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "`kubectl logs` is the standard tool used to retrieve console output from container processes inside active Kubernetes pods."
+  },
+  "47": {
+    "question": "You want to deploy an internal web application packaged as a Docker container. The application receives unpredictable traffic spikes but is completely idle during nights and weekends. You want to scale to zero instances when idle to save costs and avoid managing VM nodes or clusters. Which service should you choose?",
+    "options": {
+      "A": "GKE Standard",
+      "B": "Compute Engine Managed Instance Groups",
+      "C": "Cloud Run (Service)",
+      "D": "Cloud Run (Job)"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Run services deploy containerized HTTP apps and can scale to zero instances automatically during idle periods to eliminate resource costs."
+  },
+  "48": {
+    "question": "You need to deploy a Node.js web application on Google Cloud. The application runs inside standard containers, but your team has zero operational experience managing Kubernetes clusters or configuring load balancers. You require the application to automatically scale to zero instances during periods of no traffic. Which service should you choose?",
+    "options": {
+      "A": "App Engine Flexible Environment",
+      "B": "GKE Standard",
+      "C": "Cloud Run",
+      "D": "Compute Engine Managed Instance Groups"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Run runs containerized applications serverlessly, scaling up on demand and down to zero when idle, requiring no infrastructure management or cluster configuration."
+  },
+  "49": {
+    "question": "Which IAM configuration is required to expose a Cloud Run service publicly to the internet, allowing unauthenticated users to access its web endpoint?",
+    "options": {
+      "A": "Grant the `allAuthenticatedUsers` group the `Cloud Run Admin` role.",
+      "B": "Grant the `allUsers` principal the `Cloud Run Invoker` role.",
+      "C": "Disable firewalls for the VPC subnet hosting the container.",
+      "D": "Create a custom role containing the `compute.instances.create` permission."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Exposing a Cloud Run service requires giving the specialized `allUsers` principal the permission to invoke (run) the service."
+  },
+  "50": {
+    "question": "Your company is adopting serverless containers using Cloud Run. You want to ensure that your workloads can easily be moved to another Kubernetes environment or on-premises cluster in the future without major code modifications. What open-source API and runtime standard is Cloud Run built on that guarantees this portability?",
+    "options": {
+      "A": "Kubernetes API",
+      "B": "Knative",
+      "C": "Docker Compose",
+      "D": "gRPC"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Run is built on the Knative open-source API and runtime environment built on Kubernetes. This standardizes container deployment specs, ensuring you can move workloads to GKE or any on-premises cluster running Knative."
+  },
+  "51": {
+    "question": "An engineer needs to deploy a script that automatically processes and extracts metadata from images as soon as they are uploaded to a specific Cloud Storage bucket. Which service is best suited for this event-driven, single-purpose task?",
+    "options": {
+      "A": "Cloud Run (Service)",
+      "B": "Cloud Run Functions (Event-driven Function)",
+      "C": "GKE Autopilot",
+      "D": "BigQuery Omni"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Run Functions are built for event-driven workflows, responding instantly to events (like a new object in Cloud Storage) without keeping servers running."
+  },
+  "52": {
+    "question": "Your application architecture requires an asynchronous messaging system to ingest streaming clickstream data. The consumer application processes these messages in large, structured batches at its own pace to avoid database write bottlenecks. Which Cloud Pub/Sub subscription type should you configure?",
+    "options": {
+      "A": "Push Subscription",
+      "B": "Pull Subscription",
+      "C": "Cloud Storage export topic",
+      "D": "Direct stream billing subscription"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "A Pull subscription allows the consumer application to request (pull) batches of messages when it has the capacity to process them, giving it complete control over ingestion speed. Push subscriptions force immediate delivery to an HTTP endpoint on receipt."
+  },
+  "53": {
+    "question": "An administrator needs to configure a storage solution for audit logs. The logs must be retained for seven years, will rarely (if ever) be accessed, but must not be lost. Which Cloud Storage class provides the most cost-effective storage?",
+    "options": {
+      "A": "Standard Storage",
+      "B": "Nearline Storage",
+      "C": "Archive Storage",
+      "D": "Coldline Storage"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Archive Storage has the lowest storage cost per gigabyte and is designed for data accessed less than once a year, making it ideal for multi-year compliance archives."
+  },
+  "54": {
+    "question": "You are hosting a static marketing website on Cloud Storage. You want to route user requests targeting `www.mycompany.com` to the bucket. What is a key requirement for the Cloud Storage bucket name to make this configuration work?",
+    "options": {
+      "A": "The bucket name must start with `gcs-website-`.",
+      "B": "The bucket name must match the domain name exactly (e.g., `www.mycompany.com`).",
+      "C": "The bucket name must be registered as a DNS record.",
+      "D": "The bucket name can be anything as long as it has public read permissions."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "To serve static website content from Cloud Storage using a custom domain (without a load balancer), the name of the bucket must match the CNAME hostname exactly (e.g., `www.mycompany.com`)."
+  },
+  "55": {
+    "question": "You need to share a large diagnostic dataset stored in a private Cloud Storage bucket with an external auditing partner. The partner does not have Google Cloud accounts, and the security policy dictates that they must only have read access for a maximum of 24 hours. What is the most secure way to share this data?",
+    "options": {
+      "A": "Share the bucket publicly and delete it after 24 hours.",
+      "B": "Generate a Signed URL with a 24-hour expiration time and share it with the partner.",
+      "C": "Create a temporary service account, download the JSON key, email it to the partner, and delete the account in 24 hours.",
+      "D": "Add the partner's email address to the bucket's Access Control List (ACL) as a Reader."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Signed URLs grant time-limited read or write access to specific Cloud Storage resources to anyone who possesses the URL, without requiring them to have a Google account."
+  },
+  "56": {
+    "question": "You are planning a database deployment for a new application. You want to use a standard MySQL database but want to minimize operational overhead such as automated backups, replication, and software security patches, without losing access to standard relational SQL query structures. Which service configuration should you choose?",
+    "options": {
+      "A": "Deploy a Compute Engine VM, install MySQL open-source, and manage cron jobs for backups.",
+      "B": "Deploy a serverless NoSQL Firestore database.",
+      "C": "Use Cloud SQL (MySQL instance) to handle automated backups, patches, and failovers.",
+      "D": "Set up a Cloud Spanner database across multiple regions."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud SQL provides a fully managed database service (supporting MySQL, PostgreSQL, and SQL Server) that automates maintenance operations like backups and patches, whereas hosting MySQL on Compute Engine leaves those operational tasks to you."
+  },
+  "57": {
+    "question": "You want to deploy a highly available PostgreSQL database on Cloud SQL. The database must automatically failover to a standby instance in a different zone within the same region in the event of a zone outage. What should you do?",
+    "options": {
+      "A": "Deploy two separate Cloud SQL instances and write a custom failover script.",
+      "B": "Enable High Availability (HA) on the Cloud SQL instance configuration, which automatically provisions a standby instance in a different zone.",
+      "C": "Set up a Read Replica in a different region and configure it as the primary master database.",
+      "D": "Deploy the database inside a GKE Autopilot cluster spanning multiple regions."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Enabling HA (High Availability) on Cloud SQL configures a regional, multi-zone deployment. Data is synchronously replicated to a standby replica in a different zone, enabling automatic failover without manual intervention."
+  },
+  "58": {
+    "question": "A global retail company is building an inventory system that requires strong consistency and transactional integrity across databases located in Asia, Europe, and North America. They must scale write throughput horizontally to support seasonal shopping spikes. Which database should they use?",
+    "options": {
+      "A": "Cloud SQL (PostgreSQL)",
+      "B": "Cloud Spanner",
+      "C": "Cloud Bigtable",
+      "D": "Firestore"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Cloud Spanner is the only relational database on Google Cloud that scales horizontally for both reads and writes globally while maintaining full ACID compliance."
+  },
+  "59": {
+    "question": "Which Google Cloud database service is a serverless document store that supports real-time client SDK connections and offline data synchronization for mobile applications?",
+    "options": {
+      "A": "BigQuery",
+      "B": "Firestore",
+      "C": "AlloyDB",
+      "D": "Cloud Bigtable"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Firestore is a serverless document database offering SDK client sync features that allow mobile and web clients to cache queries offline and listen to modifications in real-time."
+  },
+  "60": {
+    "question": "An IoT startup needs to ingest time-series sensor telemetry data from millions of connected smart meters. The database must handle a continuous stream of write requests at a rate of 100,000 writes per second, and require sub-10 millisecond read latencies for dashboard queries. Which database is best suited for this?",
+    "options": {
+      "A": "Cloud SQL (MySQL)",
+      "B": "Cloud Spanner",
+      "C": "Cloud Bigtable",
+      "D": "Firestore"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Bigtable is a wide-column NoSQL service designed specifically for high-throughput streaming writes and low-latency single-key lookups, making it ideal for IoT time-series data."
+  },
+  "61": {
+    "question": "An ML research team is training a custom deep learning transformer model from scratch. The training process consists of massive matrix multiplication operations and will run for several weeks. The team is writing their code in PyTorch. Which accelerator is specifically designed by Google to optimize this type of matrix math?",
+    "options": {
+      "A": "Intel Xeon CPU",
+      "B": "AMD EPYC CPU",
+      "C": "NVIDIA L4 GPU",
+      "D": "Google Tensor Processing Unit (TPU)"
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "TPUs are Google-designed ASICs optimized for high-performance tensor operations (matrix multiplications) found in large deep learning model training."
+  },
+  "62": {
+    "question": "You need to deploy a low-latency model inference service that analyzes customer feedback in real-time. The application requires high computational flexibility and runs on a custom Python library not supported directly by Vertex AI. Which deployment option provides the best balance of container orchestration and GPU resource allocation?",
+    "options": {
+      "A": "GKE node pools configured with attached GPUs.",
+      "B": "Standalone Compute Engine VMs using standard E2 machine types.",
+      "C": "Serverless Cloud Run Functions without accelerators.",
+      "D": "Google Cloud Storage buckets."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "GKE node pools with attached GPUs allow developers to deploy custom containerized inference services with full scheduling control over hardware accelerators."
+  },
+  "63": {
+    "question": "What is a key difference between GPUs and TPUs regarding framework flexibility?",
+    "options": {
+      "A": "TPUs support any custom C++ application, whereas GPUs are restricted to TensorFlow.",
+      "B": "GPUs offer broader compatibility with diverse software frameworks, while TPUs are custom ASICs optimized specifically for select ML libraries like JAX, PyTorch, and TensorFlow.",
+      "C": "GPUs are only used for graphics, while TPUs perform all other system arithmetic.",
+      "D": "There is no architectural difference; they are synonymous."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "GPUs are generic parallel processing hardware with wide software compatibility. TPUs are specialized ASICs that require specific ML frameworks (TensorFlow, PyTorch, JAX) to utilize the hardware architecture."
+  },
+  "64": {
+    "question": "An engineer modifies an instance configuration file to change the machine type of a VM from `e2-medium` to `e2-standard-4`. Which block type in Terraform defines this resource?",
+    "options": {
+      "A": "`variable \"machine_type\"`",
+      "B": "`resource \"google_compute_instance\"`",
+      "C": "`output \"instance_ip\"`",
+      "D": "`provider \"google\"`"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "In Terraform, infrastructure assets are defined within `resource` blocks (such as `google_compute_instance`), whereas `variable` defines input parameters."
+  },
+  "65": {
+    "question": "Which Terraform CLI command should an engineer run to preview a dry-run listing of the resources that Terraform will create, modify, or destroy, without actually making changes to their live Google Cloud environment?",
+    "options": {
+      "A": "`terraform init`",
+      "B": "`terraform validate`",
+      "C": "`terraform plan`",
+      "D": "`terraform apply`"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "`terraform plan` queries the current state, compares it with local files, and shows the dry-run operations (add/change/destroy) without applying them."
+  },
+  "66": {
+    "question": "A DevOps team wants to collaborate on a Google Cloud infrastructure repository using Terraform. They need to ensure that the state file is stored securely in a central location, and that concurrent executions by different team members do not conflict or corrupt the state. Which configuration should they use?",
+    "options": {
+      "A": "Store the state file in a Git repository and use branch locking.",
+      "B": "Configure a remote backend storing the state in a Cloud Storage bucket, which natively supports state locking.",
+      "C": "Run a local cron job to sync the state file with Google Drive.",
+      "D": "Use the primitive Editor role to share local workspace access."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Storing state in Cloud Storage using a `gcs` backend provides centralized access control and native state locking to prevent concurrent deployment runs."
+  },
+  "67": {
+    "question": "An administrator needs to archive audit logs for seven years to comply with regulatory standards. The logs should be stored as cost-effectively as possible, and rapid search access is not required. Where should the administrator configure a Cloud Logging Sink to route these logs?",
+    "options": {
+      "A": "A BigQuery dataset.",
+      "B": "A Pub/Sub topic routed to a SIEM.",
+      "C": "A Cloud Storage bucket with Archive class files.",
+      "D": "An external third-party file database."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Directing logs through a Cloud Logging Sink to an Archive class Cloud Storage bucket provides the most cost-efficient long-term retention."
+  },
+  "68": {
+    "question": "Your finance department needs to analyze historical, itemized billing records for all Google Cloud resources consumed across your organization. They want to use standard SQL to run complex analytical queries over these records. How should you set this up?",
+    "options": {
+      "A": "Download the billing PDF invoice monthly and write a script to parse it.",
+      "B": "Configure Cloud Billing export to BigQuery, and direct the finance team to run SQL queries on the resulting datasets.",
+      "C": "Set up a Cloud Storage bucket sink to export CSV billing records daily.",
+      "D": "Grant the finance team the `Billing Account Administrator` role so they can view the dashboard."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Exporting billing data to BigQuery provides detailed, line-item resource records that can be analyzed dynamically using standard SQL queries, enabling custom cost reporting."
+  },
+  "69": {
+    "question": "You want to verify that your global e-commerce web application is accessible to users outside the local network. You need to verify status codes and response times every 5 minutes from multiple global regions. Which feature of Cloud Monitoring should you configure?",
+    "options": {
+      "A": "Metric Explorer queries.",
+      "B": "Uptime Checks.",
+      "C": "Cloud Logging Sinks.",
+      "D": "Cloud Trace spans."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Uptime Checks target web endpoints from global source locations to verify connection status, response codes, and network latency periodically."
+  },
+  "70": {
+    "question": "You have deployed several Linux virtual machines on Compute Engine. You notice that the Google Cloud Console shows CPU and network metrics, but memory (RAM) and disk space utilization metrics are missing. What must you do to collect and view these metrics?",
+    "options": {
+      "A": "Upgrade the VMs to memory-optimized machine families.",
+      "B": "Install the Google Cloud Ops Agent on each virtual machine.",
+      "C": "Grant the VM service accounts the `roles/monitoring.metricWriter` role and restart the VMs.",
+      "D": "Enable the Compute Engine OS Login feature in project metadata."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Basic VM metrics (CPU/network) are collected from the hypervisor. Internal OS metrics like memory utilization and disk space require agent-based monitoring. Installing the **Ops Agent** (which combines logging and metrics) is the standard method to collect these."
+  },
+  "71": {
+    "question": "An Associate Cloud Engineer needs to verify that a deployed microservice meets target performance metrics and troubleshoot recent high-latency issues. Which Google Cloud suite is best suited for this task?",
+    "options": {
+      "A": "Google Cloud Identity",
+      "B": "Google Cloud Observability (formerly Stackdriver)",
+      "C": "Cloud Identity-Aware Proxy (IAP)",
+      "D": "Workforce Identity Federation"
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Google Cloud Observability collects logs, tracks application metrics (latencies, resource usage), and monitors health via dashboards."
+  },
+  "72": {
+    "question": "An application operations team wants to analyze application latency profiles and identify the exact database queries that are slowing down HTTP response cycles. Which tool should they use?",
+    "options": {
+      "A": "Cloud Logging",
+      "B": "Cloud Monitoring",
+      "C": "Cloud Trace",
+      "D": "Cloud Profiler"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Cloud Trace collects latency metrics across distributed microservices, tracking individual requests through call graphs to identify performance bottlenecks."
+  },
+  "73": {
+    "question": "What does it mean that Gemini Notebook is \"source-grounded\"?",
+    "options": {
+      "A": "It can only search the live internet for information.",
+      "B": "It prioritizes and restricts its answers to the documents you explicitly upload, citing them directly.",
+      "C": "It requires a constant connection to a local database.",
+      "D": "It only operates when local files are saved on your computer's desktop."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Source-grounded means the model targets your specific files first. It reduces hallucinations and maps answers back to verified uploads with inline citations."
+  },
+  "74": {
+    "question": "You are studying for a Google Cloud certification exam using Gemini Notebook. What is the recommended way to prevent the AI from generating answers based on outdated or out-of-scope training data?",
+    "options": {
+      "A": "Upload as many documents from the internet as possible to dilute its training data.",
+      "B": "Append the instruction \"Answer only using the provided sources\" to your complex technical queries.",
+      "C": "Disconnect your computer from the internet before querying the AI.",
+      "D": "Use the primitive Owner role in IAM to restrict the notebook's API."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Prompts specifying \"Answer only using the provided sources\" force the model to anchor its logical deductions inside your verified files, ignoring unrelated training parameters."
+  },
+  "75": {
+    "question": "An Associate Cloud Engineer student wants to review their study materials during their daily commute without looking at a screen. Which feature of Gemini Notebook is best suited for this?",
+    "options": {
+      "A": "Studio Flashcards",
+      "B": "Deep Research Panel",
+      "C": "Audio Overviews (Deep Dives)",
+      "D": "Inline Citation Highlighting"
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Audio Overviews generate a conversational, podcast-style dialogue between two AI voices talking about your sources, which is great for off-screen study."
+  },
+  "76": {
+    "question": "Which of the following describes a limitation of Gemini Notebook?",
+    "options": {
+      "A": "Each notebook has access to all the sources uploaded in your other notebooks.",
+      "B": "The free plan limits users to 3 notebooks total.",
+      "C": "It does not provide citations or references for its answers.",
+      "D": "Notebooks are isolated; there is no automated cross-pollination of information between separate notebooks."
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "Each notebook acts as an isolated workspace. Information uploaded in one notebook is inaccessible from another unless duplicated."
+  },
+  "77": {
+    "question": "How does Gemini Notebook retrieve information to answer your prompts?",
+    "options": {
+      "A": "It performs a live Google Search across the public internet.",
+      "B": "It searches all Google Cloud product documentation automatically.",
+      "C": "It prioritizes the sources you upload to the notebook.",
+      "D": "It accesses your personal Google Workspace to find relevant files."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Unlike standard models, Gemini Notebook relies on a dedicated, user-curated knowledge base by prioritizing and scanning your checked sources."
+  },
+  "78": {
+    "question": "How can you incorporate your own insights into a Gemini Notebook project?",
+    "options": {
+      "A": "Create a note in the Studio panel and select \"Convert to source\".",
+      "B": "Edit the original PDF documents and re-upload them to the project.",
+      "C": "Send a chat message asking Gemini Notebook to permanently remember a fact.",
+      "D": "Export the notebook to Google Docs and type your insights there."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Creating a note in the Studio panel and selecting \"Convert to source\" adds your personal input directly to the source list, making it queryable."
+  },
+  "79": {
+    "question": "Which approach yields the most accurate and useful responses from Gemini Notebook?",
+    "options": {
+      "A": "Writing the shortest possible prompts to minimize processing time.",
+      "B": "Providing detailed prompts grounded in high-quality, comprehensive source documents.",
+      "C": "Asking Gemini Notebook to search the public internet for the latest technical articles.",
+      "D": "Relying entirely on Gemini Notebook’s pre-trained base model knowledge."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Detail-rich prompts tied to solid, authoritative source documents supply the context necessary for correct, grounded answers."
+  },
+  "80": {
+    "question": "How can Gemini Notebook assist you with a complex topic like configuring Workload Identity Federation?",
+    "options": {
+      "A": "It can automatically provision the required identity resources in your Google Cloud project.",
+      "B": "It can rewrite the official Google Cloud documentation to permanently change the source URL.",
+      "C": "It can analyze your uploaded course materials and summarize the key concepts and steps.",
+      "D": "It can contact Google Cloud Support on your behalf to request a technical explanation."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Gemini Notebook is an informational assistant. It cannot provision resources, execute code, or make API calls, but it is excellent at summarizing and explaining complex processes from your files."
+  },
+  "81": {
+    "question": "How can you customize a generated study resource, such as a quiz or study guide, in the Studio panel?",
+    "options": {
+      "A": "Modify the underlying HTML code of the Gemini Notebook interface to change the output format.",
+      "B": "Send a chat prompt asking Gemini Notebook to permanently change its default output style for all future resources.",
+      "C": "You cannot customize Studio features. They always generate standard, unchangeable outputs.",
+      "D": "Select the pencil icon next to the feature to provide specific instructions or set context before generating."
+    },
+    "answer_official": "D",
+    "answer_community": "D",
+    "explanation": "The pencil icon allows users to input custom instructions, tailoring the quizzes or reports to specific styles, focuses, or depths."
+  },
+  "82": {
+    "question": "When you generate a new study resource (like an Audio Overview or a set of flashcards), which documents does Gemini Notebook use to create the content?",
+    "options": {
+      "A": "Every document you have ever uploaded to any notebook in your account.",
+      "B": "Only the single most recently uploaded document in your current notebook.",
+      "C": "Only the specific documents that are currently checked in the Sources panel.",
+      "D": "All documents in the current notebook, regardless of whether they are checked or unchecked."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "Checking and unchecking items in the Sources panel lets you target the model. It ignores unchecked documents in the current workspace."
+  },
+  "83": {
+    "question": "Why is Gemini Notebook recommended over a general-purpose AI chatbot for your Associate Cloud Engineer exam preparation?",
+    "options": {
+      "A": "It automatically connects to your Google Cloud project to analyze your live architecture and configurations.",
+      "B": "It restricts you to using only text-based prompts, which improves your command-line interface (CLI) skills.",
+      "C": "It prioritizes the specific Google Cloud documentation and official course materials you upload to generate its answers.",
+      "D": "It contains a hidden, pre-loaded database of all future Associate Cloud Engineer exam questions."
+    },
+    "answer_official": "C",
+    "answer_community": "C",
+    "explanation": "The primary benefit is the source-grounded model, which reduces hallucinations and restricts the context to the study materials you explicitly upload."
+  },
+  "84": {
+    "question": "During your study session, you type a summary of Compute Engine machine types into a note. How can you ensure Gemini Notebook uses your summary to answer future questions?",
+    "options": {
+      "A": "Pin the note to the top of the Studio panel.",
+      "B": "Select \"Convert to source\" on the note.",
+      "C": "Export the note to a PDF and email it to yourself.",
+      "D": "Copy and paste the note into every new chat prompt you write."
+    },
+    "answer_official": "B",
+    "answer_community": "B",
+    "explanation": "Clicking \"Convert to source\" adds your note to the notebook's active knowledge base, allowing the AI to reference it for future queries."
+  },
+  "85": {
+    "question": "Which of the following practices is LEAST likely to improve network security in Google Cloud?",
+    "options": {
+      "A": "Assigning public IP addresses to all virtual machines in a VPC.",
+      "B": "Enabling VPC flow logs to monitor network traffic.",
+      "C": "Regularly reviewing and updating IAM (Identity and Access Management) permissions.",
+      "D": "Implementing network firewall rules to control traffic."
+    },
+    "answer_official": "A",
+    "answer_community": "A",
+    "explanation": "Assigning public IP addresses to all VMs in a VPC exposes them directly to the public internet, significantly increasing the attack surface and reducing overall network security."
+  }
+}
